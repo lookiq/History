@@ -3,7 +3,7 @@ const path = require('path');
 const { runFFmpeg } = require('./ffmpeg');
 const { Logger } = require('./logger');
 
-const LAYOUTS = new Set(['blur', 'crop', 'stacked']);
+const LAYOUTS = new Set(['blur', 'crop', 'stacked', 'history_bypass']);
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, Number(value) || minimum));
@@ -78,7 +78,7 @@ class ShortsRepurposingService {
         sourceSceneIds: window.scenes.map(scene => scene.id),
         startSeconds: window.startSeconds,
         duration: window.duration,
-        layout: position === 1 ? 'crop' : position === 2 ? 'stacked' : 'blur',
+        layout: position === 0 ? 'history_bypass' : position === 1 ? 'stacked' : 'blur',
         rationale: `Selected from ${window.scenes.map(scene => scene.label).join(', ')} as a self-contained vertical excerpt.`,
         status: 'proposed',
         publishTime: new Date(baseTime.getTime() + position * 86400000).toISOString(),
@@ -185,13 +185,39 @@ class ShortsRepurposingService {
     await this.db.updateShortClip(clip.id, { status: 'rendering', error: null });
 
     try {
-      const filter = this.videoFilter(clip.layout, captionsPath);
-      await this.runFFmpeg([
-        '-y', '-ss', String(clip.startSeconds), '-i', sourceVideo, '-t', String(clip.duration),
-        '-filter_complex', filter, '-map', '[shortv]', '-map', '0:a:0?',
-        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
-        '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', '-shortest', outputPath
-      ]);
+      if (clip.layout === 'history_bypass') {
+        const overlayPath = path.join(directory, `${clip.id}_card.png`);
+        const { HistoryCardGenerator } = require('./history-card-generator');
+        const cardGenerator = new HistoryCardGenerator({
+          width: this.width,
+          height: this.height,
+          channelName: process.env.CHANNEL_DISPLAY_NAME || process.env.CHANNEL_NAME || 'History Bypass',
+          channelHandle: process.env.CHANNEL_HANDLE || '@HistoryBypass',
+          avatarPath: process.env.CHANNEL_LOGO_PATH || null
+        });
+        const cardResult = await cardGenerator.renderCardOverlay(clip.title, overlayPath);
+        const vY = cardResult.videoY || Math.round(this.height * 0.40);
+        const filter = `[0:v]scale=${this.width}:-2:force_original_aspect_ratio=decrease[fg];` +
+          `color=c=black:s=${this.width}x${this.height}:d=${clip.duration}[bg];` +
+          `[bg][fg]overlay=(W-w)/2:${vY}[mid];` +
+          `[mid][1:v]overlay=0:0:eof_action=repeat,fps=30,format=yuv420p[shortv]`;
+
+        await this.runFFmpeg([
+          '-y', '-ss', String(clip.startSeconds), '-i', sourceVideo, '-t', String(clip.duration),
+          '-loop', '1', '-t', String(clip.duration), '-i', overlayPath,
+          '-filter_complex', filter, '-map', '[shortv]', '-map', '0:a:0?',
+          '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
+          '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', '-shortest', outputPath
+        ]);
+      } else {
+        const filter = this.videoFilter(clip.layout, captionsPath);
+        await this.runFFmpeg([
+          '-y', '-ss', String(clip.startSeconds), '-i', sourceVideo, '-t', String(clip.duration),
+          '-filter_complex', filter, '-map', '[shortv]', '-map', '0:a:0?',
+          '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21',
+          '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', '-shortest', outputPath
+        ]);
+      }
       await this.runFFmpeg(['-v', 'error', '-i', outputPath, '-f', 'null', '-']);
       const stats = await fs.stat(outputPath);
       if (!stats.isFile() || stats.size <= 0) throw new Error('FFmpeg returned an empty Short');

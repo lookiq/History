@@ -16,6 +16,13 @@ const PROVIDERS = {
     models: ['gpt-5.6', 'gpt-5.6-terra', 'gpt-5.6-luna'],
     envKey: 'OPENAI_API_KEY',
   },
+  groq: {
+    name: 'Groq',
+    baseURL: 'https://api.groq.com/openai/v1',
+    defaultModel: 'qwen/qwen3.8-27b',
+    models: ['qwen/qwen3.8-27b', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
+    envKey: 'GROQ_API_KEY',
+  },
   openrouter: {
     name: 'OpenRouter',
     baseURL: 'https://openrouter.ai/api/v1',

@@ -1,0 +1,87 @@
+name: The History Uncut - Autonomous Daily Shorts Pipeline
+
+on:
+  schedule:
+    # Golden Slot 1: USA Morning Peak (7-9 AM EST) -> Published at 5:00 AM EST / 09:00 UTC / 3:00 PM BST (2h Pre-Peak)
+    - cron: '0 9 * * *'
+    # Golden Slot 2: USA Lunch Break Peak (12-2 PM EST) -> Published at 10:00 AM EST / 14:00 UTC / 8:00 PM BST (2h Pre-Peak)
+    - cron: '0 14 * * *'
+    # Golden Slot 3: USA Mega Evening Peak (6-9 PM EST) -> Published at 4:00 PM EST / 20:00 UTC / 2:00 AM BST (2h Pre-Peak)
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Custom historical topic or era (optional)'
+        required: false
+        default: ''
+      safety_buffer_hours:
+        description: 'Copyright safety quarantine hours before going Public (default: 2)'
+        required: false
+        default: '2'
+
+jobs:
+  generate-and-schedule:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Set up Python 3.12 (For yt-dlp Cinematic Fetcher)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install System Dependencies (FFmpeg & Fonts)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji fonts-liberation
+
+      - name: Install Python CLI Tools (yt-dlp)
+        run: |
+          python -m pip install --upgrade pip
+          pip install yt-dlp
+
+      - name: Install Node.js Dependencies
+        run: |
+          npm install --production=false
+
+      - name: Generate Master Short (Anti-Content ID Shield + Color Psychology + Dynamic Subtitles)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+          CUSTOM_TOPIC: ${{ github.event.inputs.topic }}
+        run: |
+          if [ -n "$CUSTOM_TOPIC" ]; then
+            echo "Generating short with custom topic: $CUSTOM_TOPIC"
+            node scripts/generate-history-uncut-short.js "$CUSTOM_TOPIC"
+          else
+            echo "Generating short with autonomous AI historical topic selection"
+            node scripts/generate-history-uncut-short.js
+          fi
+
+      - name: Upload to YouTube Studio with 2-Hour Scheduled Quarantine
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          SAFETY_HOURS: ${{ github.event.inputs.safety_buffer_hours || '2' }}
+        run: |
+          node scripts/upload-and-schedule-short.js "" "$SAFETY_HOURS"
+
+      - name: Commit Upload History and State to Git
+        run: |
+          git config --global user.name "HistoryUncut Bot"
+          git config --global user.email "bot@historyuncut.internal"
+          git add data/upload_history.log data/videos/*_meta.json || true
+          git commit -m "Auto-update: Log published short [skip ci]" || echo "No changes to commit"
+          git push
