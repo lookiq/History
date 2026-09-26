@@ -157,15 +157,17 @@ async function uploadAndScheduleShort(specificMetaPath = null, delayHours = 2) {
   console.log(`   🎥 Video ID:        ${videoId}`);
   console.log(`   🔗 Direct Link:     ${youtubeUrl}`);
   console.log(`   🛠️  Studio Edit:     ${studioUrl}`);
-  console.log(`   🔒 Status:          PRIVATE (Quarantine Phase)`);
-  console.log(`   ⏰ Goes PUBLIC At:  ${publishDate.toLocaleString()} (Automatic via YouTube Cloud)`);
+  console.log(`   🔒 Status:          ${isInstantPublic ? 'PUBLIC (Live Now)' : 'PRIVATE (Quarantine Phase)'}`);
+  if (!isInstantPublic) {
+    console.log(`   ⏰ Goes PUBLIC At:  ${publishDate.toLocaleString()} (Automatic via YouTube Cloud)`);
+  }
   console.log('====================================================');
 
   // 6. Update metadata with upload result
   meta.youtubeId = videoId;
   meta.youtubeUrl = youtubeUrl;
-  meta.scheduledPublishAt = publishAtIso;
-  meta.uploadStatus = 'scheduled';
+  meta.scheduledPublishAt = isInstantPublic ? null : publishAtIso;
+  meta.uploadStatus = isInstantPublic ? 'public' : 'scheduled';
   await fsPromises.writeFile(metaPath, JSON.stringify(meta, null, 2));
 
   // Log to master upload history
@@ -185,7 +187,7 @@ async function uploadAndScheduleShort(specificMetaPath = null, delayHours = 2) {
 
 if (require.main === module) {
   const metaArg = process.argv[2] && process.argv[2].endsWith('.json') ? process.argv[2] : null;
-  const delayArg = parseFloat(process.argv[3]) || 2;
+  const delayArg = (process.argv[3] !== undefined && !isNaN(parseFloat(process.argv[3]))) ? parseFloat(process.argv[3]) : 2;
   uploadAndScheduleShort(metaArg, delayArg)
     .then(res => {
       console.log(`\n🎉 Pipeline completed. Video is safely scheduled.`);

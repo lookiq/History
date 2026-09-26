@@ -37,9 +37,9 @@ const HISTORICAL_CURATED_VAULT = {
     { id: 'jq35bep2TbU', title: "Kingdom of Heaven - Medieval Knights Combat", safeStart: 35 }
   ],
   ottoman_empire: [
-    { id: 'epW1-gxA7LE', title: "Magnificent Century - Sultan Suleiman Court & Execution Verdict", safeStart: 25 },
-    { id: 'uBsWaYc0VXg', title: "Rise of Empires: Ottoman - Sultan Mehmed II", safeStart: 20 },
-    { id: 'zw6tB6lObfQ', title: "Magnificent Century - Ottoman Palace Trial & Grand Vizier", safeStart: 20 },
+    { id: 'LKl6CXgVwDU', title: "Rise of Empires Ottoman - Fall of Constantinople", safeStart: 35 },
+    { id: 'uBsWaYc0VXg', title: "Rise of Empires: Ottoman - Sultan Mehmed II Court", safeStart: 20 },
+    { id: 'twijKovvrwE', title: "Rise of Empires: Ottoman - Palace & Execution Order", safeStart: 25 },
     { id: '4han6ZIqqxs', title: "Rise of Empires Ottoman - Mehmed The Conqueror", safeStart: 30 },
     { id: 'O-mP48R7miw', title: "Kurulus Osman - Ottoman Warriors Battle Action", safeStart: 35 }
   ]
@@ -209,7 +209,7 @@ class CinematicVideoFetcher {
 
     let filterString = '';
     for (let i = 0; i < numClips; i++) {
-      filterString += `[${i}:v]scale=1080:820:force_original_aspect_ratio=increase,crop=1080:820,setsar=1,format=yuv420p,hflip,setpts=0.96*PTS,eq=contrast=1.06:brightness=0.01:saturation=1.08,fps=30[v${i}];`;
+      filterString += `[${i}:v]scale=1080:880:force_original_aspect_ratio=increase,crop=1080:820:(in_w-out_w)/2:0,setsar=1,format=yuv420p,hflip,setpts=0.96*PTS,eq=contrast=1.06:brightness=0.01:saturation=1.08,fps=30[v${i}];`;
     }
 
     const concatInputs = clipPaths.map((_, i) => `[v${i}]`).join('');
