@@ -62,6 +62,7 @@ build/
 *.webm
 *.mkv
 *.avi
+!assets/audio/dark_suspense.mp3
 
 # Image files (except examples)
 *.jpg
@@ -71,6 +72,7 @@ build/
 !examples/*.png
 !examples/*.jpg
 !assets/youtube-automation-agent.jpg
+!assets/history_uncut_logo.png
 
 # Backup files
 *.backup
