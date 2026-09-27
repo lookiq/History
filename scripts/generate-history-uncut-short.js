@@ -88,7 +88,7 @@ Respond ONLY with valid JSON in this exact structure:
   "tags": ["main keyword", "secondary keyword", "long tail query", "the history uncut"]
 }`;
 
-  const responseText = await aiText.generateText(prompt, { temperature: 0.7, maxTokens: 1100 });
+  const responseText = await aiText.generateText(prompt, { temperature: 0.7, maxTokens: 850 });
   let content;
   try {
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
