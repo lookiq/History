@@ -44,6 +44,12 @@ const HISTORICAL_CURATED_VAULT = {
     { id: 'twijKovvrwE', title: "Rise of Empires: Ottoman - Palace & Execution Order", safeStart: 25 },
     { id: '4han6ZIqqxs', title: "Rise of Empires Ottoman - Mehmed The Conqueror", safeStart: 30 },
     { id: 'O-mP48R7miw', title: "Kurulus Osman - Ottoman Warriors Battle Action", safeStart: 35 }
+  ],
+  world_war_2: [
+    { id: 'WXusCl05hG0', title: "Band of Brothers - Infantry Battle Combat", safeStart: 20 },
+    { id: 'iYRHFOu9xlc', title: "Saving Private Ryan - WWII Battle Scene", safeStart: 30 },
+    { id: '0Xc4ckTTQN0', title: "Fury - Sherman Tank WWII Combat", safeStart: 25 },
+    { id: 'LyZK8k4gzyg', title: "Band of Brothers - WWII Troops Marching", safeStart: 15 }
   ]
 };
 
@@ -53,7 +59,8 @@ const ERA_WHITELISTS = {
   ancient_egypt: ['egypt', 'pharaoh', 'mummy', 'pyramid', 'cleopatra', 'tomb', 'nile', 'anubis'],
   ancient_greece: ['sparta', 'spartan', '300', 'troy', 'achilles', 'greek', 'greece', 'athens'],
   medieval: ['kingdom', 'knight', 'medieval', 'castle', 'crusade', 'viking', 'sword', 'siege'],
-  ottoman_empire: ['ottoman', 'sultan', 'mehmed', 'suleiman', 'janissary', 'turkey', 'turkish', 'empire', 'constantinople', 'harem', 'osman', 'ertugrul', 'vizier', 'pasha']
+  ottoman_empire: ['ottoman', 'sultan', 'mehmed', 'suleiman', 'janissary', 'turkey', 'turkish', 'empire', 'constantinople', 'harem', 'osman', 'ertugrul', 'vizier', 'pasha'],
+  world_war_2: ['ww2', 'wwii', 'world war', 'hitler', 'nazi', 'churchill', 'stalin', 'allies', 'normandy', 'd-day', 'tank', 'soldier', 'sniper', 'army', 'battle', 'war', 'combat', 'patton', 'fury', 'saving private ryan', 'band of brothers', 'dunkirk']
 };
 
 const BLACKLIST_TERMS = [
@@ -74,6 +81,7 @@ class CinematicVideoFetcher {
     if (/bruce lee|kung fu|martial art|dragon|dojo|jeet kune/i.test(combined)) return 'bruce_lee';
     if (/egypt|pharaoh|mummy|pyramid|cleopatra|nile|tomb/i.test(combined)) return 'ancient_egypt';
     if (/sparta|spartan|300|troy|achilles|greek|greece|athens/i.test(combined)) return 'ancient_greece';
+    if (/ww2|wwii|world war|nazi|hitler|churchill|stalin|d-day|normandy|pearl harbor|blitzkrieg|panzer|tiger tank|sniper simo/i.test(combined)) return 'world_war_2';
     if (/medieval|knight|castle|crusade|sword|viking|dark age|king|guillotine/i.test(combined)) return 'medieval';
     return 'ancient_rome';
   }
@@ -157,8 +165,9 @@ class CinematicVideoFetcher {
     if (era === 'bruce_lee') eraAnchor = 'Bruce Lee Enter the dragon scene';
     if (era === 'ancient_egypt') eraAnchor = 'The Mummy 1999 ancient Egypt scene';
     if (era === 'ancient_greece') eraAnchor = 'Troy 2004 or 300 movie battle scene';
-    if (era === 'medieval') eraAnchor = 'Kingdom of Heaven movie battle scene';
-    if (era === 'ottoman_empire') eraAnchor = 'Rise of Empires Ottoman or Magnificent Century Turkish scene';
+    if (/medieval|knight|castle/i.test(era)) eraAnchor = 'Kingdom of Heaven movie battle scene';
+    if (/ottoman_empire/i.test(era)) eraAnchor = 'Rise of Empires Ottoman or Magnificent Century Turkish scene';
+    if (/world_war_2/i.test(era)) eraAnchor = 'Band of Brothers or Saving Private Ryan 1080p battle scene';
 
     const cleanQuery = `${query.replace(/"/g, '').replace(/1080p/gi, '').trim()} ${eraAnchor} 1080p -reaction -review -streamer -fullmovie`;
     const searchCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,web" "ytsearch1:${cleanQuery}" --get-id --get-title`;
