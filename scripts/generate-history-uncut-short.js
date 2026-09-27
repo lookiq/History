@@ -74,7 +74,7 @@ Format rules:
    - Bottom: Exactly 3 to 5 relevant hashtags (e.g. #history #shorts #thehistoryuncut #historyfacts #ancienthistory).
 6. tags: Array of 15 to 22 high-search, low-competition tags (targeting 380-460 total characters).
    - Include primary keywords, long-tail search queries ("shocking history facts", "dark ancient history", "weird history facts", "brutal ancient laws", "bizarre historical secrets"), and channel tags ("the history uncut", "history uncut shorts").
-7. era: One of "ottoman_empire", "ancient_rome", "bruce_lee", "ancient_egypt", "medieval", "ancient_greece"
+7. era: One of "ottoman_empire", "ancient_rome", "bruce_lee", "ancient_egypt", "medieval", "ancient_greece", "world_war_2"
 
 Respond ONLY with valid JSON in this exact structure:
 {
