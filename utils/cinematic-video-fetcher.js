@@ -4,7 +4,9 @@ const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
 
-const YTDLP_PATH = process.env.YTDLP_PATH || 'C:\\Users\\MD JEWEL RANA\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\yt-dlp.exe';
+const YTDLP_PATH = process.env.YTDLP_PATH || (process.platform === 'win32' 
+  ? 'C:\\Users\\MD JEWEL RANA\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\yt-dlp.exe' 
+  : 'yt-dlp');
 
 /**
  * CURATED HISTORICAL CINEMATIC VAULT

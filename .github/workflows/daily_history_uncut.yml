@@ -59,6 +59,7 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+          YTDLP_PATH: yt-dlp
           CUSTOM_TOPIC: ${{ github.event.inputs.topic }}
         run: |
           if [ -n "$CUSTOM_TOPIC" ]; then
