@@ -102,8 +102,9 @@ class HistoryCardGenerator {
         // Newline
         coloredWords.push({ text: '\n', color: COLOR_PALETTE.white });
       } else if (match[4]) {
-        // Regular word - check against psychological emotion rules
-        const token = match[4];
+        // Regular word or untagged bracket like [word] - clean brackets and check rules
+        let token = match[4].replace(/^\[+|[\]]+$/g, '');
+        if (!token) token = match[4];
         let matchedColor = COLOR_PALETTE.white;
         for (const rule of COLOR_RULES) {
           if (rule.regex.test(token)) {

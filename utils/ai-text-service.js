@@ -109,7 +109,8 @@ class AITextService {
 
   async generateText(prompt, options = {}) {
     const model = options.model || this.model;
-    const maxTokens = options.maxTokens || 2048;
+    const rawMaxTokens = options.maxTokens || 2048;
+    const maxTokens = this.providerName === 'Groq' ? Math.min(rawMaxTokens, 800) : rawMaxTokens;
     const temperature = options.temperature ?? 0.7;
 
     if (this.gemini) {
