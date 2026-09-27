@@ -23,102 +23,99 @@ const { SubtitleGenerator } = require('../utils/subtitle-generator');
  * 6. Cinematic Audio Mix (Voiceover + Ducked Dark Ambient Music)
  */
 const USA_VIRAL_TOPICS_POOL = [
-  // 1. World War II & Military Outliers
+  // ==========================================
+  // WORLD WAR 1 (The Great War Shocking Outliers)
+  // ==========================================
   {
-    topic: "The Ghost Army of World War 2: The actors and inflatable rubber tanks that tricked Hitler's intelligence",
-    era: "world_war_2"
+    topic: "The Harlem Hellfighters: The legendary African American regiment that spent 191 days in frontline trenches without losing an inch of ground",
+    era: "world_war_1"
   },
   {
-    topic: "Pervitin: How Nazi soldiers used pharmaceutical crystal meth to power the 72-hour Blitzkrieg",
-    era: "world_war_2"
+    topic: "The Christmas Truce of 1914: The miraculous day enemy German and British soldiers stopped firing to play soccer and exchange gifts",
+    era: "world_war_1"
   },
   {
-    topic: "Corporal Wojtek: The 500-pound Syrian brown bear who carried live artillery shells in WWII combat",
-    era: "world_war_2"
+    topic: "The Attack of the Dead Men: Russian soldiers at Osowiec Fortress who countercharged German poison gas with bloody rags over melted lungs",
+    era: "world_war_1"
   },
   {
-    topic: "Operation Mincemeat: How British spies used a dead homeless man with fake documents to fool Hitler",
-    era: "world_war_2"
+    topic: "The Red Baron: Manfred von Richthofen, the feared German flying ace who painted his fighter blood-red and claimed 80 kills",
+    era: "world_war_1"
   },
   {
-    topic: "Simo Häyhä: The White Death sniper who took down 505 enemy soldiers with iron sights in freezing snow",
-    era: "world_war_2"
-  },
-
-  // 2. Ancient Rome & Gladiator Shocking Secrets
-  {
-    topic: "Gladiator Sweat: Why Roman noblewomen paid fortunes to use gladiators' sweat as anti-aging facial cream",
-    era: "ancient_rome"
+    topic: "Cher Ami: The heroic carrier pigeon that saved 194 surrounded American soldiers despite being shot through the chest and losing a leg",
+    era: "world_war_1"
   },
   {
-    topic: "Emperor Caligula: The mad Roman ruler who declared war on Neptune's ocean and made his horse a senator",
-    era: "ancient_rome"
+    topic: "The 1916 Tank Shock: When Britain first unleashed massive iron tanks on the Somme, terrifying German soldiers into mass surrender",
+    era: "world_war_1"
   },
   {
-    topic: "The Roman Xylospongium: The horrifying reality of ancient Roman public toilets and shared sea sponges",
-    era: "ancient_rome"
+    topic: "The Gallipoli Drip Rifle: How ANZAC troops used dripping tin cans of water to fire rifles automatically during their secret night evacuation",
+    era: "world_war_1"
   },
   {
-    topic: "The Vestal Virgins: The terrifying Roman punishment where priestesses were buried alive in underground chambers",
-    era: "ancient_rome"
+    topic: "Sergeant Stubby: The stray bull terrier who became the most decorated military dog of WWI by sniffing out poison gas and capturing a German spy",
+    era: "world_war_1"
   },
 
-  // 3. Brutal Ancient Tortures & Shocking Laws
+  // ==========================================
+  // WORLD WAR 2 (Bizarre Secrets & Crazy Operations)
+  // ==========================================
   {
-    topic: "The Brazen Bull: The ancient bronze execution chamber designed to turn human screams into bull sounds",
-    era: "medieval"
-  },
-  {
-    topic: "The Viking Blood Eagle: The terrifying execution where ribs were carved open to resemble bloody eagle wings",
-    era: "medieval"
-  },
-  {
-    topic: "Hammurabi's Code: The brutal ancient Babylonian laws that amputated surgeons' hands if an operation failed",
-    era: "ancient_egypt"
-  },
-
-  // 4. Forbidden / Untaught American History
-  {
-    topic: "Abraham Lincoln's Wrestling Legacy: The US President who won 299 out of 300 brutal wrestling matches and entered the Hall of Fame",
+    topic: "The Ghost Army of World War 2: The artists and inflatable rubber tanks that tricked Hitler's intelligence into moving entire divisions",
     era: "world_war_2"
   },
   {
-    topic: "George Washington's Teeth: The dark truth about how America's first president wore dentures pulled from enslaved men",
+    topic: "Pervitin: How Nazi soldiers used pharmaceutical crystal meth to fight for 72 hours straight during the Blitzkrieg",
     era: "world_war_2"
   },
   {
-    topic: "Prohibition Poison: When the US government poisoned industrial alcohol in the 1920s, killing 10,000 citizens",
+    topic: "Corporal Wojtek: The 500-pound Syrian brown bear who was officially enlisted as a soldier and carried live artillery shells in combat",
     era: "world_war_2"
   },
-
-  // 5. Spartan Alpha Warrior Brutality
   {
-    topic: "The Spartan Baby Cliff: How Spartan elders inspected newborns and threw weak infants off Mount Taygetos",
-    era: "ancient_greece"
+    topic: "Operation Mincemeat: How British intelligence used a dead homeless man with fake documents to fool Hitler into defending the wrong country",
+    era: "world_war_2"
   },
   {
-    topic: "The Spartan Wedding Ritual: Why Spartan brides were forced to shave their heads and dress as boys on wedding nights",
-    era: "ancient_greece"
+    topic: "Simo Häyhä: The White Death sniper who took down 505 enemy soldiers with iron sights in freezing snow without a telescope",
+    era: "world_war_2"
   },
   {
-    topic: "The Crypteia: Spartan teenagers sent into the night with daggers to terrorize and assassinate slave leaders",
-    era: "ancient_greece"
-  },
-
-  // 6. Ottoman Empire Shocking Outliers (Channel Proven High-Performer)
-  {
-    topic: "The Ottoman Kafes: Why Ottoman princes were locked in the Golden Cage for 40 years until going completely insane",
-    era: "ottoman_empire"
+    topic: "The Night Witches: The Soviet all-female military aviators who cut their engines to glide silently in the dark, dropping bombs on Nazi camps",
+    era: "world_war_2"
   },
   {
-    topic: "The Janissaries: Christian boys taken from families who became the Ottoman Empire's deadliest shock troops",
-    era: "ottoman_empire"
+    topic: "Hiroo Onoda: The Japanese soldier who held out on a remote Philippine island for 29 years after WWII ended, refusing to surrender until 1974",
+    era: "world_war_2"
+  },
+  {
+    topic: "The Navajo Code Talkers: The secret Native American language that Japanese intelligence could never decipher in World War II",
+    era: "world_war_2"
+  },
+  {
+    topic: "The Bat Bombs: The bizarre secret American WWII weapon designed to strap tiny incendiary bombs to thousands of bats",
+    era: "world_war_2"
+  },
+  {
+    topic: "Desmond Doss: The unarmed medic who refused to hold a weapon yet saved 75 wounded soldiers on Hacksaw Ridge under heavy enemy fire",
+    era: "world_war_2"
+  },
+  {
+    topic: "The St. Nazaire Raid: The greatest commando raid in history where a British destroyer rammed a dry dock packed with delayed explosives",
+    era: "world_war_2"
+  },
+  {
+    topic: "Mad Jack Churchill: The British officer who fought WWII with a Scottish broadsword, longbow, and bagpipes, capturing 42 German soldiers in one night",
+    era: "world_war_2"
   }
 ];
 
 async function generateHistoryUncutShort(customTopic = null) {
   console.log('====================================================');
   console.log('🎬 THE HISTORY UNCUT - ULTIMATE MASTER GENERATOR');
+  console.log('   🎖️  EXCLUSIVE SERIES: WORLD WAR 1 & WORLD WAR 2 ONLY');
   console.log('   🛡️  Anti-Content ID Shield: ACTIVE (100% Copyright Safe)');
   console.log('   ⚡ Dynamic Subtitles: Millisecond Karaoke Active Word');
   console.log('   🎙️  Voiceover: Hybrid ElevenLabs / Neural Documentary');
@@ -137,60 +134,61 @@ async function generateHistoryUncutShort(customTopic = null) {
     throw new Error('No AI provider available. Check GROQ_API_KEY in .env');
   }
 
-  // 1. AI Research & Scripting (Curated USA High-Conversion Pool)
+  // 1. AI Research & Scripting (Strictly World War 1 & World War 2 Exclusive)
   let selectedTopicInfo = null;
   if (!customTopic) {
     selectedTopicInfo = USA_VIRAL_TOPICS_POOL[Math.floor(Math.random() * USA_VIRAL_TOPICS_POOL.length)];
   }
 
   const topicGuidance = customTopic 
-    ? `Specific topic: "${customTopic}"` 
-    : `Target topic: "${selectedTopicInfo.topic}" (Era: ${selectedTopicInfo.era})`;
+    ? `Specific World War topic: "${customTopic}"` 
+    : `Target World War topic: "${selectedTopicInfo.topic}" (Era: ${selectedTopicInfo.era})`;
 
-  console.log('\n🧠 1. Researching viral outlier history topic via AI...');
-  console.log(`   🎯 Selected Strategic Focus: ${customTopic || selectedTopicInfo.topic}`);
+  console.log('\n🧠 1. Researching World War 1 / World War 2 outlier topic via AI...');
+  console.log(`   🎯 Selected War Focus: ${customTopic || selectedTopicInfo.topic}`);
 
   const prompt = `You are the lead content director for the viral YouTube Shorts channel "The History Uncut" (@HistoryUncutUS).
-Topic preference: ${topicGuidance}. Ensure the story reveals an outlier, unbelievable, or shocking truth that hooks American viewers immediately.
+MANDATORY CHANNEL RULE: The channel is currently locked EXCLUSIVELY to World War 1 and World War 2 viral outlier stories. Do NOT cover ancient, medieval, or other eras.
+Topic preference: ${topicGuidance}. Ensure the story reveals an outlier, unbelievable, or shocking truth from World War 1 or World War 2 that hooks American viewers immediately.
 
 Format rules:
 1. headlineHook: 2 to 3 punchy lines for the top Twitter-style card (max 20 words). Follow STRICT VIRAL COLOR PSYCHOLOGY:
-   - [word|yellow]: Protagonist, Emperor, King, Power, Status (triggers Attention). E.g. [Nero|yellow], [Gladiators|yellow], [Bruce Lee|yellow].
-   - [word|red]: Danger, Death, Poison, Murder, Fatal, Blood, Execution (triggers Survival & Threat alarm). E.g. [poison|red], [death|red], [executed|red].
-   - [word|cyan]: Secret, Forbidden, Hidden truth, Mystery, Doctors, Conspiracy (triggers Curiosity Loop). E.g. [secretly|cyan], [hidden|cyan], [banned|cyan].
-   - [word|green]: Taboo substances, Drugs, Venom, Gold, Riches (triggers Taboo Fascination). E.g. [cannabis|green], [gold|green].
+   - [word|yellow]: Protagonist, Commander, General, Soldier, Power (triggers Attention). E.g. [Soldiers|yellow], [General|yellow], [Hero|yellow].
+   - [word|red]: Danger, Death, Gas, Enemy, Tanks, Bombs, Combat (triggers Survival & Threat alarm). E.g. [poison gas|red], [death|red], [tanks|red].
+   - [word|cyan]: Secret, Forbidden, Decoy, Fake, Strategy, Spies (triggers Curiosity Loop). E.g. [inflatable|cyan], [secretly|cyan], [decoy|cyan].
+   - [word|green]: Gold, Survival, Medals, Victory, Animals (triggers Taboo Fascination). E.g. [bear|green], [won|green], [survived|green].
    - Leave 70% of words untagged (pure white) so the psychological power words pop violently against the black background!
 2. voiceScript: Engaging, gripping, story-driven spoken script (85 to 110 words, approx 40 to 45 seconds). Written for a deep documentary voice (NO bracket tags in voiceScript).
    Structure this 40-45s narrative into 3 compelling storytelling acts:
-   - Act 1 (0-10s): An irresistible shocking opening hook that introduces the bizarre historical dilemma.
-   - Act 2 (10-30s): The gritty backstory, terrifying details, and how historical figures carried it out.
-   - Act 3 (30-38s): The unexpected historical consequence, taboo irony, or brutal outcome.
+   - Act 1 (0-10s): An irresistible shocking opening hook that introduces the bizarre wartime dilemma.
+   - Act 2 (10-30s): The gritty backstory, terrifying combat details, and how soldiers pulled it off.
+   - Act 3 (30-38s): The unexpected wartime consequence or shocking outcome.
    - Act 4 (38-45s) MANDATORY SIGNATURE BRANDED ENDING: The very last sentence MUST end with:
      "[Topic-related question]? Subscribe to The History Uncut to uncover the truth."
-     (e.g., "Would you have survived Nero's banquet? Subscribe to The History Uncut to uncover the truth." or "Could you endure Ancient Rome? Subscribe to The History Uncut to uncover the truth.")
-3. visualQueries: An array of 5 to 6 specific search queries for distinct 3-second scene beats across the 40-45s timeline (e.g. ["roman palace banquet 1080p", "ancient chalice wine poison 1080p", "emperor guards combat 1080p", "colosseum gladiator fight 1080p", "ancient senate betrayal 1080p"]).
+     (e.g., "Would you have charged through the gas? Subscribe to The History Uncut to uncover the truth." or "Could you survive the trenches? Subscribe to The History Uncut to uncover the truth.")
+3. visualQueries: An array of 5 to 6 specific search queries for distinct 3-second scene beats across the 40-45s timeline (e.g. ["ww1 trench warfare battle 1080p", "artillery bombardment battlefield 1080p", "soldiers charging no mans land 1080p", "ww2 combat cinematic 1080p", "tanks rolling battle 1080p"]).
 4. title: STRICT vidIQ SEO Sweet Spot (50 to 60 characters total length).
-   - Front-load the main high-volume search keyword in the first 30-40 characters (e.g. "Ottoman Law of Fratricide: Why Sultans Killed #shorts").
+   - Front-load the main high-volume search keyword in the first 30-40 characters (e.g. "The Ghost Army: How Inflatable Tanks Fooled Hitler #shorts").
    - MUST end with #shorts. Must NOT exceed 60 characters so it never cuts off on mobile devices.
 5. description: STRICT vidIQ SEO Sweet Spot (350 to 650 characters total).
    - First 1-2 lines (first 140 characters before 'Show More'): Front-load the main target keyword within the first 25 words with an irresistible curiosity hook.
    - Middle paragraph: 2 natural, compelling sentences providing context without keyword stuffing.
    - Outro CTA: "Subscribe to The History Uncut to uncover more bizarre truths from history."
-   - Bottom: Exactly 3 to 5 relevant hashtags (e.g. #history #shorts #thehistoryuncut #historyfacts #ancienthistory).
+   - Bottom: Exactly 3 to 5 relevant hashtags (e.g. #history #shorts #thehistoryuncut #ww2 #ww1 #historyfacts).
 6. tags: Array of 15 to 22 high-search, low-competition tags (targeting 380-460 total characters).
-   - Include primary keywords, long-tail search queries ("shocking history facts", "dark ancient history", "weird history facts", "brutal ancient laws", "bizarre historical secrets"), and channel tags ("the history uncut", "history uncut shorts").
-7. era: One of "ottoman_empire", "ancient_rome", "bruce_lee", "ancient_egypt", "medieval", "ancient_greece", "world_war_2"
+   - Include primary keywords ("world war 2", "world war 1", "ww2 facts", "ww1 history", "shocking war facts"), long-tail search queries, and channel tags ("the history uncut", "history uncut shorts").
+7. era: MUST be either "world_war_1" or "world_war_2"
 
 Respond ONLY with valid JSON in this exact structure:
 {
   "topic": "Topic Name",
-  "era": "ottoman_empire",
+  "era": "world_war_2",
   "headlineHook": "Line 1 with [colored|yellow] words\\nLine 2 with [colored|red] words",
   "voiceScript": "Spoken script text here ending with: [Topic question]? Subscribe to The History Uncut to uncover the truth.",
   "visualQueries": ["scene 1 query", "scene 2 query", "scene 3 query"],
   "title": "Main Keyword Frontloaded: Hook Here #shorts",
-  "description": "First 1-2 lines with main keyword hook...\\n\\nContext sentence here.\\n\\nSubscribe to The History Uncut to uncover more bizarre truths from history.\\n\\n#history #shorts #thehistoryuncut #historyfacts #targettopic",
-  "tags": ["main keyword", "secondary keyword", "long tail query", "the history uncut"]
+  "description": "First 1-2 lines with main keyword hook...\\n\\nContext sentence here.\\n\\nSubscribe to The History Uncut to uncover more bizarre truths from history.\\n\\n#history #shorts #thehistoryuncut #ww2 #historyfacts",
+  "tags": ["main keyword", "secondary keyword", "world war 2", "the history uncut"]
 }`;
 
   const responseText = await aiText.generateText(prompt, { temperature: 0.7, maxTokens: 850 });
@@ -202,14 +200,14 @@ Respond ONLY with valid JSON in this exact structure:
   } catch (err) {
     console.warn('AI output parse fallback:', err.message);
     content = {
-      topic: 'Roman Gladiator Superstars',
-      era: 'ancient_rome',
-      headlineHook: '[Roman gladiators|yellow] rarely fought to the [death.|red]\nThey were expensive [superstars|cyan]\nowned by wealthy [trainers.|green]',
-      voiceScript: 'Roman gladiators rarely fought to the death in the blood-soaked Colosseum. In reality, they were idolized superstars, meticulously trained and owned by wealthy promoters. Because training a gladiator cost a small fortune, killing one required the event sponsor to pay massive compensation. Most fights ended in submission, and wounded fighters received the best medical care in the ancient world. They even endorsed Roman cosmetics and olive oil. Would you fight for glory in the Colosseum? Subscribe to The History Uncut to uncover the truth.',
-      visualQueries: ['gladiator colosseum combat scene 1080p', 'roman emperor gladiator arena 1080p', 'ancient rome battle cinematic 1080p', 'gladiator training ludus arena 1080p', 'roman crowd cheering colosseum 1080p'],
-      title: 'Roman Gladiators: The Superstar Secret #shorts',
-      description: 'Roman gladiators rarely fought to the death in the Colosseum. In reality, they were idolized superstars owned by elite trainers who insured their lives.\n\nLearn the shocking truth about how ancient Rome really treated its arena legends.\n\nSubscribe to The History Uncut to uncover more bizarre truths from history.\n\n#history #shorts #thehistoryuncut #historyfacts #ancientrome',
-      tags: ['roman gladiators', 'gladiators ancient rome', 'colosseum facts', 'shocking history facts', 'dark ancient history', 'weird history facts', 'gladiator fight to the death', 'roman empire secrets', 'ancient rome documentary', 'bizarre historical facts', 'the history uncut', 'history uncut shorts']
+      topic: 'The Ghost Army of World War II',
+      era: 'world_war_2',
+      headlineHook: 'The [Secret Army|yellow] that tricked [Hitler|red]\nwith [inflatable tanks|cyan] and [actors.|green]',
+      voiceScript: 'During World War II, the United States deployed a top secret unit known as the Ghost Army. Instead of weapons, this elite battalion was made up of actors, artists, and sound engineers. Armed with inflatable rubber tanks, dummy aircraft, and massive speakers broadcasting recorded tank sounds, they staged over twenty battlefield deceptions. German intelligence believed an entire division was moving, shifting their armies to the wrong locations and saving tens of thousands of Allied lives. Could you trick an entire army with balloons? Subscribe to The History Uncut to uncover the truth.',
+      visualQueries: ['ww2 soldiers trench battlefield 1080p', 'ww2 tanks moving battle 1080p', 'allied soldiers combat 1080p', 'normandy invasion battle scene 1080p', 'ww2 army marching dramatic 1080p'],
+      title: 'The Ghost Army: Fake Tanks That Fooled Hitler #shorts',
+      description: 'The Ghost Army of World War II used inflatable rubber tanks and sound effects to deceive Nazi forces.\n\nOver 1,100 artists and actors staged fake military divisions, tricking Hitler into shifting his elite divisions.\n\nSubscribe to The History Uncut to uncover more bizarre truths from history.\n\n#history #shorts #thehistoryuncut #ww2 #ghostarmy',
+      tags: ['the ghost army', 'world war 2', 'ww2 deception', 'inflatable tanks', 'hitler fooled', 'shocking ww2 facts', 'weird war stories', 'military secrets', 'ww2 intelligence', 'allied deception', 'the history uncut', 'history uncut shorts']
     };
   }
 
