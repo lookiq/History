@@ -211,6 +211,10 @@ Respond ONLY with valid JSON in this exact structure:
     };
   }
 
+  if (content.voiceScript) {
+    content.voiceScript = content.voiceScript.replace(/\[([^\]|]+)(?:\|[a-zA-Z]+)?\]/g, '$1').trim();
+  }
+
   console.log(`📌 Topic: ${content.topic} (Era: ${content.era || 'auto'})`);
   console.log(`📜 Headline Hook:\n${content.headlineHook}`);
   console.log(`🎙️  Voice Script: "${content.voiceScript}"`);
