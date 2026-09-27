@@ -40,6 +40,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Set up Deno (for yt-dlp JS challenge solver)
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
       - name: Install System Dependencies (FFmpeg & Fonts)
         run: |
           sudo apt-get update

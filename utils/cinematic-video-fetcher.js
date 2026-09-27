@@ -131,8 +131,9 @@ class CinematicVideoFetcher {
             console.log(`   🔁 Reusing prior verified clip for 100% fail-safe render`);
             subClips.push(subClips[subClips.length - 1]);
           } else {
-            const localFallback = path.join(this.tempDir, 'gladiator_clip.mp4');
-            subClips.push(localFallback);
+            console.log(`   🎨 Generating procedural cinematic backdrop for 100% fail-safe render`);
+            await execPromise(`ffmpeg -y -f lavfi -i "color=c=0x0d0d12:s=1080x820:d=${clipDuration}:r=30" -c:v libx264 -pix_fmt yuv420p "${clipOut}"`);
+            subClips.push(clipOut);
           }
         }
       }
@@ -160,7 +161,7 @@ class CinematicVideoFetcher {
     if (era === 'ottoman_empire') eraAnchor = 'Rise of Empires Ottoman or Magnificent Century Turkish scene';
 
     const cleanQuery = `${query.replace(/"/g, '').replace(/1080p/gi, '').trim()} ${eraAnchor} 1080p -reaction -review -streamer -fullmovie`;
-    const searchCmd = `"${this.ytdlpPath}" --js-runtimes node "ytsearch1:${cleanQuery}" --get-id --get-title`;
+    const searchCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,web" "ytsearch1:${cleanQuery}" --get-id --get-title`;
     
     let videoId = '';
     let videoTitle = '';
@@ -187,7 +188,7 @@ class CinematicVideoFetcher {
     const startStr = this.formatTime(startSec);
     const endStr = this.formatTime(endSec);
 
-    const downloadCmd = `"${this.ytdlpPath}" --js-runtimes node --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080][ext=mp4]/bestvideo[height<=720]/136/398/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${videoId}"`;
+    const downloadCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,web" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080][ext=mp4]/bestvideo[height<=720]/136/398/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${videoId}"`;
 
     await execPromise(downloadCmd);
     return { path: outputPath, videoId, title: videoTitle };
@@ -199,7 +200,7 @@ class CinematicVideoFetcher {
     const startStr = this.formatTime(startSec);
     const endStr = this.formatTime(endSec);
 
-    const downloadCmd = `"${this.ytdlpPath}" --js-runtimes node --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080][ext=mp4]/bestvideo[height<=720]/136/398/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${curated.id}"`;
+    const downloadCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,web" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080][ext=mp4]/bestvideo[height<=720]/136/398/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${curated.id}"`;
 
     await execPromise(downloadCmd);
     return outputPath;
