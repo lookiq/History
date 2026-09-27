@@ -22,6 +22,100 @@ const { SubtitleGenerator } = require('../utils/subtitle-generator');
  * 5. 100% History Bypass Layout (Top card, verified badge, watermark)
  * 6. Cinematic Audio Mix (Voiceover + Ducked Dark Ambient Music)
  */
+const USA_VIRAL_TOPICS_POOL = [
+  // 1. World War II & Military Outliers
+  {
+    topic: "The Ghost Army of World War 2: The actors and inflatable rubber tanks that tricked Hitler's intelligence",
+    era: "world_war_2"
+  },
+  {
+    topic: "Pervitin: How Nazi soldiers used pharmaceutical crystal meth to power the 72-hour Blitzkrieg",
+    era: "world_war_2"
+  },
+  {
+    topic: "Corporal Wojtek: The 500-pound Syrian brown bear who carried live artillery shells in WWII combat",
+    era: "world_war_2"
+  },
+  {
+    topic: "Operation Mincemeat: How British spies used a dead homeless man with fake documents to fool Hitler",
+    era: "world_war_2"
+  },
+  {
+    topic: "Simo Häyhä: The White Death sniper who took down 505 enemy soldiers with iron sights in freezing snow",
+    era: "world_war_2"
+  },
+
+  // 2. Ancient Rome & Gladiator Shocking Secrets
+  {
+    topic: "Gladiator Sweat: Why Roman noblewomen paid fortunes to use gladiators' sweat as anti-aging facial cream",
+    era: "ancient_rome"
+  },
+  {
+    topic: "Emperor Caligula: The mad Roman ruler who declared war on Neptune's ocean and made his horse a senator",
+    era: "ancient_rome"
+  },
+  {
+    topic: "The Roman Xylospongium: The horrifying reality of ancient Roman public toilets and shared sea sponges",
+    era: "ancient_rome"
+  },
+  {
+    topic: "The Vestal Virgins: The terrifying Roman punishment where priestesses were buried alive in underground chambers",
+    era: "ancient_rome"
+  },
+
+  // 3. Brutal Ancient Tortures & Shocking Laws
+  {
+    topic: "The Brazen Bull: The ancient bronze execution chamber designed to turn human screams into bull sounds",
+    era: "medieval"
+  },
+  {
+    topic: "The Viking Blood Eagle: The terrifying execution where ribs were carved open to resemble bloody eagle wings",
+    era: "medieval"
+  },
+  {
+    topic: "Hammurabi's Code: The brutal ancient Babylonian laws that amputated surgeons' hands if an operation failed",
+    era: "ancient_egypt"
+  },
+
+  // 4. Forbidden / Untaught American History
+  {
+    topic: "Abraham Lincoln's Wrestling Legacy: The US President who won 299 out of 300 brutal wrestling matches and entered the Hall of Fame",
+    era: "world_war_2"
+  },
+  {
+    topic: "George Washington's Teeth: The dark truth about how America's first president wore dentures pulled from enslaved men",
+    era: "world_war_2"
+  },
+  {
+    topic: "Prohibition Poison: When the US government poisoned industrial alcohol in the 1920s, killing 10,000 citizens",
+    era: "world_war_2"
+  },
+
+  // 5. Spartan Alpha Warrior Brutality
+  {
+    topic: "The Spartan Baby Cliff: How Spartan elders inspected newborns and threw weak infants off Mount Taygetos",
+    era: "ancient_greece"
+  },
+  {
+    topic: "The Spartan Wedding Ritual: Why Spartan brides were forced to shave their heads and dress as boys on wedding nights",
+    era: "ancient_greece"
+  },
+  {
+    topic: "The Crypteia: Spartan teenagers sent into the night with daggers to terrorize and assassinate slave leaders",
+    era: "ancient_greece"
+  },
+
+  // 6. Ottoman Empire Shocking Outliers (Channel Proven High-Performer)
+  {
+    topic: "The Ottoman Kafes: Why Ottoman princes were locked in the Golden Cage for 40 years until going completely insane",
+    era: "ottoman_empire"
+  },
+  {
+    topic: "The Janissaries: Christian boys taken from families who became the Ottoman Empire's deadliest shock troops",
+    era: "ottoman_empire"
+  }
+];
+
 async function generateHistoryUncutShort(customTopic = null) {
   console.log('====================================================');
   console.log('🎬 THE HISTORY UNCUT - ULTIMATE MASTER GENERATOR');
@@ -43,10 +137,21 @@ async function generateHistoryUncutShort(customTopic = null) {
     throw new Error('No AI provider available. Check GROQ_API_KEY in .env');
   }
 
-  // 1. AI Research & Scripting
+  // 1. AI Research & Scripting (Curated USA High-Conversion Pool)
+  let selectedTopicInfo = null;
+  if (!customTopic) {
+    selectedTopicInfo = USA_VIRAL_TOPICS_POOL[Math.floor(Math.random() * USA_VIRAL_TOPICS_POOL.length)];
+  }
+
+  const topicGuidance = customTopic 
+    ? `Specific topic: "${customTopic}"` 
+    : `Target topic: "${selectedTopicInfo.topic}" (Era: ${selectedTopicInfo.era})`;
+
   console.log('\n🧠 1. Researching viral outlier history topic via AI...');
+  console.log(`   🎯 Selected Strategic Focus: ${customTopic || selectedTopicInfo.topic}`);
+
   const prompt = `You are the lead content director for the viral YouTube Shorts channel "The History Uncut" (@HistoryUncutUS).
-Topic preference: ${customTopic || 'A bizarre, shocking, or taboo historical secret from Ancient Rome, Sparta, Medieval times, or Ancient Egypt.'}
+Topic preference: ${topicGuidance}. Ensure the story reveals an outlier, unbelievable, or shocking truth that hooks American viewers immediately.
 
 Format rules:
 1. headlineHook: 2 to 3 punchy lines for the top Twitter-style card (max 20 words). Follow STRICT VIRAL COLOR PSYCHOLOGY:
