@@ -163,6 +163,24 @@ async function uploadAndScheduleShort(specificMetaPath = null, delayHours = 2) {
   }
   console.log('====================================================');
 
+  // 5b. Upload Custom Thumbnail if available
+  const possibleThumb = meta.customThumbnail || path.join(path.dirname(meta.videoPath), `${path.basename(meta.videoPath, '.mp4')}_thumb.jpg`);
+  if (fs.existsSync(possibleThumb)) {
+    try {
+      console.log(`\n🖼️  Uploading Custom Thumbnail: ${path.basename(possibleThumb)}...`);
+      await youtube.thumbnails.set({
+        videoId: videoId,
+        media: {
+          mimeType: 'image/jpeg',
+          body: fs.createReadStream(possibleThumb)
+        }
+      });
+      console.log('   ✅ Custom Thumbnail uploaded and set successfully!');
+    } catch (thumbErr) {
+      console.log(`   ℹ️  Note on Custom Thumbnail API: ${thumbErr.message}`);
+    }
+  }
+
   // 6. Update metadata with upload result
   meta.youtubeId = videoId;
   meta.youtubeUrl = youtubeUrl;
