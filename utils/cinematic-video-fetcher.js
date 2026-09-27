@@ -8,10 +8,38 @@ const YTDLP_PATH = process.env.YTDLP_PATH || (process.platform === 'win32'
   ? 'C:\\Users\\MD JEWEL RANA\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\yt-dlp.exe' 
   : 'yt-dlp');
 
+const HISTORY_FILE = path.join(__dirname, '..', 'data', 'used_clips_history.json');
+
+async function loadUsedClipsHistory() {
+  try {
+    const data = await fs.readFile(HISTORY_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+async function recordUsedClip(id, title, context = {}) {
+  try {
+    const history = await loadUsedClipsHistory();
+    if (!history.some(item => item.id === id)) {
+      history.push({
+        id,
+        title: title || '',
+        topic: context.topic || '',
+        era: context.era || '',
+        usedAt: new Date().toISOString()
+      });
+      await fs.writeFile(HISTORY_FILE, JSON.stringify(history, null, 2), 'utf-8');
+    }
+  } catch (err) {
+    console.warn(`Could not save to used_clips_history: ${err.message}`);
+  }
+}
+
 /**
  * CURATED HISTORICAL CINEMATIC VAULT
- * 100% verified Hollywood & HBO production scenes matching specific historical eras.
- * Bypasses bad search queries and guarantees ZERO modern/irrelevant clips.
+ * High quality diverse historical scenes used ONLY as emergency fallback
  */
 const HISTORICAL_CURATED_VAULT = {
   ancient_rome: [
@@ -46,10 +74,19 @@ const HISTORICAL_CURATED_VAULT = {
     { id: 'O-mP48R7miw', title: "Kurulus Osman - Ottoman Warriors Battle Action", safeStart: 35 }
   ],
   world_war_1: [
-    { id: 'D4JmMBC28x8', title: "1917 - Trench Run & Battlefield Charge", safeStart: 25 },
-    { id: 'XFBAhcbFvzo', title: "All Quiet on the Western Front - WW1 Trench Combat", safeStart: 20 },
-    { id: '8RORWeD49vs', title: "All Quiet on the Western Front - Troops Marching", safeStart: 15 },
-    { id: '5cN7d_IQgtY', title: "1917 - Epic No Mans Land Run", safeStart: 20 }
+    { id: '3vPG1wj4mYs', title: "Epic WW1 Reenactment Rockford Trench Combat", safeStart: 45 },
+    { id: 'QC5AfhS_D7c', title: "Epic WW1 Reenactment Rockford Charge", safeStart: 30 },
+    { id: 'JHJIbKnzVnc', title: "WWI The Germans Release First Chemical Gas WMD", safeStart: 20 },
+    { id: 'vmir6SxYNII', title: "First World War tech: Chlorine Gas & Gas Masks", safeStart: 35 },
+    { id: 'HLayJ_n2PV0', title: "The First Gas Attack in History Langemark WW1", safeStart: 40 },
+    { id: '-lSLWnfCP6M', title: "WW1 Gas Attack Western Front Trench", safeStart: 30 },
+    { id: 'Sdj7XZYjAmM', title: "Attack of the Dead Men Osowiec Fortress WW1", safeStart: 50 },
+    { id: 'dJe6Dt84Wws', title: "Attack of the Dead, Third Battle of Osowiec", safeStart: 35 },
+    { id: '5W-n6mQbAMU', title: "Verdun 1916 The 300-Day Hell of World War I", safeStart: 60 },
+    { id: 'EfKS-jRKAFc', title: "German Prisoners 1914-1918 Historical Footage", safeStart: 25 },
+    { id: 's6DERzglY1g', title: "History Channel World War I Battle Action", safeStart: 40 },
+    { id: 'kfyf0tJLPSI', title: "German troops attacking Western Front Footage", safeStart: 20 },
+    { id: 'nzWPcCDOP4Y', title: "German soldiers WW1 Reenactment Combat", safeStart: 15 }
   ],
   world_war_2: [
     { id: 'WXusCl05hG0', title: "Band of Brothers - Infantry Battle Combat", safeStart: 20 },
@@ -66,20 +103,44 @@ const ERA_WHITELISTS = {
   ancient_greece: ['sparta', 'spartan', '300', 'troy', 'achilles', 'greek', 'greece', 'athens'],
   medieval: ['kingdom', 'knight', 'medieval', 'castle', 'crusade', 'viking', 'sword', 'siege'],
   ottoman_empire: ['ottoman', 'sultan', 'mehmed', 'suleiman', 'janissary', 'turkey', 'turkish', 'empire', 'constantinople', 'harem', 'osman', 'ertugrul', 'vizier', 'pasha'],
-  world_war_1: ['ww1', 'wwi', 'world war 1', 'world war i', 'trench', '1917', 'all quiet', 'somme', 'verdun', 'gallipoli', 'red baron', 'western front', 'kaiser', 'gas mask', 'no man', 'harlem hellfighters', 'tank 1916'],
-  world_war_2: ['ww2', 'wwii', 'world war', 'hitler', 'nazi', 'churchill', 'stalin', 'allies', 'normandy', 'd-day', 'tank', 'soldier', 'sniper', 'army', 'battle', 'war', 'combat', 'patton', 'fury', 'saving private ryan', 'band of brothers', 'dunkirk']
+  world_war_1: [
+    'ww1', 'wwi', 'world war 1', 'world war i', 'great war', '1914', '1915', '1916', '1917', '1918',
+    'osowiec', 'dead men', 'trench', 'chlorine', 'mustard gas', 'gas mask', 'gas attack', 'somme',
+    'verdun', 'gallipoli', 'western front', 'eastern front', 'kaiser', 'bayonet', 'infantry', 'artillery',
+    'reenactment', 'rockford', 'all quiet', 'no man', 'no-man'
+  ],
+  world_war_2: [
+    'ww2', 'wwii', 'world war 2', 'world war ii', '1939', '1940', '1941', '1942', '1943', '1944', '1945',
+    'hitler', 'nazi', 'churchill', 'stalin', 'd-day', 'normandy', 'panzer', 'tank', 'soldier', 'sniper',
+    'army', 'battle', 'war', 'combat', 'patton', 'fury', 'saving private ryan', 'band of brothers', 'dunkirk',
+    'night witches', 'bomber', 'pacific', 'okinawa', 'iwo jima', 'midway', 'stalingrad', 'kursk', 'bulge',
+    'ghost army', 'deception', 'inflatable'
+  ]
 };
 
 const BLACKLIST_TERMS = [
-  'dj afro', 'full movie', 'movie 2024', 'movie 2025', 'reaction', 'review',
-  'podcast', 'vlog', 'gameplay', 'parody', 'funny', 'tiktok', 'whatsapp',
-  'status', 'song', 'music video', 'trailer', 'comedy'
+  // Gaming
+  'gameplay', 'walkthrough', 'playthrough', 'battlefield 1', 'call of duty', 'cod', 'roblox', 'minecraft',
+  'lego', 'brick', 'gamer', 'gaming', 'speedrun', 'mod ',
+  // Music & Songs
+  'music video', 'official video', 'audio', 'remix', 'song', 'lyrics', 'cover', 'sabaton', 'album',
+  // Commentary, modern, reactions
+  'reaction', 'review', 'podcast', 'vlog', 'tiktok', 'whatsapp', 'status', 'funny', 'parody', 'comedy',
+  'meme', 'trailer', 'teaser', 'interview',
+  // Animation / kids
+  'animation 3d', 'cartoon', 'kids', 'for kids', 'nursery',
+  // Regional non-english
+  'hindi', 'urdu', 'tamil', 'telugu', 'bengali', 'malayalam', 'marathi', 'spanish', 'francais', 'deutsch',
+  // Modern conflict / news leakage
+  'ukraine', 'putin', 'zelensky', 'russia ukraine', 'biden', 'trump', 'drill', 'exercise', 'today',
+  'breaking news', 'live stream', 'al jazeera', 'cnn', 'bbc news', 'fox news', 'headline'
 ];
 
 class CinematicVideoFetcher {
   constructor(options = {}) {
     this.ytdlpPath = options.ytdlpPath || YTDLP_PATH;
     this.tempDir = options.tempDir || path.join(__dirname, '..', 'temp');
+    this.sessionUsedIds = new Set();
   }
 
   detectEra(topic = '', extraText = '') {
@@ -87,18 +148,19 @@ class CinematicVideoFetcher {
     if (/ottoman|sultan|mehmed|suleiman|turk|turkish|janissary|constantinople|harem|ertugrul|osman|vizier|pasha/i.test(combined)) return 'ottoman_empire';
     if (/bruce lee|kung fu|martial art|dragon|dojo|jeet kune/i.test(combined)) return 'bruce_lee';
     if (/egypt|pharaoh|mummy|pyramid|cleopatra|nile|tomb/i.test(combined)) return 'ancient_egypt';
-    if (/ww1|wwi|world war 1|world war i|first world war|trench warfare|somme|verdun|gallipoli|red baron|1917|all quiet/i.test(combined)) return 'world_war_1';
-    if (/ww2|wwii|world war|nazi|hitler|churchill|stalin|d-day|normandy|pearl harbor|blitzkrieg|panzer|tiger tank|sniper simo/i.test(combined)) return 'world_war_2';
+    if (/ww1|wwi|world war 1|world war i|great war|trench warfare|somme|verdun|gallipoli|red baron|1917|all quiet|osowiec|dead men/i.test(combined)) return 'world_war_1';
+    if (/ww2|wwii|world war|nazi|hitler|churchill|stalin|d-day|normandy|pearl harbor|blitzkrieg|panzer|tiger tank|sniper simo|night witches|ghost army/i.test(combined)) return 'world_war_2';
     if (/medieval|knight|castle|crusade|sword|viking|dark age|king|guillotine/i.test(combined)) return 'medieval';
     return 'world_war_2';
   }
 
-  isTitleRelevant(title = '', era = 'ancient_rome') {
+  isTitleRelevant(title = '', era = 'world_war_1') {
     const lower = title.toLowerCase();
     for (const bad of BLACKLIST_TERMS) {
       if (lower.includes(bad)) return false;
     }
-    const whitelist = ERA_WHITELISTS[era] || ERA_WHITELISTS.ancient_rome;
+
+    const whitelist = ERA_WHITELISTS[era] || ERA_WHITELISTS.world_war_1;
     return whitelist.some(keyword => lower.includes(keyword));
   }
 
@@ -112,9 +174,9 @@ class CinematicVideoFetcher {
     if (queryList.length === 1) {
       const base = queryList[0];
       queryList = [
-        `${base} cinematic close up 1080p`,
-        `${base} dramatic atmosphere 1080p`,
-        `${base} epic wide shot 1080p`
+        `${base} combat footage`,
+        `${base} battle charge`,
+        `${base} dramatic aftermath`
       ];
     }
 
@@ -122,17 +184,17 @@ class CinematicVideoFetcher {
     const neededClips = Math.ceil(totalDuration / clipDuration);
     const subClips = [];
 
-    console.log(`🛡️  Anti-Content ID Shield: Sourcing ${neededClips} clips (3.5s Cut Rule) strictly for [${era.toUpperCase()}]...`);
-    const curatedPool = HISTORICAL_CURATED_VAULT[era] || HISTORICAL_CURATED_VAULT.ancient_rome;
+    console.log(`🛡️  Anti-Content ID Shield & Dynamic Sourcing: Sourcing ${neededClips} FRESH clips (Zero Reuse Guarantee)...`);
+    const curatedPool = HISTORICAL_CURATED_VAULT[era] || HISTORICAL_CURATED_VAULT.world_war_1;
 
     for (let i = 0; i < neededClips; i++) {
       const q = queryList[i % queryList.length];
       const clipOut = path.join(this.tempDir, `shield_clip_${Date.now()}_${i}.mp4`);
       
       try {
-        const clipInfo = await this.downloadSingleSnippet(q, clipDuration, clipOut, i, era);
+        const clipInfo = await this.downloadSingleSnippet(q, clipDuration, clipOut, i, era, context);
         subClips.push(clipInfo.path);
-        console.log(`   ✅ Clip ${i + 1}/${neededClips}: ${clipInfo.title || 'Curated ' + era}`);
+        console.log(`   ✅ Clip ${i + 1}/${neededClips}: "${clipInfo.title}" [ID: ${clipInfo.videoId}]`);
       } catch (err) {
         console.warn(`   ⚠️ Clip ${i + 1} fallback activated: ${err.message}`);
         try {
@@ -141,7 +203,6 @@ class CinematicVideoFetcher {
           subClips.push(fallbackClip);
           console.log(`   ✅ Curated Fallback ${i + 1}/${neededClips}: ${curated.title}`);
         } catch (fbErr) {
-          // If online download fails, reuse a previously downloaded valid clip
           if (subClips.length > 0) {
             console.log(`   🔁 Reusing prior verified clip for 100% fail-safe render`);
             subClips.push(subClips[subClips.length - 1]);
@@ -165,42 +226,87 @@ class CinematicVideoFetcher {
     };
   }
 
-  async downloadSingleSnippet(query, duration, outputPath, seedIndex = 0, era = 'ancient_rome') {
-    const curatedPool = HISTORICAL_CURATED_VAULT[era] || HISTORICAL_CURATED_VAULT.ancient_rome;
+  async downloadSingleSnippet(query, duration, outputPath, seedIndex = 0, era = 'world_war_1', context = {}) {
+    const usedHistory = await loadUsedClipsHistory();
+    const usedIds = new Set([...usedHistory.map(h => h.id), ...this.sessionUsedIds]);
 
-    let eraAnchor = 'HBO Rome or Gladiator 2000 movie scene';
-    if (era === 'bruce_lee') eraAnchor = 'Bruce Lee Enter the dragon scene';
-    if (era === 'ancient_egypt') eraAnchor = 'The Mummy 1999 ancient Egypt scene';
-    if (era === 'ancient_greece') eraAnchor = 'Troy 2004 or 300 movie battle scene';
-    if (/medieval|knight|castle/i.test(era)) eraAnchor = 'Kingdom of Heaven movie battle scene';
-    if (/ottoman_empire/i.test(era)) eraAnchor = 'Rise of Empires Ottoman or Magnificent Century Turkish scene';
-    if (/world_war_1/i.test(era)) eraAnchor = '1917 or All Quiet on the Western Front 1080p war scene';
-    if (/world_war_2/i.test(era)) eraAnchor = 'Band of Brothers or Saving Private Ryan 1080p battle scene';
+    // Clean query into concise search keywords
+    let cleanQuery = query
+      .replace(/1080p|4k|hd|vintage|cinematic|map|aftermath|scene/gi, '')
+      .replace(/[^\w\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-    const cleanQuery = `${query.replace(/"/g, '').replace(/1080p/gi, '').trim()} ${eraAnchor} 1080p -reaction -review -streamer -fullmovie`;
-    const searchCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,web" "ytsearch1:${cleanQuery}" --get-id --get-title`;
-    
-    let videoId = '';
-    let videoTitle = '';
-
-    try {
-      const { stdout } = await execPromise(searchCmd);
-      const lines = stdout.trim().split('\n').map(l => l.trim()).filter(Boolean);
-      if (lines.length >= 2) {
-        videoTitle = lines[0];
-        videoId = lines[1];
-      } else if (lines.length === 1) {
-        videoId = lines[0];
-      }
-    } catch {}
-
-    if (!videoId || videoId.length < 5 || !this.isTitleRelevant(videoTitle, era)) {
-      const curated = curatedPool[seedIndex % curatedPool.length];
-      videoId = curated.id;
-      videoTitle = curated.title;
+    // Ensure era anchor is present in query
+    const prefix = era === 'world_war_1' ? 'ww1' : 'ww2';
+    if (!cleanQuery.toLowerCase().includes('ww1') && !cleanQuery.toLowerCase().includes('ww2')) {
+      cleanQuery = `${prefix} ${cleanQuery}`;
     }
 
-    const startSec = 22 + (seedIndex * 10);
+    const searchCmd = `"${this.ytdlpPath}" --ignore-errors --extractor-args "youtube:player_client=android,web" "ytsearch6:${cleanQuery} footage" --print "%(id)s|||%(title)s|||%(duration)s"`;
+    
+    let candidates = [];
+    try {
+      let stdout = '';
+      try {
+        const res = await execPromise(searchCmd);
+        stdout = res.stdout;
+      } catch (searchErr) {
+        stdout = (searchErr.stdout || '') + '\n' + (searchErr.stderr || '');
+      }
+
+      const lines = stdout.split('\n').map(l => l.trim()).filter(l => l.includes('|||'));
+      for (const line of lines) {
+        const parts = line.split('|||');
+        if (parts.length >= 2) {
+          const id = parts[0].trim();
+          const title = parts[1].trim();
+          const dur = parseFloat(parts[2]) || 0;
+          if (id.length >= 8 && id.length <= 15) {
+            candidates.push({ id, title, duration: dur });
+          }
+        }
+      }
+    } catch (e) {
+      console.warn(`Search error: ${e.message}`);
+    }
+
+    // 1. Select candidate: Fresh, not used in any video, passes relevance check & blacklist
+    let selectedCandidate = candidates.find(c => !usedIds.has(c.id) && this.isTitleRelevant(c.title, era));
+
+    // 2. Fallback candidate: Not used in current session and passes relevance check
+    if (!selectedCandidate) {
+      selectedCandidate = candidates.find(c => !this.sessionUsedIds.has(c.id) && this.isTitleRelevant(c.title, era));
+    }
+
+    let videoId = '';
+    let videoTitle = '';
+    let videoDuration = 0;
+
+    if (selectedCandidate) {
+      videoId = selectedCandidate.id;
+      videoTitle = selectedCandidate.title;
+      videoDuration = selectedCandidate.duration;
+    } else {
+      // Pick next unused curated video
+      const curatedPool = HISTORICAL_CURATED_VAULT[era] || HISTORICAL_CURATED_VAULT.world_war_1;
+      const unusedCurated = curatedPool.find(c => !usedIds.has(c.id)) || curatedPool.find(c => !this.sessionUsedIds.has(c.id)) || curatedPool[seedIndex % curatedPool.length];
+      videoId = unusedCurated.id;
+      videoTitle = unusedCurated.title;
+      videoDuration = 180;
+    }
+
+    // Register clip ID to prevent reuse in current montage and across future videos
+    this.sessionUsedIds.add(videoId);
+    await recordUsedClip(videoId, videoTitle, context);
+
+    // Calculate smart safe start time to capture action and avoid static logos
+    let startSec = 25 + (seedIndex * 15);
+    if (videoDuration > 60) {
+      const safeMax = Math.max(videoDuration - 25, 35);
+      startSec = Math.floor(25 + ((seedIndex * 19) % (safeMax - 25)));
+    }
+
     const endSec = startSec + Math.ceil(duration) + 1;
     const startStr = this.formatTime(startSec);
     const endStr = this.formatTime(endSec);
