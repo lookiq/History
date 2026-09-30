@@ -12,8 +12,12 @@ class SubtitleGenerator {
     this.primaryColor = options.primaryColor || '&H00FFFFFF';    // White
     this.highlightColor = options.highlightColor || '&H0014E6FA';// Bright Gold-Yellow (&HAABBGGRR in ASS)
     this.outlineColor = options.outlineColor || '&H00000000';    // Black
-    this.outlineWidth = options.outlineWidth || 4;
-    this.marginV = options.marginV || 550;                       // Lower third of 1080x820 video in 1080x1920
+    this.outlineWidth = options.outlineWidth !== undefined ? options.outlineWidth : 4;
+    this.shadow = options.shadow !== undefined ? options.shadow : 2;
+    this.marginL = options.marginL || 40;
+    this.marginR = options.marginR || 40;
+    this.marginV = options.marginV || 550;                       // Lower third
+    this.maxWords = options.maxWords || 4;
   }
 
   /**
@@ -35,8 +39,8 @@ class SubtitleGenerator {
     // 1. Calculate word timings if not supplied
     const timings = wordTimings || this.estimateWordTimings(cleanText, totalDuration);
 
-    // 2. Group words into short dynamic phrases (3 to 4 words per phrase)
-    const phrases = this.groupIntoPhrases(timings, 4);
+    // 2. Group words into short dynamic phrases (maxWords per phrase)
+    const phrases = this.groupIntoPhrases(timings, this.maxWords);
 
     // 3. Generate ASS Dialogue events with active-word highlighting
     const events = [];
@@ -72,7 +76,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: DynamicSub,${this.fontName},${this.fontSize},${this.primaryColor},&H0000FFFF,${this.outlineColor},&H80000000,-1,0,0,0,100,100,1,0,1,${this.outlineWidth},2,2,40,40,${this.marginV},1
+Style: DynamicSub,${this.fontName},${this.fontSize},${this.primaryColor},&H0000FFFF,${this.outlineColor},&H80000000,-1,0,0,0,100,100,1,0,1,${this.outlineWidth},${this.shadow},2,${this.marginL},${this.marginR},${this.marginV},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
