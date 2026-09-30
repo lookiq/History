@@ -178,6 +178,7 @@ async function generateFullBleedDocumentaryShort(customTopic = null, options = {
 
   // Extract preview frame for inspection
   const previewPath = path.join(tempDir, 'frame_preview.png');
+  const thumbPath = path.join(outputDir, `master_short_${timestamp}_thumb.jpg`);
   try {
     await runFFmpeg([
       '-y',
@@ -186,6 +187,14 @@ async function generateFullBleedDocumentaryShort(customTopic = null, options = {
       '-vframes', '1',
       previewPath
     ]);
+    await runFFmpeg([
+      '-y',
+      '-ss', String(Math.floor(videoDuration * 0.35)),
+      '-i', finalVideoPath,
+      '-vframes', '1',
+      '-q:v', '2',
+      thumbPath
+    ]);
   } catch {}
 
   // Save metadata
@@ -193,6 +202,7 @@ async function generateFullBleedDocumentaryShort(customTopic = null, options = {
   const fullMeta = {
     ...dossier,
     videoPath: finalVideoPath,
+    customThumbnail: thumbPath,
     previewPath,
     duration: videoDuration,
     voiceProvider: voiceResult.provider,

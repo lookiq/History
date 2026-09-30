@@ -48,7 +48,7 @@ jobs:
       - name: Install System Dependencies (FFmpeg & Fonts)
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji fonts-liberation
+          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji fonts-liberation fonts-freefont-ttf
 
       - name: Install Python CLI Tools (yt-dlp & edge-tts)
         run: |
@@ -59,7 +59,7 @@ jobs:
         run: |
           npm install --production=false
 
-      - name: Generate Master Short (Anti-Content ID Shield + Color Psychology + Dynamic Subtitles)
+      - name: Generate Master Full-Bleed Short (Branding + Subscribe CTA + American Andrew Voice)
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
@@ -68,14 +68,18 @@ jobs:
           CUSTOM_TOPIC: ${{ github.event.inputs.topic }}
         run: |
           if [ -n "$CUSTOM_TOPIC" ]; then
-            echo "Generating short with custom topic: $CUSTOM_TOPIC"
-            node scripts/generate-history-uncut-short.js "$CUSTOM_TOPIC"
+            echo "Generating full-bleed short with custom topic: $CUSTOM_TOPIC"
+            node scripts/generate-fullbleed-documentary-short.js "$CUSTOM_TOPIC"
           else
-            echo "Generating short with autonomous AI historical topic selection"
-            node scripts/generate-history-uncut-short.js
+            echo "Generating full-bleed short with autonomous AI historical outlier topic"
+            node scripts/generate-fullbleed-documentary-short.js
           fi
 
-      - name: Upload to YouTube Studio with 2-Hour Scheduled Quarantine
+      - name: Validate Video Integrity (Zero Black Screen Guarantee)
+        run: |
+          node scripts/verify-video-integrity.js
+
+      - name: Upload to YouTube Studio with Scheduled Quarantine
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -88,6 +92,6 @@ jobs:
         run: |
           git config --global user.name "HistoryUncut Bot"
           git config --global user.email "bot@historyuncut.internal"
-          git add data/upload_history.log data/videos/*_meta.json || true
-          git commit -m "Auto-update: Log published short [skip ci]" || echo "No changes to commit"
+          git add data/upload_history.log data/used_clips_history.json || true
+          git commit -m "Auto-update: Log published short & record used clips [skip ci]" || echo "No changes to commit"
           git push
