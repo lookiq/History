@@ -24,6 +24,7 @@ const ELEVENLABS_VOICES = {
  * Curated Neural Fallback Voices via edge-tts (100% Free, Unlimited)
  */
 const NEURAL_VOICES = {
+  andrew: 'en-US-AndrewNeural',           // Warm, Confident, Authentic American Documentary Narrator
   christopher: 'en-US-ChristopherNeural', // Deep, authoritative documentary
   guy: 'en-US-GuyNeural',                 // Energetic, dramatic storyteller
   brian: 'en-US-BrianNeural',             // Rich, formal narrator
@@ -33,8 +34,8 @@ const NEURAL_VOICES = {
 class VoiceoverService {
   constructor(options = {}) {
     this.elevenLabsApiKey = options.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || null;
-    this.defaultVoice = options.voice || 'adam';
-    this.fallbackVoice = options.fallbackVoice || 'christopher';
+    this.defaultVoice = options.voice || 'andrew';
+    this.fallbackVoice = options.fallbackVoice || 'andrew';
   }
 
   /**

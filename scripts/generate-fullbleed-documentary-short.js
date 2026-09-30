@@ -46,7 +46,7 @@ async function generateFullBleedDocumentaryShort(customTopic = null, options = {
 
   // 2. Deep Documentary Voiceover Generation
   const voiceService = new VoiceoverService({
-    fallbackVoice: 'christopher'
+    fallbackVoice: options.voice || 'andrew'
   });
   const voicePath = path.join(tempDir, 'voiceover.mp3');
   const voiceResult = await voiceService.generateVoiceover(dossier.voiceScript, voicePath);
@@ -148,14 +148,14 @@ async function generateFullBleedDocumentaryShort(customTopic = null, options = {
     filterComplex =
       `[0:v][3:v]overlay=0:0[vbrand];` +
       `[vbrand]ass='${relSubPath}'[outv];` +
-      `[2:a]volume=0.12,atrim=0:${videoDuration},afade=t=out:st=${videoDuration - 1.5}:d=1.5[music];` +
-      `[1:a]volume=1.05[voice];` +
+      `[2:a]volume=0.08,atrim=0:${videoDuration},afade=t=out:st=${videoDuration - 1.5}:d=1.5[music];` +
+      `[1:a]volume=1.45,acompressor=threshold=-16dB:ratio=4:attack=5:release=50[voice];` +
       `[voice][music]amix=inputs=2:duration=first:dropout_transition=2[outa]`;
   } else {
     filterComplex =
       `[0:v]ass='${relSubPath}'[outv];` +
-      `[2:a]volume=0.12,atrim=0:${videoDuration},afade=t=out:st=${videoDuration - 1.5}:d=1.5[music];` +
-      `[1:a]volume=1.05[voice];` +
+      `[2:a]volume=0.08,atrim=0:${videoDuration},afade=t=out:st=${videoDuration - 1.5}:d=1.5[music];` +
+      `[1:a]volume=1.45,acompressor=threshold=-16dB:ratio=4:attack=5:release=50[voice];` +
       `[voice][music]amix=inputs=2:duration=first:dropout_transition=2[outa]`;
   }
 
