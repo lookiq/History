@@ -282,8 +282,9 @@ Respond ONLY with valid JSON in this exact structure:
   const ctaStartTime = Math.max(videoDuration - 3.5, 0);
   const relSubPath = path.relative(process.cwd(), subPath).replace(/\\/g, '/');
   const filterComplex = 
-    `color=c=black:s=1080x1920:d=${videoDuration}:r=30[bg];` +
-    `[bg][0:v]overlay=(W-w)/2:${cardResult.videoY}[mid];` +
+    `[0:v]split=2[fg][bg_raw];` +
+    `[bg_raw]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=25:5,eq=brightness=-0.22:saturation=0.8[blurbg];` +
+    `[blurbg][fg]overlay=(W-w)/2:${cardResult.videoY}[mid];` +
     `[mid][1:v]overlay=0:0[carded];` +
     `[carded][4:v]overlay=0:0:enable='between(t,${ctaStartTime},${videoDuration})'[with_cta];` +
     `[with_cta]ass='${relSubPath}'[outv];` +
