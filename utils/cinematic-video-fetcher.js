@@ -74,19 +74,19 @@ const HISTORICAL_CURATED_VAULT = {
     { id: 'O-mP48R7miw', title: "Kurulus Osman - Ottoman Warriors Battle Action", safeStart: 35 }
   ],
   world_war_1: [
-    { id: '3vPG1wj4mYs', title: "Epic WW1 Reenactment Rockford Trench Combat", safeStart: 45 },
-    { id: 'QC5AfhS_D7c', title: "Epic WW1 Reenactment Rockford Charge", safeStart: 30 },
-    { id: 'JHJIbKnzVnc', title: "WWI The Germans Release First Chemical Gas WMD", safeStart: 20 },
-    { id: 'vmir6SxYNII', title: "First World War tech: Chlorine Gas & Gas Masks", safeStart: 35 },
-    { id: 'HLayJ_n2PV0', title: "The First Gas Attack in History Langemark WW1", safeStart: 40 },
-    { id: '-lSLWnfCP6M', title: "WW1 Gas Attack Western Front Trench", safeStart: 30 },
-    { id: 'Sdj7XZYjAmM', title: "Attack of the Dead Men Osowiec Fortress WW1", safeStart: 50 },
-    { id: 'dJe6Dt84Wws', title: "Attack of the Dead, Third Battle of Osowiec", safeStart: 35 },
-    { id: '5W-n6mQbAMU', title: "Verdun 1916 The 300-Day Hell of World War I", safeStart: 60 },
-    { id: 'EfKS-jRKAFc', title: "German Prisoners 1914-1918 Historical Footage", safeStart: 25 },
-    { id: 's6DERzglY1g', title: "History Channel World War I Battle Action", safeStart: 40 },
-    { id: 'kfyf0tJLPSI', title: "German troops attacking Western Front Footage", safeStart: 20 },
-    { id: 'nzWPcCDOP4Y', title: "German soldiers WW1 Reenactment Combat", safeStart: 15 }
+    { id: '3vPG1wj4mYs', title: "Epic WW1 Reenactment Rockford Trench Combat", safeStart: 50 },
+    { id: 'QC5AfhS_D7c', title: "Epic WW1 Reenactment Rockford Charge", safeStart: 45 },
+    { id: 'JHJIbKnzVnc', title: "WWI The Germans Release First Chemical Gas WMD", safeStart: 55 },
+    { id: 'vmir6SxYNII', title: "First World War tech: Chlorine Gas & Gas Masks", safeStart: 50 },
+    { id: 'HLayJ_n2PV0', title: "The First Gas Attack in History Langemark WW1", safeStart: 60 },
+    { id: '-lSLWnfCP6M', title: "WW1 Gas Attack Western Front Trench", safeStart: 45 },
+    { id: 'Sdj7XZYjAmM', title: "Attack of the Dead Men Osowiec Fortress WW1", safeStart: 60 },
+    { id: 'dJe6Dt84Wws', title: "Attack of the Dead, Third Battle of Osowiec", safeStart: 50 },
+    { id: '5W-n6mQbAMU', title: "Verdun 1916 The 300-Day Hell of World War I", safeStart: 70 },
+    { id: 'EfKS-jRKAFc', title: "German Prisoners 1914-1918 Historical Footage", safeStart: 45 },
+    { id: 's6DERzglY1g', title: "History Channel World War I Battle Action", safeStart: 50 },
+    { id: 'kfyf0tJLPSI', title: "German troops attacking Western Front Footage", safeStart: 40 },
+    { id: 'nzWPcCDOP4Y', title: "German soldiers WW1 Reenactment Combat", safeStart: 35 }
   ],
   world_war_2: [
     { id: 'WXusCl05hG0', title: "Band of Brothers - Infantry Battle Combat", safeStart: 20 },
@@ -121,19 +121,20 @@ const ERA_WHITELISTS = {
 const BLACKLIST_TERMS = [
   // Gaming
   'gameplay', 'walkthrough', 'playthrough', 'battlefield 1', 'call of duty', 'cod', 'roblox', 'minecraft',
-  'lego', 'brick', 'gamer', 'gaming', 'speedrun', 'mod ',
+  'lego', 'brick', 'gamer', 'gaming', 'speedrun', 'mod ', 'vr gameplay', 'cutscene',
   // Music & Songs
-  'music video', 'official video', 'audio', 'remix', 'song', 'lyrics', 'cover', 'sabaton', 'album',
-  // Commentary, modern, reactions
+  'music video', 'official video', 'audio', 'remix', 'song', 'lyrics', 'cover', 'sabaton', 'album', 'soundtrack', 'ost',
+  // Commentary, interviews, talking heads, modern, reactions
   'reaction', 'review', 'podcast', 'vlog', 'tiktok', 'whatsapp', 'status', 'funny', 'parody', 'comedy',
-  'meme', 'trailer', 'teaser', 'interview',
-  // Animation / kids
-  'animation 3d', 'cartoon', 'kids', 'for kids', 'nursery',
+  'meme', 'trailer', 'teaser', 'interview', 'veteran describes', 'describes killing', 'describes', 'talking head',
+  'soundbite', 'explaining', 'explains', 'lecture', 'presentation',
+  // Animation / cartoons / kids
+  'animation', 'animated', 'cartoon', 'kids', 'for kids', 'nursery', 'draw', 'drawing', 'stop motion', 'anime',
   // Regional non-english
-  'hindi', 'urdu', 'tamil', 'telugu', 'bengali', 'malayalam', 'marathi', 'spanish', 'francais', 'deutsch',
-  // Modern conflict / news leakage
-  'ukraine', 'putin', 'zelensky', 'russia ukraine', 'biden', 'trump', 'drill', 'exercise', 'today',
-  'breaking news', 'live stream', 'al jazeera', 'cnn', 'bbc news', 'fox news', 'headline'
+  'hindi', 'urdu', 'tamil', 'telugu', 'bengali', 'malayalam', 'marathi', 'spanish', 'francais', 'deutsch', 'russian',
+  // Modern conflict / news / military drills
+  'ukraine', 'putin', 'zelensky', 'russia ukraine', 'biden', 'trump', 'drill', 'drills', 'exercise', 'today',
+  'breaking news', 'live stream', 'al jazeera', 'cnn', 'bbc news', 'fox news', 'headline', 'switzerland', 'taiwan', 'china'
 ];
 
 class CinematicVideoFetcher {
@@ -300,11 +301,17 @@ class CinematicVideoFetcher {
     this.sessionUsedIds.add(videoId);
     await recordUsedClip(videoId, videoTitle, context);
 
-    // Calculate smart safe start time to capture action and avoid static logos
-    let startSec = 25 + (seedIndex * 15);
-    if (videoDuration > 60) {
-      const safeMax = Math.max(videoDuration - 25, 35);
-      startSec = Math.floor(25 + ((seedIndex * 19) % (safeMax - 25)));
+    // Calculate smart safe start time to capture genuine action and avoid introductory title cards/logos
+    let startSec = 50 + (seedIndex * 15);
+    if (videoDuration > 120) {
+      // For videos over 2 minutes, avoid the first 70s (opening cards/logos) and last 30s (end screens/credits)
+      const safeMin = 70;
+      const safeMax = Math.max(videoDuration - 30, safeMin + 20);
+      startSec = Math.floor(safeMin + ((seedIndex * 27) % (safeMax - safeMin)));
+    } else if (videoDuration > 60) {
+      const safeMin = 35;
+      const safeMax = Math.max(videoDuration - 15, safeMin + 10);
+      startSec = Math.floor(safeMin + ((seedIndex * 15) % (safeMax - safeMin)));
     }
 
     const endSec = startSec + Math.ceil(duration) + 1;
@@ -318,7 +325,7 @@ class CinematicVideoFetcher {
   }
 
   async downloadCuratedClip(curated, duration, outputPath, seedIndex = 0) {
-    const startSec = (curated.safeStart || 20) + (seedIndex * 8);
+    const startSec = (curated.safeStart || 50) + (seedIndex * 10);
     const endSec = startSec + Math.ceil(duration) + 1;
     const startStr = this.formatTime(startSec);
     const endStr = this.formatTime(endSec);
