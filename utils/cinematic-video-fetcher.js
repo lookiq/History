@@ -277,7 +277,13 @@ class CinematicVideoFetcher {
 
     // 2. Fallback candidate: Not used in current session and passes relevance check
     if (!selectedCandidate) {
-      selectedCandidate = candidates.find(c => !this.sessionUsedIds.has(c.id) && this.isTitleRelevant(c.title, era));
+      // Prefer long-form documentary footage (duration >= 90s, no shorts) to prevent baked-in subtitles
+      selectedCandidate = candidates.find(c => 
+        !this.sessionUsedIds.has(c.id) && 
+        c.duration >= 90 && 
+        !c.title.toLowerCase().includes('short') && 
+        this.isTitleRelevant(c.title, era)
+      ) || candidates.find(c => !this.sessionUsedIds.has(c.id) && this.isTitleRelevant(c.title, era));
     }
 
     let videoId = '';
@@ -360,7 +366,7 @@ class CinematicVideoFetcher {
 
     let filterString = '';
     for (let i = 0; i < numClips; i++) {
-      filterString += `[${i}:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,format=yuv420p,hflip,setpts=0.96*PTS,eq=contrast=1.07:brightness=0.01:saturation=1.06,fps=30[v${i}];`;
+      filterString += `[${i}:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,format=yuv420p,setpts=0.96*PTS,eq=contrast=1.07:brightness=0.01:saturation=1.06,fps=30[v${i}];`;
     }
 
     const concatInputs = clipPaths.map((_, i) => `[v${i}]`).join('');

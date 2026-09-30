@@ -124,7 +124,7 @@ Uncover the exact psychological mechanisms, secret deceptions, and untold grit. 
         { role: 'user', content: userPrompt }
       ],
       response_format: { type: 'json_object' },
-      max_tokens: 580,
+      max_tokens: 950,
       temperature: 0.65
     });
 
