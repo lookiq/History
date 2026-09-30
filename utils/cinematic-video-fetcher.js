@@ -354,6 +354,24 @@ class CinematicVideoFetcher {
     return outputPath;
   }
 
+  async assembleFullBleedCinematicMontage(clipPaths, targetDuration, outputPath) {
+    const inputs = clipPaths.map(p => `-i "${p}"`).join(' ');
+    const numClips = clipPaths.length;
+
+    let filterString = '';
+    for (let i = 0; i < numClips; i++) {
+      filterString += `[${i}:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,format=yuv420p,hflip,setpts=0.96*PTS,eq=contrast=1.07:brightness=0.01:saturation=1.06,fps=30[v${i}];`;
+    }
+
+    const concatInputs = clipPaths.map((_, i) => `[v${i}]`).join('');
+    filterString += `${concatInputs}concat=n=${numClips}:v=1:a=0[vconcat];[vconcat]trim=0:${targetDuration}[outv]`;
+
+    const ffmpegCmd = `ffmpeg -y ${inputs} -filter_complex "${filterString}" -map "[outv]" -c:v libx264 -preset fast -crf 19 "${outputPath}"`;
+
+    await execPromise(ffmpegCmd);
+    return outputPath;
+  }
+
   formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
