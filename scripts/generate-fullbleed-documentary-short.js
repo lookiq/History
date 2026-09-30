@@ -5,6 +5,7 @@ const { DeepResearchEngine } = require('../utils/deep-research-engine');
 const { VoiceoverService } = require('../utils/voiceover-service');
 const { SubtitleGenerator } = require('../utils/subtitle-generator');
 const { CinematicVideoFetcher } = require('../utils/cinematic-video-fetcher');
+const { BrandingOverlayGenerator } = require('../utils/branding-overlay-generator');
 const { runFFmpeg } = require('../utils/ffmpeg');
 
 /**
@@ -17,11 +18,14 @@ const { runFFmpeg } = require('../utils/ffmpeg');
  *  4. Lower-third bold subtitles with golden-orange active word highlight.
  *  5. Audio mastered with deep documentary voice + dark ambient war drone.
  */
-async function generateFullBleedDocumentaryShort(customTopic = null) {
+async function generateFullBleedDocumentaryShort(customTopic = null, options = {}) {
+  const enableBranding = options.branding !== false; // Default true
+
   console.log('====================================================');
   console.log('🎬 THE HISTORY UNCUT - FULL-BLEED MASTER GENERATOR');
   console.log('   🔥 Benchmark Style: Full-Screen Cinematic (aUh1Zaj-czA)');
   console.log('   🧠 Deep Research & Forensic Fact-Checking: ACTIVE');
+  console.log(`   🏷️  Channel Branding & Subscribe CTA Pill: ${enableBranding ? 'ACTIVE' : 'OFF'}`);
   console.log('   🛡️  Anti-Content ID Shield: ACTIVE (100% Safe)');
   console.log('====================================================');
 
@@ -49,19 +53,51 @@ async function generateFullBleedDocumentaryShort(customTopic = null) {
   const videoDuration = Math.ceil(voiceResult.duration) + 1;
   console.log(`   🔊 Voice Duration: ${voiceResult.duration.toFixed(1)}s (Total short duration: ${videoDuration}s)`);
 
-  // 3. Dynamic Lower-Third Karaoke Subtitles (Matching benchmark aUh1Zaj-czA)
-  const subtitleGen = new SubtitleGenerator({
-    fontName: 'Segoe UI',
-    fontSize: 58,
-    primaryColor: '&H00FFFFFF',      // Crisp White
-    highlightColor: '&H0000A5FF',    // Golden Orange (&HAABBGGRR in ASS)
-    outlineColor: '&H00000000',      // Solid Black Stroke
-    outlineWidth: 4.5,
-    marginV: 450                     // Lower-third positioning (Y≈1420)
-  });
+  // 3. Channel Branding & Subtitle Generation
+  let brandingOverlayPath = null;
+  let subtitleGen;
+
+  if (enableBranding) {
+    const overlayGen = new BrandingOverlayGenerator({
+      projectRoot: path.join(__dirname, '..'),
+      channelName: 'The History Uncut',
+      handle: '@HistoryUncutUS'
+    });
+    brandingOverlayPath = path.join(tempDir, 'branding_overlay.png');
+    await overlayGen.generateOverlay(brandingOverlayPath);
+    console.log(`   🏷️  Branding & Subscribe CTA overlay generated.`);
+
+    // In-Pill Subtitles (Rendered cleanly inside the golden-bordered caption pill)
+    subtitleGen = new SubtitleGenerator({
+      fontName: 'Segoe UI',
+      fontSize: 38,
+      primaryColor: '&H001E232F',      // Charcoal / Dark Slate for high contrast on white
+      highlightColor: '&H001A24D4',    // Vivid Red active word highlight (&HAABBGGRR)
+      outlineColor: '&H00FFFFFF',      // Subtle white edge
+      outlineWidth: 1.5,
+      shadow: 0,
+      marginL: 290,
+      marginR: 150,
+      marginV: 375,                    // In-pill vertical center (Y≈1525)
+      maxWords: 3                      // 2-3 words per phrase to fit pill width perfectly
+    });
+  } else {
+    // Classic Lower-Third Karaoke Subtitles
+    subtitleGen = new SubtitleGenerator({
+      fontName: 'Segoe UI',
+      fontSize: 58,
+      primaryColor: '&H00FFFFFF',      // Crisp White
+      highlightColor: '&H0000A5FF',    // Golden Orange
+      outlineColor: '&H00000000',      // Solid Black Stroke
+      outlineWidth: 4.5,
+      shadow: 2,
+      marginV: 450                     // Lower-third positioning (Y≈1420)
+    });
+  }
+
   const subPath = path.join(tempDir, 'dynamic_subtitles.ass');
   await subtitleGen.generateSubtitles(dossier.voiceScript, voiceResult.duration, subPath);
-  console.log(`   ⚡ Dynamic Lower-Third Subtitles saved.`);
+  console.log(`   ⚡ Dynamic Subtitles saved (${enableBranding ? 'In-Pill' : 'Classic'}).`);
 
   // 4. Sourcing Scene-Specific Cinematic Footage
   const visualQueries = dossier.visualQueries || (dossier.scenes ? dossier.scenes.map(s => s.visualQuery) : [dossier.topic]);
@@ -99,17 +135,32 @@ async function generateFullBleedDocumentaryShort(customTopic = null) {
   console.log('\n🎬 Compositing Full-Bleed 1080x1920 Master Short via FFmpeg...');
   const relSubPath = path.relative(process.cwd(), subPath).replace(/\\/g, '/');
 
-  const filterComplex =
-    `[0:v]ass='${relSubPath}'[outv];` +
-    `[2:a]volume=0.12,atrim=0:${videoDuration},afade=t=out:st=${videoDuration - 1.5}:d=1.5[music];` +
-    `[1:a]volume=1.05[voice];` +
-    `[voice][music]amix=inputs=2:duration=first:dropout_transition=2[outa]`;
-
-  await runFFmpeg([
+  let filterComplex;
+  const ffmpegInputs = [
     '-y',
     '-i', fullBleedMontagePath,                         // [0:v] 1080x1920 Full Bleed Video
     '-i', voiceResult.outputPath,                       // [1:a] Voiceover
-    '-stream_loop', '-1', '-i', musicPath,             // [2:a] Dark Ambient War Drone
+    '-stream_loop', '-1', '-i', musicPath              // [2:a] Dark Ambient War Drone
+  ];
+
+  if (enableBranding && brandingOverlayPath) {
+    ffmpegInputs.push('-i', brandingOverlayPath);      // [3:v] Branding & CTA Overlay
+    filterComplex =
+      `[0:v][3:v]overlay=0:0[vbrand];` +
+      `[vbrand]ass='${relSubPath}'[outv];` +
+      `[2:a]volume=0.12,atrim=0:${videoDuration},afade=t=out:st=${videoDuration - 1.5}:d=1.5[music];` +
+      `[1:a]volume=1.05[voice];` +
+      `[voice][music]amix=inputs=2:duration=first:dropout_transition=2[outa]`;
+  } else {
+    filterComplex =
+      `[0:v]ass='${relSubPath}'[outv];` +
+      `[2:a]volume=0.12,atrim=0:${videoDuration},afade=t=out:st=${videoDuration - 1.5}:d=1.5[music];` +
+      `[1:a]volume=1.05[voice];` +
+      `[voice][music]amix=inputs=2:duration=first:dropout_transition=2[outa]`;
+  }
+
+  await runFFmpeg([
+    ...ffmpegInputs,
     '-filter_complex', filterComplex,
     '-map', '[outv]',
     '-map', '[outa]',
@@ -146,7 +197,7 @@ async function generateFullBleedDocumentaryShort(customTopic = null) {
     duration: videoDuration,
     voiceProvider: voiceResult.provider,
     voiceName: voiceResult.voice,
-    style: 'full_bleed_cinematic',
+    style: enableBranding ? 'branded_cta_full_bleed' : 'full_bleed_cinematic',
     createdAt: new Date().toISOString()
   };
   await fs.writeFile(metadataPath, JSON.stringify(fullMeta, null, 2));
