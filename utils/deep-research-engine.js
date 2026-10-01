@@ -78,29 +78,29 @@ class DeepResearchEngine {
 
     console.log(`\n🔎 [DeepResearchEngine] Initiating deep-dive research into: "${topicToResearch}"...`);
 
-    const systemPrompt = `You are the lead historical researcher and master documentary scriptwriter for "The History Uncut", an elite, high-retention YouTube channel focusing strictly on World War 1 and World War 2.
+    const systemPrompt = `You are the lead historical researcher and master documentary scriptwriter for "The History Uncut", an elite, high-retention YouTube channel focusing on extraordinary outlier events in Ancient Civilizations (Rome, Greece, Egypt, Persia, Medieval) and Modern Warfare (World War 1 & World War 2).
 
 BENCHMARK STYLE TO REPLICATE EXACTLY:
-- Full-bleed cinematic pacing (similar to the viral "Ghost Army" video).
-- Unhurried, deep, authoritative narration (approx 130-140 words total).
+- Full-bleed cinematic documentary pacing (similar to the viral "Ghost Army" video).
+- Unhurried, deep, authoritative narration (approx 125-140 words total).
 - 0-3s Impossible Hook: Immediately grabs the viewer with a paradoxical or shocking truth.
-- Story Progression: Divided into exactly 10 chronological visual scenes (each exactly 5 to 6 seconds).
-- Ending: No desperate call to subscribe. Instead, a chilling philosophical question or open cognitive loop that forces viewers to re-watch and debate in the comments.
+- Story Progression: Divided into chronological visual scenes (each 4 to 6 seconds).
+- Ending: No desperate call to subscribe. Instead, a chilling philosophical question or open cognitive loop that forces viewers to debate in the comments.
 
 STRICT REQUIREMENTS:
-1. ONLY World War 1 or World War 2.
-2. 100% verified historical facts, authentic unit names, locations, and methods.
+1. Focus on authentic historical outlier events (Ancient Rome/Greece/Civilizations or WW1/WW2).
+2. 100% verified historical facts, authentic unit names, locations, and tactics.
 3. Every scene MUST have a hyper-specific visual search query describing genuine historical action (no generic stock buzzwords).
 
 OUTPUT FORMAT:
 Return strictly a valid JSON object matching this schema:
 {
   "topic": "Concise verified title",
-  "era": "world_war_1" or "world_war_2",
+  "era": "ancient_rome" or "ancient_greece" or "ancient_egypt" or "world_war_1" or "world_war_2",
   "hook": "The first 3 seconds sentence",
   "voiceScript": "The full spoken narrative (125-140 words, unhurried documentary pacing)",
   "visualQueries": [
-    "Specific 1080p archival search query 1",
+    "Specific 1080p archival or cinematic search query 1",
     "Specific 1080p combat search query 2",
     "Specific 1080p battlefield search query 3",
     "Specific 1080p aftermath search query 4",
