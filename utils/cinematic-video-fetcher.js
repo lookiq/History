@@ -370,7 +370,7 @@ class CinematicVideoFetcher {
 
     let filterString = '';
     for (let i = 0; i < numClips; i++) {
-      filterString += `[${i}:v]scale=1080:880:force_original_aspect_ratio=increase,crop=1080:820:(in_w-out_w)/2:0,setsar=1,format=yuv420p,hflip,setpts=0.96*PTS,unsharp=lx=5:ly=5:la=0.6:cx=5:cy=5:ca=0.25,eq=contrast=1.06:brightness=0.01:saturation=1.08,fps=30[v${i}];`;
+      filterString += `[${i}:v]scale=1080:880:force_original_aspect_ratio=increase,crop=1080:820:(in_w-out_w)/2:0,setsar=1,format=yuv420p,setpts=0.96*PTS,unsharp=lx=5:ly=5:la=0.6:cx=5:cy=5:ca=0.25,eq=contrast=1.06:brightness=0.01:saturation=1.08,fps=30[v${i}];`;
     }
 
     const concatInputs = clipPaths.map((_, i) => `[v${i}]`).join('');
