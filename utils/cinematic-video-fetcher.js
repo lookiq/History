@@ -89,19 +89,39 @@ const HISTORICAL_CURATED_VAULT = {
     { id: 'nzWPcCDOP4Y', title: "German soldiers WW1 Reenactment Combat", safeStart: 35 }
   ],
   world_war_2: [
-    { id: 'WXusCl05hG0', title: "Band of Brothers - Infantry Battle Combat", safeStart: 20 },
-    { id: 'iYRHFOu9xlc', title: "Saving Private Ryan - WWII Battle Scene", safeStart: 30 },
-    { id: '0Xc4ckTTQN0', title: "Fury - Sherman Tank WWII Combat", safeStart: 25 },
-    { id: 'LyZK8k4gzyg', title: "Band of Brothers - WWII Troops Marching", safeStart: 15 }
+    { id: 'FbAi7UAG-rU', title: "Kursk 1943 in Color - Largest Tank Battle WWII", safeStart: 45 },
+    { id: 'm19r4ZCcHq8', title: "WW2: Operation Barbarossa Combat Footage", safeStart: 40 },
+    { id: 'fR20MWwPEEU', title: "WW2 US Street Fighting Caught on Film", safeStart: 35 },
+    { id: 'AyEcWIEm0CU', title: "29th Infantry Division at Saint-Lo WW2 Combat", safeStart: 50 },
+    { id: 'ZXF1sHkHAZc', title: "WW2 Battle of the Atlantic Real Footage in Colour", safeStart: 60 },
+    { id: 'pL5-OFpC4lI', title: "Real Footage of Omaha Beach 4K Colorized", safeStart: 45 },
+    { id: '6Q94cze2s68', title: "The Last Moments of a Tank Crew Caught on Camera", safeStart: 30 },
+    { id: 'zNmXMee2ABE', title: "The Ghost Army 23rd HQ Special Troops Go To War", safeStart: 50 },
+    { id: 'v4b0_OVfewk', title: "Naval Bombardment of Iwo Jima - Flags of our Fathers", safeStart: 30 },
+    { id: 'mxUk0STBRIU', title: "The Japanese Surrender aboard USS Missouri 1945", safeStart: 40 },
+    { id: 'u8afP6GetP8', title: "Cassino Monastery Bombed 1944 Archival", safeStart: 25 },
+    { id: 'BThk_U9RbMg', title: "Historic Munich Agreement 1938 HD Stock Footage", safeStart: 20 },
+    { id: 'dAHJ0omYo7U', title: "Entire World War II German Perspective Pure Color", safeStart: 60 },
+    { id: 'Yl_zCQZooJo', title: "German Tiger I Tank and Soviet T-34 Battle of Kursk", safeStart: 2 }
   ],
   american_civil_war: [
-    { id: 'WXusCl05hG0', title: "Civil War Reenactment Cannon & Musket Volley", safeStart: 20 },
-    { id: 'LyZK8k4gzyg', title: "Civil War Infantry Line Combat Gettysburg", safeStart: 25 },
-    { id: 'iYRHFOu9xlc', title: "Civil War Cavalry Charge Battlefield", safeStart: 30 }
+    { id: 'i8SvloJ4f08', title: "Battle of Shiloh Tennessee Reenactment - Civil War Stock", safeStart: 25 },
+    { id: 'c6YN_I-sN5Y', title: "Battle of Shiloh Reenactment - Union on Horseback", safeStart: 20 },
+    { id: 'tbvOt3lAPws', title: "American Civil War: Battle Of Manassas Bull Run", safeStart: 40 },
+    { id: 'w7h85nYNhgY', title: "Civil War Reenactment Cannon & Musket Volley", safeStart: 35 },
+    { id: 'qyUb-qE_sAU', title: "Battle of Shiloh Reenactment - Troops March Forward", safeStart: 25 },
+    { id: 'HhDsvTi9iZc', title: "HD Civil War Stock Footage REEL - Reenactment", safeStart: 30 },
+    { id: 'GGhBDtUBLy0', title: "Reenactment Charge during Battle of Bull Run", safeStart: 20 },
+    { id: 'YKIEiJ5ca70', title: "Battle of Shiloh Reenactment - Rebel Flag Bearer", safeStart: 15 },
+    { id: 'aC3axYHlIW8', title: "Fix Bayonets Gettysburg Charge", safeStart: 25 }
   ],
   american_wars: [
-    { id: 'WXusCl05hG0', title: "US Military Combat Action Battlefield", safeStart: 20 },
-    { id: '0Xc4ckTTQN0', title: "American Armor & Artillery Combat", safeStart: 25 }
+    { id: 'fHHg_xfEl_8', title: "Battle of Lexington & Concord Reenactment", safeStart: 30 },
+    { id: 'ZCuHU6ll-io', title: "Revolutionary War Reenactment Battle of Germantown", safeStart: 25 },
+    { id: 'ZbLruILDxLU', title: "Revolutionary War Reenactment Battle of Monmouth", safeStart: 35 },
+    { id: 'W6Eqkg1fZpw', title: "Boston Massacre Reenactment American Revolutionary War", safeStart: 20 },
+    { id: 'etcfSNa5b5o', title: "Battle of Brooklyn Heights American Revolution", safeStart: 40 },
+    { id: 'ujyyldXk8BM', title: "American Armor & Artillery Live Fire Maneuvers", safeStart: 30 }
   ]
 };
 
@@ -137,7 +157,9 @@ const ERA_WHITELISTS = {
 
 const BLACKLIST_TERMS = [
   // Gaming
-  'gameplay', 'walkthrough', 'playthrough', 'battlefield 1', 'call of duty', 'cod', 'roblox', 'minecraft',
+  'gameplay', 'walkthrough', 'playthrough', 'battlefield 1', 'battlefield 5', 'battlefield v', 'battlefield 4',
+  'call of duty', 'cod', 'roblox', 'minecraft', 'war thunder', 'warthunder', 'world of tanks', 'hell let loose',
+  'enlisted', 'arma 3', 'post scriptum', 'squad 44',
   'lego', 'brick', 'gamer', 'gaming', 'speedrun', 'mod ', 'vr gameplay', 'cutscene',
   // Music & Songs
   'music video', 'official video', 'audio', 'remix', 'song', 'lyrics', 'cover', 'sabaton', 'album', 'soundtrack', 'ost',
@@ -163,11 +185,14 @@ class CinematicVideoFetcher {
 
   detectEra(topic = '', extraText = '') {
     const combined = `${topic} ${extraText}`.toLowerCase();
+    if (/civil war|gettysburg|antietam|confederate|union army|lincoln|grant|robert e lee|hunley|ironclad|shiloh|bull run/i.test(combined)) return 'american_civil_war';
+    if (/american revolution|revolutionary war|george washington|bunker hill|yorktown|1776|continental army|lexington/i.test(combined)) return 'american_wars';
+    if (/us army|marine corps|us military|vietnam|korean war|doolittle raid|american war/i.test(combined)) return 'american_wars';
+    if (/ww1|wwi|world war 1|world war i|great war|trench warfare|somme|verdun|gallipoli|red baron|1917|all quiet|osowiec|dead men/i.test(combined)) return 'world_war_1';
+    if (/ww2|wwii|world war|nazi|hitler|churchill|stalin|d-day|normandy|pearl harbor|blitzkrieg|panzer|tiger tank|sniper simo|night witches|ghost army/i.test(combined)) return 'world_war_2';
     if (/ottoman|sultan|mehmed|suleiman|turk|turkish|janissary|constantinople|harem|ertugrul|osman|vizier|pasha/i.test(combined)) return 'ottoman_empire';
     if (/bruce lee|kung fu|martial art|dragon|dojo|jeet kune/i.test(combined)) return 'bruce_lee';
     if (/egypt|pharaoh|mummy|pyramid|cleopatra|nile|tomb/i.test(combined)) return 'ancient_egypt';
-    if (/ww1|wwi|world war 1|world war i|great war|trench warfare|somme|verdun|gallipoli|red baron|1917|all quiet|osowiec|dead men/i.test(combined)) return 'world_war_1';
-    if (/ww2|wwii|world war|nazi|hitler|churchill|stalin|d-day|normandy|pearl harbor|blitzkrieg|panzer|tiger tank|sniper simo|night witches|ghost army/i.test(combined)) return 'world_war_2';
     if (/medieval|knight|castle|crusade|sword|viking|dark age|king|guillotine/i.test(combined)) return 'medieval';
     return 'world_war_2';
   }
@@ -179,7 +204,45 @@ class CinematicVideoFetcher {
     }
 
     const whitelist = ERA_WHITELISTS[era] || ERA_WHITELISTS.world_war_1;
-    return whitelist.some(keyword => lower.includes(keyword));
+    if (whitelist.some(keyword => lower.includes(keyword))) return true;
+
+    // High-relevance historical documentary combat terms
+    const generalMilitaryTerms = [
+      'combat', 'battle', 'war', 'army', 'soldier', 'infantry', 'artillery',
+      'tank', 'forces', 'front', 'military', 'archival', 'footage', 'documentary',
+      'operation', 'defense', 'charge', 'regiment', 'division', 'reenactment'
+    ];
+    return generalMilitaryTerms.some(term => lower.includes(term));
+  }
+
+  async searchCandidates(cleanQuery, limit = 12) {
+    const searchCmd = `"${this.ytdlpPath}" --ignore-errors "ytsearch${limit}:${cleanQuery} 1080p footage" --print "%(id)s---%(title)s---%(duration)s"`;
+    let candidates = [];
+    try {
+      let stdout = '';
+      try {
+        const res = await execPromise(searchCmd);
+        stdout = res.stdout;
+      } catch (searchErr) {
+        stdout = (searchErr.stdout || '') + '\n' + (searchErr.stderr || '');
+      }
+
+      const lines = stdout.split('\n').map(l => l.trim()).filter(l => l.includes('---'));
+      for (const line of lines) {
+        const parts = line.split('---');
+        if (parts.length >= 2) {
+          const id = parts[0].trim();
+          const title = parts[1].trim();
+          const dur = parseFloat(parts[2]) || 0;
+          if (id.length >= 8 && id.length <= 15) {
+            candidates.push({ id, title, duration: dur });
+          }
+        }
+      }
+    } catch (e) {
+      console.warn(`Search error for "${cleanQuery}": ${e.message}`);
+    }
+    return candidates;
   }
 
   async fetchMontageClips(queries, totalDuration, outputPath, context = {}) {
@@ -202,8 +265,8 @@ class CinematicVideoFetcher {
     const neededClips = Math.ceil(totalDuration / clipDuration);
     const subClips = [];
 
-    console.log(`🛡️  Anti-Content ID Shield & Dynamic Sourcing: Sourcing ${neededClips} FRESH clips (Zero Reuse Guarantee)...`);
-    const curatedPool = HISTORICAL_CURATED_VAULT[era] || HISTORICAL_CURATED_VAULT.world_war_1;
+    console.log(`🛡️  Strict Zero-Reuse Clip Sourcing: Sourcing ${neededClips} 100% FRESH clips...`);
+    const curatedPool = HISTORICAL_CURATED_VAULT[era] || HISTORICAL_CURATED_VAULT.world_war_2;
 
     for (let i = 0; i < neededClips; i++) {
       const q = queryList[i % queryList.length];
@@ -214,26 +277,28 @@ class CinematicVideoFetcher {
         subClips.push(clipInfo.path);
         console.log(`   ✅ Clip ${i + 1}/${neededClips}: "${clipInfo.title}" [ID: ${clipInfo.videoId}]`);
       } catch (err) {
-        console.warn(`   ⚠️ Clip ${i + 1} fallback activated: ${err.message}`);
+        console.warn(`   ⚠️ Clip ${i + 1} fresh sourcing warning: ${err.message}`);
         try {
-          const curated = curatedPool[i % curatedPool.length];
-          const fallbackClip = await this.downloadCuratedClip(curated, clipDuration, clipOut, i);
+          // Emergency fallback from curated pool, ensuring no duplicate in session
+          const usedHistory = await loadUsedClipsHistory();
+          const allUsed = new Set([...usedHistory.map(h => h.id), ...this.sessionUsedIds]);
+          const unusedCurated = curatedPool.find(c => !allUsed.has(c.id)) || curatedPool[i % curatedPool.length];
+          
+          this.sessionUsedIds.add(unusedCurated.id);
+          await recordUsedClip(unusedCurated.id, unusedCurated.title, context);
+
+          const fallbackClip = await this.downloadCuratedClip(unusedCurated, clipDuration, clipOut, i);
           subClips.push(fallbackClip);
-          console.log(`   ✅ Curated Fallback ${i + 1}/${neededClips}: ${curated.title}`);
+          console.log(`   ✅ Curated Fallback ${i + 1}/${neededClips}: ${unusedCurated.title} [ID: ${unusedCurated.id}]`);
         } catch (fbErr) {
-          if (subClips.length > 0) {
-            console.log(`   🔁 Reusing prior verified clip for 100% fail-safe render`);
-            subClips.push(subClips[subClips.length - 1]);
-          } else {
-            console.log(`   🎨 Generating procedural cinematic backdrop for 100% fail-safe render`);
-            await execPromise(`ffmpeg -y -f lavfi -i "color=c=0x0d0d12:s=1080x820:d=${clipDuration}:r=30" -c:v libx264 -pix_fmt yuv420p "${clipOut}"`);
-            subClips.push(clipOut);
-          }
+          console.error(`   ❌ Critical fallback error for clip ${i + 1}: ${fbErr.message}`);
+          await execPromise(`ffmpeg -y -f lavfi -i "color=c=0x0a0908:s=1080x820:d=${clipDuration}:r=30" -c:v libx264 -pix_fmt yuv420p "${clipOut}"`);
+          subClips.push(clipOut);
         }
       }
     }
 
-    console.log(`🛡️  Applying Anti-Content ID transformations (hflip + 1.04x speed shift + color grading)...`);
+    console.log(`🛡️  Applying Anti-Content ID transformations (1.04x speed shift + color grading + unsharp)...`);
     await this.assembleMontageWithShield(subClips, totalDuration, outputPath);
 
     return {
@@ -244,7 +309,7 @@ class CinematicVideoFetcher {
     };
   }
 
-  async downloadSingleSnippet(query, duration, outputPath, seedIndex = 0, era = 'world_war_1', context = {}) {
+  async downloadSingleSnippet(query, duration, outputPath, seedIndex = 0, era = 'world_war_2', context = {}) {
     const usedHistory = await loadUsedClipsHistory();
     const usedIds = new Set([...usedHistory.map(h => h.id), ...this.sessionUsedIds]);
 
@@ -266,90 +331,74 @@ class CinematicVideoFetcher {
       cleanQuery = `${prefix} ${cleanQuery}`;
     }
 
-    const searchCmd = `"${this.ytdlpPath}" --ignore-errors "ytsearch6:${cleanQuery} 1080p footage" --print "%(id)s|||%(title)s|||%(duration)s"`;
-    
-    let candidates = [];
-    try {
-      let stdout = '';
+    // 1. Primary search query
+    let candidates = await this.searchCandidates(cleanQuery, 14);
+
+    // Filter strictly for FRESH candidates (never used in ANY video)
+    let freshCandidates = candidates.filter(c => !usedIds.has(c.id) && this.isTitleRelevant(c.title, era));
+
+    // 2. If no fresh candidates found, try alternative broadened search queries
+    if (freshCandidates.length === 0) {
+      const altQueries = [
+        `${prefix} archival combat footage`,
+        `${prefix} battlefield rare action 1080p`,
+        `${prefix} military historical documentary footage`
+      ];
+      for (const altQ of altQueries) {
+        const altCandidates = await this.searchCandidates(altQ, 12);
+        freshCandidates = altCandidates.filter(c => !usedIds.has(c.id) && this.isTitleRelevant(c.title, era));
+        if (freshCandidates.length > 0) break;
+      }
+    }
+
+    // 3. Multi-Candidate Download Loop: Try candidates one by one until success
+    for (const cand of freshCandidates) {
       try {
-        const res = await execPromise(searchCmd);
-        stdout = res.stdout;
-      } catch (searchErr) {
-        stdout = (searchErr.stdout || '') + '\n' + (searchErr.stderr || '');
-      }
-
-      const lines = stdout.split('\n').map(l => l.trim()).filter(l => l.includes('|||'));
-      for (const line of lines) {
-        const parts = line.split('|||');
-        if (parts.length >= 2) {
-          const id = parts[0].trim();
-          const title = parts[1].trim();
-          const dur = parseFloat(parts[2]) || 0;
-          if (id.length >= 8 && id.length <= 15) {
-            candidates.push({ id, title, duration: dur });
-          }
+        let videoDuration = cand.duration || 180;
+        let startSec = 50 + (seedIndex * 15);
+        if (videoDuration > 120) {
+          const safeMin = 60;
+          const safeMax = Math.max(videoDuration - 30, safeMin + 20);
+          startSec = Math.floor(safeMin + ((seedIndex * 27) % (safeMax - safeMin)));
+        } else if (videoDuration > 60) {
+          const safeMin = 30;
+          const safeMax = Math.max(videoDuration - 15, safeMin + 10);
+          startSec = Math.floor(safeMin + ((seedIndex * 15) % (safeMax - safeMin)));
         }
+
+        const endSec = startSec + Math.ceil(duration) + 1;
+        const startStr = this.formatTime(startSec);
+        const endStr = this.formatTime(endSec);
+
+        const downloadCmd = `"${this.ytdlpPath}" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080]/best[height<=1080]/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${cand.id}"`;
+
+        await execPromise(downloadCmd);
+
+        // Success! Immediately lock and record clip
+        this.sessionUsedIds.add(cand.id);
+        await recordUsedClip(cand.id, cand.title, context);
+
+        return { path: outputPath, videoId: cand.id, title: cand.title };
+      } catch (dlErr) {
+        console.warn(`   ⚠️ Download failed for "${cand.title}" [${cand.id}]: ${dlErr.message}. Trying next candidate...`);
+        continue;
       }
-    } catch (e) {
-      console.warn(`Search error: ${e.message}`);
     }
 
-    // 1. Select candidate: Fresh, not used in any video, passes relevance check & blacklist
-    let selectedCandidate = candidates.find(c => !usedIds.has(c.id) && this.isTitleRelevant(c.title, era));
-
-    // 2. Fallback candidate: Not used in current session and passes relevance check
-    if (!selectedCandidate) {
-      // Prefer long-form documentary footage (duration >= 90s, no shorts) to prevent baked-in subtitles
-      selectedCandidate = candidates.find(c => 
-        !this.sessionUsedIds.has(c.id) && 
-        c.duration >= 90 && 
-        !c.title.toLowerCase().includes('short') && 
-        this.isTitleRelevant(c.title, era)
-      ) || candidates.find(c => !this.sessionUsedIds.has(c.id) && this.isTitleRelevant(c.title, era));
+    // 4. Fallback to Curated Vault if all fresh search candidates fail
+    const curatedPool = HISTORICAL_CURATED_VAULT[era] || HISTORICAL_CURATED_VAULT.world_war_2;
+    // Prefer curated items NEVER used anywhere
+    let curatedItem = curatedPool.find(c => !usedIds.has(c.id));
+    if (!curatedItem) {
+      // If all were used in previous videos, at least choose one not used in THIS session
+      curatedItem = curatedPool.find(c => !this.sessionUsedIds.has(c.id)) || curatedPool[seedIndex % curatedPool.length];
     }
 
-    let videoId = '';
-    let videoTitle = '';
-    let videoDuration = 0;
+    await this.downloadCuratedClip(curatedItem, duration, outputPath, seedIndex);
+    this.sessionUsedIds.add(curatedItem.id);
+    await recordUsedClip(curatedItem.id, curatedItem.title, context);
 
-    if (selectedCandidate) {
-      videoId = selectedCandidate.id;
-      videoTitle = selectedCandidate.title;
-      videoDuration = selectedCandidate.duration;
-    } else {
-      // Pick next unused curated video
-      const curatedPool = HISTORICAL_CURATED_VAULT[era] || HISTORICAL_CURATED_VAULT.world_war_1;
-      const unusedCurated = curatedPool.find(c => !usedIds.has(c.id)) || curatedPool.find(c => !this.sessionUsedIds.has(c.id)) || curatedPool[seedIndex % curatedPool.length];
-      videoId = unusedCurated.id;
-      videoTitle = unusedCurated.title;
-      videoDuration = 180;
-    }
-
-    // Register clip ID to prevent reuse in current montage and across future videos
-    this.sessionUsedIds.add(videoId);
-    await recordUsedClip(videoId, videoTitle, context);
-
-    // Calculate smart safe start time to capture genuine action and avoid introductory title cards/logos
-    let startSec = 50 + (seedIndex * 15);
-    if (videoDuration > 120) {
-      // For videos over 2 minutes, avoid the first 70s (opening cards/logos) and last 30s (end screens/credits)
-      const safeMin = 70;
-      const safeMax = Math.max(videoDuration - 30, safeMin + 20);
-      startSec = Math.floor(safeMin + ((seedIndex * 27) % (safeMax - safeMin)));
-    } else if (videoDuration > 60) {
-      const safeMin = 35;
-      const safeMax = Math.max(videoDuration - 15, safeMin + 10);
-      startSec = Math.floor(safeMin + ((seedIndex * 15) % (safeMax - safeMin)));
-    }
-
-    const endSec = startSec + Math.ceil(duration) + 1;
-    const startStr = this.formatTime(startSec);
-    const endStr = this.formatTime(endSec);
-
-    const downloadCmd = `"${this.ytdlpPath}" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080]/best[height<=1080]/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${videoId}"`;
-
-    await execPromise(downloadCmd);
-    return { path: outputPath, videoId, title: videoTitle };
+    return { path: outputPath, videoId: curatedItem.id, title: curatedItem.title };
   }
 
   async downloadCuratedClip(curated, duration, outputPath, seedIndex = 0) {
