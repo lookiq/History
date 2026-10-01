@@ -73,6 +73,9 @@ build/
 !examples/*.jpg
 !assets/youtube-automation-agent.jpg
 !assets/history_uncut_logo.png
+!assets/history_uncut_logo_512.png
+!assets/templates/*.png
+!assets/fonts/*.ttf
 
 # Backup files
 *.backup
