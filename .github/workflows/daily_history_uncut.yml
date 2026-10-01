@@ -2,12 +2,14 @@ name: The History Uncut - Autonomous Daily Shorts Pipeline
 
 on:
   schedule:
-    # Golden Slot 1: USA Morning Peak (7-9 AM EST) -> Published at 5:00 AM EST / 09:00 UTC / 3:00 PM BST (2h Pre-Peak)
-    - cron: '0 9 * * *'
-    # Golden Slot 2: USA Lunch Break Peak (12-2 PM EST) -> Published at 10:00 AM EST / 14:00 UTC / 8:00 PM BST (2h Pre-Peak)
-    - cron: '0 14 * * *'
-    # Golden Slot 3: USA Mega Evening Peak (6-9 PM EST) -> Published at 4:00 PM EST / 20:00 UTC / 2:00 AM BST (2h Pre-Peak)
-    - cron: '0 20 * * *'
+    # Slot 1: USA Morning Commute (06:15 AM EDT / 10:15 UTC / 04:15 PM BST)
+    - cron: '15 10 * * *'
+    # Slot 2: USA Midday Pre-Lunch & West Coast Morning (10:45 AM EDT / 14:45 UTC / 08:45 PM BST)
+    - cron: '45 14 * * *'
+    # Slot 3: USA Afternoon Drive & Office Exit (04:45 PM EDT / 20:45 UTC / 02:45 AM BST)
+    - cron: '45 20 * * *'
+    # Slot 4: USA National Evening Mega Prime Time (08:15 PM EDT / 00:15 UTC / 06:15 AM BST)
+    - cron: '15 0 * * *'
   workflow_dispatch:
     inputs:
       topic:
@@ -15,9 +17,9 @@ on:
         required: false
         default: ''
       safety_buffer_hours:
-        description: 'Copyright safety quarantine hours before going Public (default: 2)'
+        description: 'Copyright safety quarantine hours before going Public (default: 0 for instant live)'
         required: false
-        default: '2'
+        default: '0'
 
 jobs:
   generate-and-schedule:
@@ -84,7 +86,7 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          SAFETY_HOURS: ${{ github.event.inputs.safety_buffer_hours || '2' }}
+          SAFETY_HOURS: ${{ github.event.inputs.safety_buffer_hours || '0' }}
         run: |
           node scripts/upload-and-schedule-short.js "" "$SAFETY_HOURS"
 
