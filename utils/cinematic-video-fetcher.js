@@ -93,6 +93,15 @@ const HISTORICAL_CURATED_VAULT = {
     { id: 'iYRHFOu9xlc', title: "Saving Private Ryan - WWII Battle Scene", safeStart: 30 },
     { id: '0Xc4ckTTQN0', title: "Fury - Sherman Tank WWII Combat", safeStart: 25 },
     { id: 'LyZK8k4gzyg', title: "Band of Brothers - WWII Troops Marching", safeStart: 15 }
+  ],
+  american_civil_war: [
+    { id: 'WXusCl05hG0', title: "Civil War Reenactment Cannon & Musket Volley", safeStart: 20 },
+    { id: 'LyZK8k4gzyg', title: "Civil War Infantry Line Combat Gettysburg", safeStart: 25 },
+    { id: 'iYRHFOu9xlc', title: "Civil War Cavalry Charge Battlefield", safeStart: 30 }
+  ],
+  american_wars: [
+    { id: 'WXusCl05hG0', title: "US Military Combat Action Battlefield", safeStart: 20 },
+    { id: '0Xc4ckTTQN0', title: "American Armor & Artillery Combat", safeStart: 25 }
   ]
 };
 
@@ -107,14 +116,22 @@ const ERA_WHITELISTS = {
     'ww1', 'wwi', 'world war 1', 'world war i', 'great war', '1914', '1915', '1916', '1917', '1918',
     'osowiec', 'dead men', 'trench', 'chlorine', 'mustard gas', 'gas mask', 'gas attack', 'somme',
     'verdun', 'gallipoli', 'western front', 'eastern front', 'kaiser', 'bayonet', 'infantry', 'artillery',
-    'reenactment', 'rockford', 'all quiet', 'no man', 'no-man'
+    'reenactment', 'rockford', 'all quiet', 'no man', 'no-man', 'harlem hellfighters', 'alvin york'
   ],
   world_war_2: [
     'ww2', 'wwii', 'world war 2', 'world war ii', '1939', '1940', '1941', '1942', '1943', '1944', '1945',
     'hitler', 'nazi', 'churchill', 'stalin', 'd-day', 'normandy', 'panzer', 'tank', 'soldier', 'sniper',
     'army', 'battle', 'war', 'combat', 'patton', 'fury', 'saving private ryan', 'band of brothers', 'dunkirk',
     'night witches', 'bomber', 'pacific', 'okinawa', 'iwo jima', 'midway', 'stalingrad', 'kursk', 'bulge',
-    'ghost army', 'deception', 'inflatable'
+    'ghost army', 'deception', 'inflatable', 'audie murphy', 'basilone', 'tuskegee'
+  ],
+  american_civil_war: [
+    'civil war', 'gettysburg', 'antietam', 'confederate', 'union', 'lincoln', 'grant', 'lee',
+    'hunley', 'submarine', 'musket', 'ironclad', 'cannon', 'artillery', 'locomotive', 'shiloh', 'bull run'
+  ],
+  american_wars: [
+    'american war', 'us army', 'marines', 'us military', 'revolution', 'washington', 'civil war',
+    'normandy', 'pacific', 'vietnam', 'korea', 'doolittle', 'patton', 'macarthur', 'code talker'
   ]
 };
 
