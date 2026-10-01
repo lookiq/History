@@ -56,7 +56,9 @@ class MasterTemplateComposer {
     const filter =
       `color=c=0x080706:s=1080x1920:d=${videoDuration}[bg];` +
       `[0:v]scale=${width}:${height}:force_original_aspect_ratio=increase,` +
-      `crop=${width}:${height}:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,format=yuv420p[vid];` +
+      `crop=${width}:${height}:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,` +
+      `unsharp=lx=5:ly=5:la=0.7:cx=5:cy=5:ca=0.25,` +
+      `eq=contrast=1.05:brightness=0.01:saturation=1.06,format=yuv420p[vid];` +
       `[bg][vid]overlay=0:${y}[vbase];` +
       `[vbase][1:v]overlay=0:0[vbranded];` +
       `[vbranded]ass='${relSubPath}'[outv];` +

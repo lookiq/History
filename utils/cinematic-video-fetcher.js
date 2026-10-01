@@ -256,12 +256,17 @@ class CinematicVideoFetcher {
       .trim();
 
     // Ensure era anchor is present in query
-    const prefix = era === 'world_war_1' ? 'ww1' : 'ww2';
-    if (!cleanQuery.toLowerCase().includes('ww1') && !cleanQuery.toLowerCase().includes('ww2')) {
+    let prefix = 'ww2';
+    if (era === 'world_war_1') prefix = 'ww1';
+    else if (era === 'american_civil_war') prefix = 'civil war';
+    else if (era === 'american_revolution') prefix = 'american revolution';
+    else if (era === 'american_wars') prefix = 'american war';
+
+    if (!cleanQuery.toLowerCase().includes(prefix) && !cleanQuery.toLowerCase().includes('ww1') && !cleanQuery.toLowerCase().includes('ww2')) {
       cleanQuery = `${prefix} ${cleanQuery}`;
     }
 
-    const searchCmd = `"${this.ytdlpPath}" --ignore-errors --extractor-args "youtube:player_client=android,web" "ytsearch6:${cleanQuery} footage" --print "%(id)s|||%(title)s|||%(duration)s"`;
+    const searchCmd = `"${this.ytdlpPath}" --ignore-errors "ytsearch6:${cleanQuery} 1080p footage" --print "%(id)s|||%(title)s|||%(duration)s"`;
     
     let candidates = [];
     try {
@@ -341,7 +346,7 @@ class CinematicVideoFetcher {
     const startStr = this.formatTime(startSec);
     const endStr = this.formatTime(endSec);
 
-    const downloadCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,web" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080][ext=mp4]/bestvideo[height<=720]/136/398/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${videoId}"`;
+    const downloadCmd = `"${this.ytdlpPath}" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080]/best[height<=1080]/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${videoId}"`;
 
     await execPromise(downloadCmd);
     return { path: outputPath, videoId, title: videoTitle };
@@ -353,7 +358,7 @@ class CinematicVideoFetcher {
     const startStr = this.formatTime(startSec);
     const endStr = this.formatTime(endSec);
 
-    const downloadCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,web" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080][ext=mp4]/bestvideo[height<=720]/136/398/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${curated.id}"`;
+    const downloadCmd = `"${this.ytdlpPath}" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080]/best[height<=1080]/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${curated.id}"`;
 
     await execPromise(downloadCmd);
     return outputPath;
@@ -365,13 +370,13 @@ class CinematicVideoFetcher {
 
     let filterString = '';
     for (let i = 0; i < numClips; i++) {
-      filterString += `[${i}:v]scale=1080:880:force_original_aspect_ratio=increase,crop=1080:820:(in_w-out_w)/2:0,setsar=1,format=yuv420p,hflip,setpts=0.96*PTS,eq=contrast=1.06:brightness=0.01:saturation=1.08,fps=30[v${i}];`;
+      filterString += `[${i}:v]scale=1080:880:force_original_aspect_ratio=increase,crop=1080:820:(in_w-out_w)/2:0,setsar=1,format=yuv420p,hflip,setpts=0.96*PTS,unsharp=lx=5:ly=5:la=0.6:cx=5:cy=5:ca=0.25,eq=contrast=1.06:brightness=0.01:saturation=1.08,fps=30[v${i}];`;
     }
 
     const concatInputs = clipPaths.map((_, i) => `[v${i}]`).join('');
     filterString += `${concatInputs}concat=n=${numClips}:v=1:a=0[vconcat];[vconcat]trim=0:${targetDuration}[outv]`;
 
-    const ffmpegCmd = `ffmpeg -y ${inputs} -filter_complex "${filterString}" -map "[outv]" -c:v libx264 -preset fast -crf 19 "${outputPath}"`;
+    const ffmpegCmd = `ffmpeg -y ${inputs} -filter_complex "${filterString}" -map "[outv]" -c:v libx264 -preset medium -crf 16 -b:v 15M "${outputPath}"`;
 
     await execPromise(ffmpegCmd);
     return outputPath;
@@ -383,13 +388,13 @@ class CinematicVideoFetcher {
 
     let filterString = '';
     for (let i = 0; i < numClips; i++) {
-      filterString += `[${i}:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,format=yuv420p,setpts=0.96*PTS,eq=contrast=1.07:brightness=0.01:saturation=1.06,fps=30[v${i}];`;
+      filterString += `[${i}:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,format=yuv420p,setpts=0.96*PTS,unsharp=lx=5:ly=5:la=0.6:cx=5:cy=5:ca=0.25,eq=contrast=1.07:brightness=0.01:saturation=1.06,fps=30[v${i}];`;
     }
 
     const concatInputs = clipPaths.map((_, i) => `[v${i}]`).join('');
     filterString += `${concatInputs}concat=n=${numClips}:v=1:a=0[vconcat];[vconcat]trim=0:${targetDuration}[outv]`;
 
-    const ffmpegCmd = `ffmpeg -y ${inputs} -filter_complex "${filterString}" -map "[outv]" -c:v libx264 -preset fast -crf 19 "${outputPath}"`;
+    const ffmpegCmd = `ffmpeg -y ${inputs} -filter_complex "${filterString}" -map "[outv]" -c:v libx264 -preset medium -crf 16 -b:v 15M "${outputPath}"`;
 
     await execPromise(ffmpegCmd);
     return outputPath;
