@@ -137,31 +137,34 @@ const ERA_WHITELISTS = {
     'ww1', 'wwi', 'world war 1', 'world war i', 'great war', '1914', '1915', '1916', '1917', '1918',
     'osowiec', 'dead men', 'trench', 'chlorine', 'mustard gas', 'gas mask', 'gas attack', 'somme',
     'verdun', 'gallipoli', 'western front', 'eastern front', 'kaiser', 'bayonet', 'infantry', 'artillery',
-    'reenactment', 'rockford', 'all quiet', 'no man', 'no-man', 'harlem hellfighters', 'alvin york'
+    'reenactment', 'rockford', 'all quiet', 'no man', 'no-man', 'harlem hellfighters', 'alvin york',
+    'battlefield 1', 'bf1', 'isonzo', 'verdun'
   ],
   world_war_2: [
     'ww2', 'wwii', 'world war 2', 'world war ii', '1939', '1940', '1941', '1942', '1943', '1944', '1945',
     'hitler', 'nazi', 'churchill', 'stalin', 'd-day', 'normandy', 'panzer', 'tank', 'soldier', 'sniper',
     'army', 'battle', 'war', 'combat', 'patton', 'fury', 'saving private ryan', 'band of brothers', 'dunkirk',
     'night witches', 'bomber', 'pacific', 'okinawa', 'iwo jima', 'midway', 'stalingrad', 'kursk', 'bulge',
-    'ghost army', 'deception', 'inflatable', 'audie murphy', 'basilone', 'tuskegee'
+    'ghost army', 'deception', 'inflatable', 'audie murphy', 'basilone', 'tuskegee',
+    'battlefield v', 'battlefield 5', 'bfv', 'hell let loose', 'call of duty wwii', 'cod ww2', 'enlisted', 'post scriptum'
   ],
   american_civil_war: [
     'civil war', 'gettysburg', 'antietam', 'confederate', 'union', 'lincoln', 'grant', 'lee',
-    'hunley', 'submarine', 'musket', 'ironclad', 'cannon', 'artillery', 'locomotive', 'shiloh', 'bull run'
+    'hunley', 'submarine', 'musket', 'ironclad', 'cannon', 'artillery', 'locomotive', 'shiloh', 'bull run',
+    'war of rights', 'holdfast'
   ],
   american_wars: [
     'american war', 'us army', 'marines', 'us military', 'revolution', 'washington', 'civil war',
-    'normandy', 'pacific', 'vietnam', 'korea', 'doolittle', 'patton', 'macarthur', 'code talker'
+    'normandy', 'pacific', 'vietnam', 'korea', 'doolittle', 'patton', 'macarthur', 'code talker',
+    'modern warfare', 'call of duty', 'squad'
   ]
 };
 
 const BLACKLIST_TERMS = [
-  // Gaming
-  'gameplay', 'walkthrough', 'playthrough', 'battlefield 1', 'battlefield 5', 'battlefield v', 'battlefield 4',
-  'call of duty', 'cod', 'roblox', 'minecraft', 'war thunder', 'warthunder', 'world of tanks', 'hell let loose',
-  'enlisted', 'arma 3', 'post scriptum', 'squad 44',
-  'lego', 'brick', 'gamer', 'gaming', 'speedrun', 'mod ', 'vr gameplay', 'cutscene',
+  // Low-quality / amateur gaming junk to avoid (keep cinematic/no-HUD allowed)
+  'walkthrough', 'playthrough', 'let\'s play', 'lets play', 'part 1', 'part 2', 'part 3',
+  'roblox', 'minecraft', 'lego', 'gamer', 'speedrun', 'funny moments', 'glitch', 'streamer',
+  'live stream', 'twitch', 'vtuber', 'facecam', 'commentary',
   // Music & Songs
   'music video', 'official video', 'audio', 'remix', 'song', 'lyrics', 'cover', 'sabaton', 'album', 'soundtrack', 'ost',
   // Commentary, interviews, talking heads, modern, reactions
@@ -368,17 +371,44 @@ class CinematicVideoFetcher {
     // Filter strictly for FRESH candidates (never used in ANY video)
     let freshCandidates = candidates.filter(c => !usedIds.has(c.id) && this.isTitleRelevant(c.title, era));
 
-    // 2. If no fresh candidates found, try alternative broadened search queries
+    // 2. If no fresh candidates found, search era-matched cinematic reenactments & archival footage
     if (freshCandidates.length === 0) {
-      const altQueries = [
-        `${prefix} archival combat footage`,
-        `${prefix} battlefield rare action 1080p`,
-        `${prefix} military historical documentary footage`
-      ];
+      let altQueries = [];
+      if (era === 'world_war_1') {
+        altQueries = [
+          'Battlefield 1 no HUD cinematic trench combat 1080p',
+          'Battlefield 1 trench warfare cinematic battle',
+          'WW1 archival trench combat rare footage 1080p',
+          'WW1 battlefield reenactment combat 1080p'
+        ];
+      } else if (era === 'world_war_2') {
+        altQueries = [
+          'Battlefield V no HUD cinematic WW2 combat 1080p',
+          'Hell Let Loose cinematic WW2 combat no HUD 1080p',
+          'Call of Duty WWII campaign cinematic no HUD 1080p',
+          'WW2 rare color combat footage 1080p'
+        ];
+      } else if (era === 'american_civil_war') {
+        altQueries = [
+          'War of Rights cinematic battle no HUD 1080p',
+          'Holdfast Nations At War cinematic combat no HUD',
+          'Civil War reenactment combat 1080p'
+        ];
+      } else {
+        altQueries = [
+          'Call of Duty Modern Warfare cinematic combat no HUD',
+          'Call of Duty war combat cinematic no HUD 1080p',
+          `${prefix} archival combat footage 1080p`
+        ];
+      }
+
       for (const altQ of altQueries) {
         const altCandidates = await this.searchCandidates(altQ, 12);
         freshCandidates = altCandidates.filter(c => !usedIds.has(c.id) && this.isTitleRelevant(c.title, era));
-        if (freshCandidates.length > 0) break;
+        if (freshCandidates.length > 0) {
+          console.log(`   🎮 Found ${freshCandidates.length} high-definition cinematic reenactment candidates using: "${altQ}"`);
+          break;
+        }
       }
     }
 
