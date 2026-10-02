@@ -92,16 +92,32 @@ async function verifyVideoIntegrity(specificMetaPath = null) {
       { stdio: 'pipe' }
     );
 
-    const imgStats = await sharp(sampleJpg).stats();
+    // Extract ONLY the Video Window inside the Master Template:
+    // Video window is positioned at Y: 240 to 1020, X: 0 to 1080.
+    // Crop box: { left: 100, top: 280, width: 880, height: 680 } to strictly audit the actual video footage window!
+    const croppedBuffer = await sharp(sampleJpg)
+      .extract({ left: 100, top: 280, width: 880, height: 680 })
+      .toBuffer();
+
+    const imgStats = await sharp(croppedBuffer).stats();
     const rMean = imgStats.channels[0].mean;
     const gMean = imgStats.channels[1].mean;
     const bMean = imgStats.channels[2].mean;
+    const rStdev = imgStats.channels[0].stdev;
+    const gStdev = imgStats.channels[1].stdev;
+    const bStdev = imgStats.channels[2].stdev;
     const avgLuma = (0.299 * rMean + 0.587 * gMean + 0.114 * bMean);
+    const avgStdev = (rStdev + gStdev + bStdev) / 3;
 
-    console.log(`   ⏱️  Sample @ ${sec}s: Visual Luminance = ${avgLuma.toFixed(1)} (RGB: ${Math.round(rMean)}, ${Math.round(gMean)}, ${Math.round(bMean)})`);
+    console.log(`   ⏱️  Sample @ ${sec}s: Video Window Luminance = ${avgLuma.toFixed(1)}, Variance/Stdev = ${avgStdev.toFixed(1)} (RGB: ${Math.round(rMean)}, ${Math.round(gMean)}, ${Math.round(bMean)})`);
 
-    if (avgLuma < 8.0) {
-      console.warn(`   ⚠️ Frame at ${sec}s is excessively dark!`);
+    // Pitch-black defective frame detection:
+    // 1) Both extremely dark and zero texture (Luma < 10.0 && Stdev < 3.0)
+    // 2) Completely flat/solid blank canvas (Stdev < 2.0)
+    const isBlackOrBlank = (avgLuma < 10.0 && avgStdev < 3.0) || avgStdev < 2.0;
+
+    if (isBlackOrBlank) {
+      console.warn(`   ⚠️ WARNING: Video window at ${sec}s is pitch black or completely blank! (Luma: ${avgLuma.toFixed(1)}, Stdev: ${avgStdev.toFixed(1)})`);
       blackFrameCount++;
     }
   }
@@ -111,8 +127,8 @@ async function verifyVideoIntegrity(specificMetaPath = null) {
     fs.rmSync(tempDir, { recursive: true, force: true });
   } catch {}
 
-  if (blackFrameCount >= 3) {
-    throw new Error(`CRITICAL: ${blackFrameCount}/${samplePoints.length} sampled frames are PITCH BLACK. Video render failed! Aborting upload to prevent black-screen publication.`);
+  if (blackFrameCount >= 2) {
+    throw new Error(`CRITICAL INTEGRITY FAILURE: ${blackFrameCount}/${samplePoints.length} sampled frames have a PITCH BLACK or BLANK video window. Video footage missing! Aborting upload immediately to protect channel quality.`);
   }
 
   console.log('\n====================================================');
