@@ -63,6 +63,7 @@ build/
 *.mkv
 *.avi
 !assets/audio/dark_suspense.mp3
+!assets/vault/*.mp4
 
 # Image files (except examples)
 *.jpg
