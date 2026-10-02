@@ -10,6 +10,9 @@ on:
     - cron: '45 20 * * *'
     # Slot 4: USA National Evening Mega Prime Time (08:15 PM EDT / 00:15 UTC / 06:15 AM BST)
     - cron: '15 0 * * *'
+  push:
+    paths:
+      - '.trigger_topic'
   workflow_dispatch:
     inputs:
       topic:
@@ -69,9 +72,15 @@ jobs:
           YTDLP_PATH: yt-dlp
           CUSTOM_TOPIC: ${{ github.event.inputs.topic }}
         run: |
-          if [ -n "$CUSTOM_TOPIC" ]; then
-            echo "Generating full-bleed short with custom topic: $CUSTOM_TOPIC"
-            node scripts/generate-fullbleed-documentary-short.js "$CUSTOM_TOPIC"
+          TARGET_TOPIC="$CUSTOM_TOPIC"
+          if [ -z "$TARGET_TOPIC" ] && [ -f .trigger_topic ]; then
+            TARGET_TOPIC=$(cat .trigger_topic | tr -d '\r\n')
+            echo "Target topic loaded from .trigger_topic: $TARGET_TOPIC"
+          fi
+
+          if [ -n "$TARGET_TOPIC" ]; then
+            echo "Generating full-bleed short with custom topic: $TARGET_TOPIC"
+            node scripts/generate-fullbleed-documentary-short.js "$TARGET_TOPIC"
           else
             echo "Generating full-bleed short with autonomous AI historical outlier topic"
             node scripts/generate-fullbleed-documentary-short.js
@@ -94,6 +103,7 @@ jobs:
         run: |
           git config --global user.name "HistoryUncut Bot"
           git config --global user.email "bot@historyuncut.internal"
-          git add data/upload_history.log data/used_clips_history.json || true
+          rm -f .trigger_topic || true
+          git add data/upload_history.log data/used_clips_history.json .trigger_topic || true
           git commit -m "Auto-update: Log published short & record used clips [skip ci]" || echo "No changes to commit"
           git push
