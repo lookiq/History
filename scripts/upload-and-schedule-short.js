@@ -61,6 +61,11 @@ async function uploadAndScheduleShort(specificMetaPath = null, delayHours = 2) {
   console.log(`📦 Video File: ${meta.videoPath} (${fileSizeMB} MB)`);
   console.log(`🎬 Title: ${meta.title}`);
 
+  // 2.5 Double-Lock Pre-Upload Visual Integrity Shield (Prevents any defective upload forever)
+  console.log('\n🛡️ Double-Lock Pre-Upload Visual Integrity Shield executing...');
+  const { verifyVideoIntegrity } = require('./verify-video-integrity');
+  await verifyVideoIntegrity(metaPath);
+
   // 3. Compute Schedule Time
   const now = new Date();
   const publishDate = new Date(now.getTime() + delayHours * 60 * 60 * 1000);

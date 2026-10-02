@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
@@ -292,14 +293,33 @@ class CinematicVideoFetcher {
           console.log(`   ✅ Curated Fallback ${i + 1}/${neededClips}: ${unusedCurated.title} [ID: ${unusedCurated.id}]`);
         } catch (fbErr) {
           console.error(`   ❌ Critical fallback error for clip ${i + 1}: ${fbErr.message}`);
-          if (subClips.length > 0) {
-            // Re-use an already downloaded valid historical clip with offset instead of a black screen!
-            console.log(`   🔄 Rescuing clip ${i + 1} using verified historical footage...`);
-            const prevClip = subClips[subClips.length - 1];
-            await execPromise(`ffmpeg -y -ss 0.5 -i "${prevClip}" -t ${clipDuration} -c:v libx264 -pix_fmt yuv420p "${clipOut}"`);
-            subClips.push(clipOut);
-          } else {
-            throw new Error(`CRITICAL: Failed to download initial historical footage (Cloud IP block or network failure): ${fbErr.message}`);
+          
+          // Tier 3: Local Offline Historical Vault!
+          // Bundled directly into the git repository so it's 100% immune to cloud datacenter IP blocks!
+          const localVaultDir = path.join(__dirname, '..', 'assets', 'vault');
+          let localRescued = false;
+          if (fsSync.existsSync(localVaultDir)) {
+            const vaultFiles = fsSync.readdirSync(localVaultDir).filter(f => f.endsWith('.mp4'));
+            if (vaultFiles.length > 0) {
+              const vaultFile = path.join(localVaultDir, vaultFiles[i % vaultFiles.length]);
+              const offset = (i * 2.2) % 6.0;
+              console.log(`   🏛️ Local Offline Vault Active: Rescuing clip ${i + 1} with "${path.basename(vaultFile)}" (offset ${offset.toFixed(1)}s)...`);
+              await execPromise(`ffmpeg -y -ss ${offset} -i "${vaultFile}" -t ${clipDuration} -vf "scale=1080:820:force_original_aspect_ratio=increase,crop=1080:820,setsar=1" -c:v libx264 -pix_fmt yuv420p "${clipOut}"`);
+              subClips.push(clipOut);
+              localRescued = true;
+            }
+          }
+
+          if (!localRescued) {
+            if (subClips.length > 0) {
+              // Re-use an already downloaded valid historical clip with offset instead of a black screen!
+              console.log(`   🔄 Rescuing clip ${i + 1} using verified historical footage...`);
+              const prevClip = subClips[subClips.length - 1];
+              await execPromise(`ffmpeg -y -ss 0.5 -i "${prevClip}" -t ${clipDuration} -c:v libx264 -pix_fmt yuv420p "${clipOut}"`);
+              subClips.push(clipOut);
+            } else {
+              throw new Error(`CRITICAL: Failed to download initial historical footage and local vault unavailable: ${fbErr.message}`);
+            }
           }
         }
       }
