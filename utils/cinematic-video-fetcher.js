@@ -216,7 +216,7 @@ class CinematicVideoFetcher {
   }
 
   async searchCandidates(cleanQuery, limit = 12) {
-    const searchCmd = `"${this.ytdlpPath}" --ignore-errors "ytsearch${limit}:${cleanQuery} 1080p footage" --print "%(id)s---%(title)s---%(duration)s"`;
+    const searchCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,ios,web" --force-ipv4 --no-check-certificates --geo-bypass --ignore-errors "ytsearch${limit}:${cleanQuery} 1080p footage" --print "%(id)s---%(title)s---%(duration)s"`;
     let candidates = [];
     try {
       let stdout = '';
@@ -292,10 +292,21 @@ class CinematicVideoFetcher {
           console.log(`   ✅ Curated Fallback ${i + 1}/${neededClips}: ${unusedCurated.title} [ID: ${unusedCurated.id}]`);
         } catch (fbErr) {
           console.error(`   ❌ Critical fallback error for clip ${i + 1}: ${fbErr.message}`);
-          await execPromise(`ffmpeg -y -f lavfi -i "color=c=0x0a0908:s=1080x820:d=${clipDuration}:r=30" -c:v libx264 -pix_fmt yuv420p "${clipOut}"`);
-          subClips.push(clipOut);
+          if (subClips.length > 0) {
+            // Re-use an already downloaded valid historical clip with offset instead of a black screen!
+            console.log(`   🔄 Rescuing clip ${i + 1} using verified historical footage...`);
+            const prevClip = subClips[subClips.length - 1];
+            await execPromise(`ffmpeg -y -ss 0.5 -i "${prevClip}" -t ${clipDuration} -c:v libx264 -pix_fmt yuv420p "${clipOut}"`);
+            subClips.push(clipOut);
+          } else {
+            throw new Error(`CRITICAL: Failed to download initial historical footage (Cloud IP block or network failure): ${fbErr.message}`);
+          }
         }
       }
+    }
+
+    if (subClips.length === 0) {
+      throw new Error(`CRITICAL: 0 valid historical video clips could be sourced. Aborting generation to prevent publishing black-screen content!`);
     }
 
     console.log(`🛡️  Applying Anti-Content ID transformations (1.04x speed shift + color grading + unsharp)...`);
@@ -370,7 +381,7 @@ class CinematicVideoFetcher {
         const startStr = this.formatTime(startSec);
         const endStr = this.formatTime(endSec);
 
-        const downloadCmd = `"${this.ytdlpPath}" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080]/best[height<=1080]/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${cand.id}"`;
+        const downloadCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,ios,web" --force-ipv4 --no-check-certificates --geo-bypass --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo[height<=720]/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${cand.id}"`;
 
         await execPromise(downloadCmd);
 
@@ -407,7 +418,7 @@ class CinematicVideoFetcher {
     const startStr = this.formatTime(startSec);
     const endStr = this.formatTime(endSec);
 
-    const downloadCmd = `"${this.ytdlpPath}" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080]/best[height<=1080]/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${curated.id}"`;
+    const downloadCmd = `"${this.ytdlpPath}" --extractor-args "youtube:player_client=android,ios,web" --force-ipv4 --no-check-certificates --geo-bypass --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" --download-sections "*${startStr}-${endStr}" -f "bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo[height<=720]/best" -o "${outputPath}" "https://www.youtube.com/watch?v=${curated.id}"`;
 
     await execPromise(downloadCmd);
     return outputPath;
