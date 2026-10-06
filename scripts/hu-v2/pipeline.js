@@ -118,9 +118,21 @@ async function main() {
     pillar: topic.pillar,
   }, null, 1));
 
-  // 8. Upload (reuse proven uploader; 0h = instant public)
-  console.log('📤 Uploading to YouTube...');
-  await execPromise(`node "${path.join(ROOT, 'scripts', 'upload-and-schedule-short.js')}" "${metaPath}" "0"`, { maxBuffer: 50 * 1024 * 1024 });
+  // 8. Telegram delivery (primary — Md reviews & uploads manually)
+  const { deliver } = require('./telegram');
+  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id });
+
+  // 9. YouTube auto-upload (best effort — skipped/failed silently if token expired)
+  if (process.env.YOUTUBE_REFRESH_TOKEN) {
+    console.log('📤 Uploading to YouTube...');
+    try {
+      await execPromise(`node "${path.join(ROOT, 'scripts', 'upload-and-schedule-short.js')}" "${metaPath}" "0"`, { maxBuffer: 50 * 1024 * 1024 });
+    } catch (e) {
+      console.log('   ⚠️ YouTube upload failed (token may be expired) — video delivered via Telegram instead');
+    }
+  } else {
+    console.log('   📤 YouTube upload skipped (no refresh token) — video delivered via Telegram');
+  }
 
   console.log(`\n🎉 DONE in ${Math.round((Date.now() - t0) / 1000)}s — "${meta.title}"`);
 }
