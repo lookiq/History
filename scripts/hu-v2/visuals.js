@@ -71,17 +71,20 @@ function downloadFile(url, dest, retries = 2) {
 async function archiveOrgClips(topic, nClips, clipSecs, workDir, usedArchives) {
   const out = [];
   const kw = topic.archive_query || 'world war ii combat';
+  // topic-specific first, then pillar-flavoured fallbacks — wider pool, fewer repeats
   const queries = [
     `${kw}`,
-    'world war ii combat infantry',
-    'us marines pacific war',
+    `${kw} newsreel`,
+    topic.pillar === 'hero' ? 'world war ii combat infantry' : `${kw} archive`,
+    'us army combat film world war ii',
+    'world war ii battlefield archive footage',
   ];
   const seenIds = [];
   for (const q of queries) {
     if (out.length >= nClips) break;
     try {
       const sq = encodeURIComponent(`(${q}) AND mediatype:movies AND (collection:prelinger OR collection:us_national_archives OR collection:wwii_archive OR collection:united_newsreels)`);
-      const data = await fetchJson(`https://archive.org/advancedsearch.php?q=${sq}&fl[]=identifier&fl[]=title&rows=10&output=json`);
+      const data = await fetchJson(`https://archive.org/advancedsearch.php?q=${sq}&fl[]=identifier&fl[]=title&rows=25&output=json&sort[]=downloads desc`);
       const docs = (data.response && data.response.docs) || [];
       for (const doc of docs) {
         if (out.length >= nClips) break;
@@ -187,24 +190,30 @@ async function kenBurnsClips(topic, nClips, clipSecs, workDir, usedSet, startIdx
   return out;
 }
 
-/* ---------------- vault fallback (never fail) ---------------- */
+/* ---------------- vault fallback (never fail, never repeat recently) ---------------- */
 
-async function vaultClips(nClips, clipSecs, workDir, startIdx) {
+async function vaultClips(nClips, clipSecs, workDir, startIdx, usedVault) {
   const out = [];
   const vaultDir = path.join(ROOT, 'assets', 'vault');
   let vaultFiles = [];
   try { vaultFiles = fs.readdirSync(vaultDir).filter(f => f.endsWith('.mp4')).sort(); } catch {}
+  // prefer vault files not used in recent runs; fall back to least-recently-used
+  const fresh = vaultFiles.filter(f => !usedVault.has(f));
+  const pool = fresh.length ? fresh : vaultFiles;
   for (let i = 0; i < nClips; i++) {
     const clip = path.join(workDir, `vis_vault_${startIdx + i}.mp4`);
-    if (vaultFiles.length) {
-      const vf = vaultFiles[(startIdx + i) % vaultFiles.length];
+    if (pool.length) {
+      const vf = pool[(startIdx + i) % pool.length];
+      usedVault.add(vf);
       const vsrc = path.join(vaultDir, vf);
       let vdur = 12;
       try {
         const { stdout } = await execPromise(`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${vsrc}"`);
         vdur = parseFloat(stdout.trim()) || 12;
       } catch {}
-      const off = Math.min(5 + (((startIdx + i) * 37) % 90), Math.max(0, vdur - clipSecs - 0.5)).toFixed(1);
+      // random-ish offset per run so the same file yields different moments
+      const maxOff = Math.max(0, vdur - clipSecs - 0.5);
+      const off = (5 + ((Date.now() / 1000 + (startIdx + i) * 37) % Math.max(1, maxOff))).toFixed(1);
       await execPromise(`ffmpeg -y -v error -ss ${off} -i "${vsrc}" -t ${clipSecs} -vf "scale=1080:1350:force_original_aspect_ratio=increase,crop=1080:1350" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
     } else {
       // absolute last resort: generated slate (pipeline never dies)
@@ -221,6 +230,7 @@ async function buildVisuals(topic, nClips, clipSecs, workDir) {
   const state = loadState();
   const usedSet = new Set(state.usedImages || []);
   const usedArchives = new Set(state.usedArchives || []);
+  const usedVault = new Set(state.usedVault || []);
   const clips = [];
 
   console.log(`🎬 Visuals for [${topic.pillar}]: need ${nClips} clips`);
@@ -248,11 +258,12 @@ async function buildVisuals(topic, nClips, clipSecs, workDir) {
   const stillNeed = nClips - clips.length;
   if (stillNeed > 0) {
     console.log(`   → ${stillNeed} vault fallback clips`);
-    clips.push(...await vaultClips(stillNeed, clipSecs, workDir, clips.length));
+    clips.push(...await vaultClips(stillNeed, clipSecs, workDir, clips.length, usedVault));
   }
 
   state.usedImages = [...usedSet].slice(-600);
   state.usedArchives = [...usedArchives].slice(-200);
+  state.usedVault = [...usedVault].slice(-30);
   if (!state.usedTopics.includes(topic.id)) state.usedTopics.push(topic.id);
   saveState(state);
   console.log(`   ✅ ${clips.length}/${nClips} clips ready`);

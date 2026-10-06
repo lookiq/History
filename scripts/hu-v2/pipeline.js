@@ -18,6 +18,7 @@ const { buildVisuals } = require('./visuals');
 const { buildAss } = require('./captions');
 const { assemble } = require('./assemble');
 const { synthesize } = require('./voice');
+const { pickMusic, playlistFor } = require('./music');
 
 const VOICE = process.env.HU_VOICE || 'en-US-GuyNeural';
 const CLIP_SECS = 8;
@@ -118,21 +119,19 @@ async function main() {
     pillar: topic.pillar,
   }, null, 1));
 
-  // 8. Telegram delivery (primary — Md reviews & uploads manually)
+  // 8. Telegram delivery (primary — Md reviews & uploads manually from his phone)
+  //     Includes: video + title + description + music suggestion + playlist + thumbnail
   const { deliver } = require('./telegram');
-  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id });
+  const musicSalt = (loadState().usedTopics || []).length;
+  const music = pickMusic(topic.pillar, musicSalt);
+  const playlist = playlistFor(topic.pillar);
+  console.log(`   🎵 Music suggestion: ${music}`);
+  console.log(`   📋 Playlist: ${playlist}`);
+  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg });
 
-  // 9. YouTube auto-upload (best effort — skipped/failed silently if token expired)
-  if (process.env.YOUTUBE_REFRESH_TOKEN) {
-    console.log('📤 Uploading to YouTube...');
-    try {
-      await execPromise(`node "${path.join(ROOT, 'scripts', 'upload-and-schedule-short.js')}" "${metaPath}" "0"`, { maxBuffer: 50 * 1024 * 1024 });
-    } catch (e) {
-      console.log('   ⚠️ YouTube upload failed (token may be expired) — video delivered via Telegram instead');
-    }
-  } else {
-    console.log('   📤 YouTube upload skipped (no refresh token) — video delivered via Telegram');
-  }
+  // 9. YouTube auto-upload DISABLED by Md (2026-10-06) — he reviews on Telegram
+  //    and uploads manually from his phone with metadata + music + playlist.
+  console.log('   📤 YouTube auto-upload disabled — Telegram delivery is the final handoff');
 
   console.log(`\n🎉 DONE in ${Math.round((Date.now() - t0) / 1000)}s — "${meta.title}"`);
 }

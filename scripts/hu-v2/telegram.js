@@ -54,14 +54,25 @@ async function sendMessage(text) {
   chunks.push(t);
   for (const c of chunks) {
     const cmd = `curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" ` +
-      `--data-urlencode chat_id="${CHAT_ID}" --data-urlencode text="${c.replace(/"/g, "'")}"`;
+      `--data-urlencode chat_id="${CHAT_ID}" --data-urlencode parse_mode="Markdown" --data-urlencode text="${c.replace(/"/g, "'")}"`;
     const { stdout } = await execPromise(cmd);
     const res = JSON.parse(stdout);
     if (!res.ok) throw new Error('Telegram sendMessage failed: ' + stdout.slice(0, 200));
   }
 }
 
-async function deliver({ videoPath, title, description, topicId }) {
+async function sendPhoto(photoPath, caption) {
+  const cap = (caption || '').slice(0, 1000);
+  const cmd = `curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendPhoto" ` +
+    `-F chat_id="${CHAT_ID}" ` +
+    `-F caption="${cap.replace(/"/g, '')}" -F photo=@"${photoPath}"`;
+  const { stdout } = await execPromise(cmd, { maxBuffer: 5 * 1024 * 1024 });
+  const res = JSON.parse(stdout);
+  if (!res.ok) throw new Error('Telegram sendPhoto failed: ' + stdout.slice(0, 200));
+  return res.result.message_id;
+}
+
+async function deliver({ videoPath, title, description, topicId, music, playlist, thumbnailPath }) {
   if (!enabled()) {
     console.log('   📱 Telegram not configured — skipping');
     return false;
@@ -70,7 +81,17 @@ async function deliver({ videoPath, title, description, topicId }) {
   const sendPath = await fitForTelegram(videoPath);
   await sendVideo(sendPath, `🎬 ${title}`);
   if (sendPath !== videoPath) fs.unlink(sendPath, () => {}); // clean compressed copy
-  await sendMessage(`📝 *${title}*\n\n${description}`);
+  let msg = `📝 *${title}*\n\n${description}`;
+  if (music) msg += `\n\n🎵 *Music:* ${music}\n(YouTube Audio Library — add at upload time)`;
+  if (playlist) msg += `\n\n📋 *Playlist:* ${playlist}`;
+  await sendMessage(msg);
+  if (thumbnailPath && fs.existsSync(thumbnailPath)) {
+    try {
+      await sendPhoto(thumbnailPath, `🖼️ Thumbnail — ${title}`);
+    } catch (e) {
+      console.log('   ⚠️ thumbnail send failed: ' + e.message.slice(0, 80));
+    }
+  }
   console.log('   ✅ Telegram delivery done');
   return true;
 }
