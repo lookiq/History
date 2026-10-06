@@ -44,13 +44,13 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   const events = lines.map(line => {
     const start = line[0].s, end = line[line.length - 1].e + 0.15;
     let t = '', cursor = start;
-    for (const w of line) {
+    line.forEach((w, idx) => {
       const lead = Math.max(0, Math.round((w.s - cursor) * 100));
       const dur = Math.max(5, Math.round((w.e - w.s) * 100));
-      if (lead > 0) t += `{\\k${lead}} `;
+      if (idx > 0) t += `{\\k${lead}} `;
       t += `{\\k${dur}}${w.w}`;
       cursor = w.e;
-    }
+    });
     return `Dialogue: 0,${fmtTime(start)},${fmtTime(end)},Karaoke,,0,0,0,,${t}`;
   });
 

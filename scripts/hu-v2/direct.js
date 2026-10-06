@@ -267,7 +267,7 @@ async function main() {
   const playlist = playlistFor(topic.pillar);
   console.log(`   🎵 Music suggestion: ${music}`);
   console.log(`   📋 Playlist: ${playlist}`);
-  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg });
+  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg, batchLabel: process.env.HU_BATCH_LABEL || '' });
 
   console.log('   📤 YouTube auto-upload disabled — Telegram delivery is the final handoff');
   console.log(`\n🎉 DONE in ${Math.round((Date.now() - t0) / 1000)}s — "${meta.title}" ${scored ? '[AI-scored]' : '[heuristic]'}`);

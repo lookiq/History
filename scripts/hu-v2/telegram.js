@@ -72,14 +72,15 @@ async function sendPhoto(photoPath, caption) {
   return res.result.message_id;
 }
 
-async function deliver({ videoPath, title, description, topicId, music, playlist, thumbnailPath }) {
+async function deliver({ videoPath, title, description, topicId, music, playlist, thumbnailPath, batchLabel }) {
   if (!enabled()) {
     console.log('   📱 Telegram not configured — skipping');
     return false;
   }
   console.log('   📱 Sending video to Telegram...');
   const sendPath = await fitForTelegram(videoPath);
-  await sendVideo(sendPath, `🎬 ${title}`);
+  const label = batchLabel ? ` [${batchLabel}]` : '';
+  await sendVideo(sendPath, `🎬 ${title}${label}`);
   if (sendPath !== videoPath) fs.unlink(sendPath, () => {}); // clean compressed copy
   let msg = `📝 *${title}*\n\n${description}`;
   if (music) msg += `\n\n🎵 *Music:* ${music}\n(YouTube Audio Library — add at upload time)`;
