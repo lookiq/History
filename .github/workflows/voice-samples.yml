@@ -1,0 +1,28 @@
+name: Voice Samples
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: 'Sample text'
+        required: false
+        default: 'He captured one hundred thirty-two German soldiers. Alone. This is the story of Alvin York, the most decorated American hero of World War One.'
+jobs:
+  samples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install edge-tts
+      - run: |
+          mkdir -p samples
+          for v in en-US-ChristopherNeural en-US-EricNeural en-US-RogerNeural en-US-AndrewNeural; do
+            name=$(echo "$v" | cut -d'-' -f3 | tr '[:upper:]' '[:lower:]')
+            edge-tts --voice "$v" --text "${{ inputs.text }}" --write-media "samples/${name}.mp3"
+          done
+          ls -la samples/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice-samples
+          path: samples/*.mp3
