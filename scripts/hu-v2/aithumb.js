@@ -68,6 +68,12 @@ async function buildAiThumb(topic, hookWords, outPath) {
     const raw = outPath.replace(/\.jpg$/i, '_ai_raw.jpg');
     const ok = await download(url, raw);
     if (!ok) return null;
+    // Pollinations stamps a small corner watermark even with nologo=true —
+    // crop the bottom 70px where it always sits.
+    await execPromise(
+      `python3 -c "from PIL import Image; im=Image.open('${raw}'); w,h=im.size; im.crop((0,0,w,h-70)).save('${raw}')"`,
+      { timeout: 30000 }
+    );
     const hook = (hookWords || hookWordsFor(topic)).replace(/"/g, '');
     await execPromise(
       `python3 "${path.join(HU, 'aithumb_text.py')}" "${raw}" "${outPath}" "${hook}"`,
