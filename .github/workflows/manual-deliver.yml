@@ -1,0 +1,55 @@
+name: Manual Deliver to Telegram
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: 'Video path in repo (e.g. data/manual/alvin-york.mp4)'
+        required: true
+      title:
+        description: 'Video title'
+        required: true
+      description:
+        description: 'Full description (body + hashtags + tags)'
+        required: true
+      music:
+        description: 'Music suggestion'
+        required: false
+        default: ''
+      playlist:
+        description: 'Playlist name'
+        required: false
+        default: ''
+      thumbnail:
+        description: 'Thumbnail path in repo (optional)'
+        required: false
+        default: ''
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null 2>&1
+      - run: |
+          node -e "
+          const { deliver } = require('./scripts/hu-v2/telegram');
+          deliver({
+            videoPath: process.env.V_VIDEO,
+            title: process.env.V_TITLE,
+            description: process.env.V_DESC,
+            music: process.env.V_MUSIC || undefined,
+            playlist: process.env.V_PLAYLIST || undefined,
+            thumbnailPath: process.env.V_THUMB || undefined,
+          }).then(ok => { if (!ok) process.exit(1); });
+          "
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          V_VIDEO: ${{ inputs.video }}
+          V_TITLE: ${{ inputs.title }}
+          V_DESC: ${{ inputs.description }}
+          V_MUSIC: ${{ inputs.music }}
+          V_PLAYLIST: ${{ inputs.playlist }}
+          V_THUMB: ${{ inputs.thumbnail }}

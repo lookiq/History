@@ -85,18 +85,15 @@ async function main() {
   console.log(`🎬 Sourcing ${nClips} archive visuals...`);
   const clips = await buildVisuals(topic, nClips, CLIP_SECS, work);
 
-  // 3. Karaoke captions
+  // 3. Karaoke captions (master template style) + per-video context line
   const assPath = path.join(work, `caps_${stamp}.ass`);
-  const { lines } = buildAss(words, assPath);
-  console.log(`💬 Karaoke: ${lines} caption lines`);
+  const contextLine = topic.setup.split('. ')[0].trim().replace(/\.$/, '') + '.';
+  const { lines } = buildAss(words, assPath, totalSecs, contextLine);
+  console.log(`💬 Karaoke: ${lines} caption lines | context: "${contextLine}"`);
 
-  // 4. Branded panel
-  const panelPng = path.join(work, `panel_${stamp}.png`);
-  await execPromise(`python3 "${path.join(HU, 'panel.py')}" "${panelPng}"`);
-
-  // 5. Assemble composite
+  // 4. Assemble on the master template (header/video window/caption/CTA baked in)
   const outMp4 = path.join(work, `history_uncut_${topic.id}_${stamp}.mp4`);
-  await assemble({ clips, panelPng, assPath, voiceMp3, outPath: outMp4, totalSecs });
+  await assemble({ clips, assPath, voiceMp3, outPath: outMp4, totalSecs });
   console.log(`✅ Assembled: ${outMp4}`);
 
   // 6. Thumbnail (frame + bold hook text)

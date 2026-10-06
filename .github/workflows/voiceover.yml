@@ -1,0 +1,31 @@
+name: Voiceover
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: 'Full voiceover script text'
+        required: true
+      voice:
+        description: 'Edge TTS voice'
+        required: false
+        default: 'en-US-ChristopherNeural'
+jobs:
+  synth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install edge-tts
+      - run: |
+          printf '%s' "${{ inputs.text }}" > script.txt
+          python3 scripts/hu-v2/word_times.py script.txt "${{ inputs.voice }}" voiceover.mp3 words.json
+          ls -la voiceover.mp3 words.json
+          python3 -c "import json; w=json.load(open('words.json')); print('words:', len(w))"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voiceover
+          path: |
+            voiceover.mp3
+            words.json
