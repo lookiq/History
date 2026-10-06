@@ -4,12 +4,31 @@
  */
 const { exec } = require('child_process');
 const util = require('util');
+const fs = require('fs');
+const path = require('path');
 const execPromise = util.promisify(exec);
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const MAX_TG_BYTES = 45 * 1024 * 1024; // Bot API limit is 50MB — stay safely under
 
 function enabled() { return !!(TOKEN && CHAT_ID); }
+
+/** If video exceeds Telegram's limit, make a compressed copy (YouTube master untouched). */
+async function fitForTelegram(videoPath) {
+  const size = fs.statSync(videoPath).size;
+  if (size <= MAX_TG_BYTES) return videoPath;
+  console.log(`   📱 Video ${(size / 1048576).toFixed(0)}MB > 45MB — compressing copy for Telegram...`);
+  const out = videoPath.replace(/\.mp4$/, '_tg.mp4');
+  await execPromise(`ffmpeg -y -v error -i "${videoPath}" -c:v libx264 -preset veryfast -crf 28 -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart "${out}"`);
+  const s2 = fs.statSync(out).size;
+  console.log(`   📱 Compressed: ${(s2 / 1048576).toFixed(0)}MB`);
+  if (s2 > MAX_TG_BYTES) {
+    // still too big: drop to 720p
+    await execPromise(`ffmpeg -y -v error -i "${videoPath}" -vf "scale=720:1280" -c:v libx264 -preset veryfast -crf 30 -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart "${out}"`);
+  }
+  return out;
+}
 
 async function sendVideo(videoPath, caption) {
   const cap = caption.slice(0, 1000);
@@ -48,7 +67,9 @@ async function deliver({ videoPath, title, description, topicId }) {
     return false;
   }
   console.log('   📱 Sending video to Telegram...');
-  await sendVideo(videoPath, `🎬 ${title}`);
+  const sendPath = await fitForTelegram(videoPath);
+  await sendVideo(sendPath, `🎬 ${title}`);
+  if (sendPath !== videoPath) fs.unlink(sendPath, () => {}); // clean compressed copy
   await sendMessage(`📝 *${title}*\n\n${description}`);
   console.log('   ✅ Telegram delivery done');
   return true;
