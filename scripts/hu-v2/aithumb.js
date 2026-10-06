@@ -17,15 +17,15 @@ const execPromise = util.promisify(exec);
 const HU = __dirname;
 
 const PILLAR_MOOD = {
-  hero: 'lone soldier heroic battlefield moment',
-  bizarre: 'surreal strange historical scene',
-  deception: 'shadowy WWII espionage scene',
+  hero: 'lone heroic soldier on a dramatic battlefield, heroic war movie poster',
+  bizarre: 'surreal bizarre historical moment, dark cinematic movie poster',
+  deception: 'shadowy WWII spy espionage scene, cinematic thriller movie poster',
 };
 
 function buildPrompt(topic) {
   const fk = (topic.focus_keyword || topic.title.replace(/#shorts/i, '').trim()).slice(0, 80);
   const mood = PILLAR_MOOD[topic.pillar] || PILLAR_MOOD.hero;
-  return `epic cinematic vertical scene of ${fk}, ${mood}, dramatic lighting, high contrast, photorealistic, 9:16 vertical, no text, no words, no watermark`;
+  return `cinematic movie poster style vertical artwork of ${fk}, ${mood}, dramatic rim lighting, ultra detailed, sharp focus, rich colors, epic atmosphere, professional film poster quality, vertical 9:16 composition, no text, no words, no watermark, no blur, no screenshot`;
 }
 
 function thumbUrl(topic) {

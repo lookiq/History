@@ -70,7 +70,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: qc-frames-${{ github.run_id }}
-          path: data/hu_v2_work/qc_*.jpg
+          path: |
+            data/hu_v2_work/qc_*.jpg
+            data/hu_v2_work/thumb_*.jpg
           if-no-files-found: warn
           retention-days: 7
 

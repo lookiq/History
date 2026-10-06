@@ -72,23 +72,34 @@ async function sendPhoto(photoPath, caption) {
   return res.result.message_id;
 }
 
-async function deliver({ videoPath, title, description, topicId, music, playlist, thumbnailPath, batchLabel }) {
+/**
+ * Md's standing copy-paste format: every piece arrives as its own clean,
+ * separately-copyable block — title, description (body+hashtags+Tags),
+ * pinned comment, focus keyword, music, playlist, thumbnail.
+ */
+async function deliver({ videoPath, title, description, topicId, music, playlist,
+                         thumbnailPath, batchLabel, pinnedComment, focusKeyword }) {
   if (!enabled()) {
     console.log('   📱 Telegram not configured — skipping');
     return false;
   }
+  const label = batchLabel ? ` [${batchLabel}]` : '';
+  const code = (t) => '```\n' + String(t).replace(/```/g, "'''") + '\n```';
+
   console.log('   📱 Sending video to Telegram...');
   const sendPath = await fitForTelegram(videoPath);
-  const label = batchLabel ? ` [${batchLabel}]` : '';
-  await sendVideo(sendPath, `🎬 ${title}${label}`);
+  await sendVideo(sendPath, `${title}${label}`);
   if (sendPath !== videoPath) fs.unlink(sendPath, () => {}); // clean compressed copy
-  let msg = `📝 *${title}*\n\n${description}`;
-  if (music) msg += `\n\n🎵 *Music:* ${music}\n(YouTube Audio Library — add at upload time)`;
-  if (playlist) msg += `\n\n📋 *Playlist:* ${playlist}`;
-  await sendMessage(msg);
+
+  await sendMessage(`📋 *Title — tap to copy:*${label}\n${code(title)}`);
+  await sendMessage(`📝 *Description — tap to copy:*\n${code(description)}`);
+  if (pinnedComment) await sendMessage(`📌 *Pinned comment:*\n${pinnedComment}`);
+  if (focusKeyword) await sendMessage(`🎯 *Focus keyword:* ${focusKeyword}`);
+  if (music) await sendMessage(`🎵 *Music:*\n${music}\n_YouTube Audio Library — add at upload time_`);
+  if (playlist) await sendMessage(`🗂️ *Playlist:*\n${playlist}`);
   if (thumbnailPath && fs.existsSync(thumbnailPath)) {
     try {
-      await sendPhoto(thumbnailPath, `🖼️ Thumbnail — ${title}`);
+      await sendPhoto(thumbnailPath, `🖼️ Thumbnail${label}`);
     } catch (e) {
       console.log('   ⚠️ thumbnail send failed: ' + e.message.slice(0, 80));
     }

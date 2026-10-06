@@ -267,7 +267,7 @@ async function main() {
   const playlist = playlistFor(topic.pillar);
   console.log(`   🎵 Music suggestion: ${music}`);
   console.log(`   📋 Playlist: ${playlist}`);
-  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg, batchLabel: process.env.HU_BATCH_LABEL || '' });
+  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg, batchLabel: process.env.HU_BATCH_LABEL || '', pinnedComment: meta.pinnedComment, focusKeyword: meta.focusKeyword });
 
   // record in batch manifest for the end-of-batch schedule summary
   try {
