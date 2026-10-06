@@ -5,9 +5,10 @@
  *   Y 240..300  : context line (ASS Context style, per-video)
  *   Y 300..1020 : video window 1080x720 — montage fills the "red box"
  *   Y 1020..1440: caption area — gold laurels + karaoke (ASS Karaoke style)
- *   Y 1440..1580: CTA — subscribe pill — baked in template
+ *   Y 1440..1580: CTA — subscribe pill — baked in template, REVEALED ONLY IN LAST 5s
  *   Y 1580..1920: safe bottom — baked in template
  * No baked-in music (Md adds the suggested track at upload time).
+ * CTA rule (Md 2026-10-06): subscribe pill appears ONLY in the final 5 seconds.
  */
 const path = require('path');
 const { exec } = require('child_process');
@@ -19,6 +20,9 @@ const TEMPLATE = path.join(ROOT, 'assets', 'templates', 'master_history_uncut_te
 const FONTS_DIR = path.join(ROOT, 'assets', 'fonts');
 // video window ("red box" in Md's screenshot)
 const VW = { x: 0, y: 300, w: 1080, h: 720 };
+// CTA strip hidden until the last CTA_SECS seconds
+const CTA = { y: 1460, h: 120 };
+const CTA_SECS = 5;
 
 async function assemble({ clips, assPath, voiceMp3, outPath, totalSecs }) {
   const n = clips.length;
@@ -29,12 +33,15 @@ async function assemble({ clips, assPath, voiceMp3, outPath, totalSecs }) {
       `crop=${VW.w}:${VW.h},setsar=1,fps=30[v${i}];`;
   });
   fc += clips.map((_, i) => `[v${i}]`).join('') + `concat=n=${n}:v=1:a=0[vm];`;
-  // master template as base, montage into the video window
-  fc += `[${n}:v]format=yuv420p[base];`;
+  // template split: base (CTA painted out) + CTA strip (revealed at the end)
+  fc += `[${n}:v]split=2[tmplA][tmplB];`;
+  fc += `[tmplA]format=yuv420p,drawbox=x=0:y=${CTA.y}:w=1080:h=${CTA.h}:color=0x0d0b07:t=fill[base];`;
+  fc += `[tmplB]crop=1080:${CTA.h}:0:${CTA.y},format=yuv420p[cta];`;
   fc += `[base][vm]overlay=${VW.x}:${VW.y}[vvid];`;
-  // karaoke + context line
+  fc += `[vvid][cta]overlay=0:${CTA.y}:enable='gte(t,${totalSecs - CTA_SECS})'[vcta];`;
+  // karaoke + context line (context stays full duration; CTA pill appears only at end)
   const assEsc = assPath.replace(/'/g, "'\\\\''");
-  fc += `[vvid]ass='${assEsc}':fontsdir='${FONTS_DIR}'[vsub];`;
+  fc += `[vcta]ass='${assEsc}':fontsdir='${FONTS_DIR}'[vsub];`;
   // subtle cohesion: film grain + gentle vignette
   fc += `[vsub]noise=alls=5:allf=t,vignette=PI/7,format=yuv420p[vout]`;
 
