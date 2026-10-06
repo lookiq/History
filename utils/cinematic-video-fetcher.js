@@ -568,7 +568,32 @@ class CinematicVideoFetcher {
     }
 
     if (!candidateUrl) {
-      throw new Error(`Failed to find unused topic-specific historical visual for "${topic}"`);
+      // Tier 4 — Bundled Offline Vault Fallback (added 2026-10-06):
+      // Never kill the whole run when Commons/Wikipedia are exhausted for a
+      // topic. Rotate through the bundled offline vault clips instead.
+      console.warn(`   🏚️  Commons exhausted for "${topic}". Falling back to bundled offline vault...`);
+      const vaultDir = path.join(__dirname, '..', 'assets', 'vault');
+      let vaultFiles = [];
+      try {
+        vaultFiles = fsSync.readdirSync(vaultDir).filter(f => f.toLowerCase().endsWith('.mp4')).sort();
+      } catch (e) {
+        console.warn(`   🏚️  Vault unreadable: ${e.message}`);
+      }
+      if (vaultFiles.length === 0) {
+        throw new Error(`Failed to find unused topic-specific historical visual for "${topic}" (offline vault empty)`);
+      }
+      const freshVault = vaultFiles.filter(f => !this.sessionUsedIds.has('vault_' + f.replace(/[^a-z0-9]/gi, '_')));
+      const pool = freshVault.length > 0 ? freshVault : vaultFiles; // rotate if all used this session
+      const pickFile = pool[seedIndex % pool.length];
+      const pickId = 'vault_' + pickFile.replace(/[^a-z0-9]/gi, '_');
+      const offsetSec = 5 + ((seedIndex * 37) % 120); // vary segment so repeats don't look identical
+      const vaultSrc = path.join(vaultDir, pickFile);
+      const cutCmd = `ffmpeg -y -ss ${offsetSec} -i "${vaultSrc}" -t ${duration} -c:v libx264 -preset veryfast -crf 18 -pix_fmt yuv420p -an "${outputPath}"`;
+      await execPromise(cutCmd);
+      this.sessionUsedIds.add(pickId);
+      await recordUsedClip(pickId, `Offline Vault: ${pickFile}`, context);
+      console.log(`   ✅ Vault fallback clip: "${pickFile}" [ID: ${pickId}]`);
+      return { path: outputPath, videoId: pickId, title: `Offline Vault: ${pickFile}` };
     }
 
     const tempImg = path.join(this.tempDir, `wiki_hist_${Date.now()}_${seedIndex}.jpg`);

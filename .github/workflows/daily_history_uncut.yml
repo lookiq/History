@@ -100,6 +100,10 @@ jobs:
           node scripts/upload-and-schedule-short.js "" "$SAFETY_HOURS"
 
       - name: Commit Upload History and State to Git
+        # Always clean up the trigger file, even when generation fails —
+        # otherwise a stale .trigger_topic traps every future run in the
+        # same failing topic loop (incident 2026-10-06).
+        if: always()
         run: |
           git config --global user.name "HistoryUncut Bot"
           git config --global user.email "bot@historyuncut.internal"
