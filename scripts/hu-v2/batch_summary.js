@@ -9,11 +9,12 @@ const path = require('path');
 const MANIFEST = process.env.HU_BATCH_MANIFEST ||
   path.join(__dirname, '..', '..', 'data', 'hu_v2_work', 'batch_manifest.json');
 
-// US-optimized slots, in Dhaka time (batch lands ~8:15 AM Dhaka)
+// US-optimized slots, expressed ONLY in Dhaka time (batch lands ~8:15 AM Dhaka).
+// Md copies these straight into YouTube's scheduler — no US conversion shown.
 const SLOTS = [
-  { when: 'আজ সন্ধ্যা ৬টা', us: '8 AM US Eastern — morning commute' },
-  { when: 'আজ রাত ১০টা', us: '12 PM US Eastern — lunch scroll' },
-  { when: 'কাল ভোর ৬টা', us: '8 PM US Eastern — prime evening' },
+  { when: 'আজ সন্ধ্যা ৬টা' },
+  { when: 'আজ রাত ১০টা' },
+  { when: 'কাল ভোর ৬টা' },
 ];
 
 async function main() {
@@ -30,7 +31,7 @@ async function main() {
     const slot = SLOTS[i] || SLOTS[SLOTS.length - 1];
     const tag = v.label ? `[${v.label}] ` : '';
     lines.push(`*${tag}${v.title}*`);
-    lines.push(`→ 🕐 ${slot.when} _(${slot.us})_\n`);
+    lines.push(`→ 🕐 ${slot.when}\n`);
   });
   lines.push('_Tip: Shorts-এ schedule রাখলে algorithm প্রতিটাকে আলাদা push দেয়।_');
 
