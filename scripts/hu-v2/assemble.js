@@ -1,6 +1,6 @@
 /**
- * hu-v2 assemble — Four Chaplains composite, 720x1280:
- *   top 770px: Ken Burns montage | bottom 510px: branded panel + gold karaoke
+ * hu-v2 assemble — Four Chaplains composite (built at 720x1280, upscaled to 1080x1920):
+ *   top 60%: Ken Burns/archive montage | bottom 40%: branded panel + gold karaoke
  */
 const path = require('path');
 const fs = require('fs');
@@ -17,8 +17,8 @@ async function assemble({ clips, panelPng, assPath, voiceMp3, outPath, totalSecs
   });
   fc += clips.map((_, i) => `[v${i}]`).join('') + `concat=n=${n}:v=1:a=0[vm];`;
   fc += `[vm][${n}:v]vstack=inputs=2[vcat];`;
-  // subtitles -> film grain + vignette: glues archive footage & Ken Burns into one cinematic look
-  fc += `[vcat]subtitles='${assPath.replace(/'/g, "'\\\\''")}':fontsdir='${path.dirname(assPath).replace(/'/g, "'\\\\''")}',noise=alls=5:allf=t,vignette=PI/6[vout]`;
+  // subtitles -> film grain + vignette -> upscale to 1080x1920 (uploader requires full-bleed)
+  fc += `[vcat]subtitles='${assPath.replace(/'/g, "'\\\\''")}':fontsdir='${path.dirname(assPath).replace(/'/g, "'\\\\''")}',noise=alls=5:allf=t,vignette=PI/6,scale=1080:1920:flags=lanczos[vout]`;
 
   const cmd = `ffmpeg -y -v error ${inputs} -loop 1 -i "${panelPng}" -i "${voiceMp3}" ` +
     `-filter_complex "${fc}" -map "[vout]" -map "${n + 1}:a" ` +
