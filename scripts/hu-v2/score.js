@@ -196,18 +196,21 @@ async function scoreClipGemini(apiKey, model, frameB64, beats, clipId, nBeats) {
 
 async function main() {
   // probe mode: just verify provider + model selection, no scoring
+  // (mirrors main() fallback chain: Gemini -> Groq)
   if (process.argv[2] === '--probe') {
     try {
+      let ok = false;
       if (process.env.GEMINI_API_KEY) {
-        const m = await pickGeminiModel(process.env.GEMINI_API_KEY);
-        console.log(`PROBE OK — provider: gemini (${m})`);
-      } else if (process.env.GROQ_API_KEY) {
-        const m = await pickGroqVisionModel(process.env.GROQ_API_KEY);
-        console.log(`PROBE OK — provider: groq (${m})`);
-      } else {
-        console.log('PROBE FAIL — no keys set');
-        process.exit(1);
+        try {
+          const m = await pickGeminiModel(process.env.GEMINI_API_KEY);
+          console.log(`PROBE OK — provider: gemini (${m})`); ok = true;
+        } catch (e) { console.log('PROBE: gemini failed, trying groq...'); }
       }
+      if (!ok && process.env.GROQ_API_KEY) {
+        const m = await pickGroqVisionModel(process.env.GROQ_API_KEY);
+        console.log(`PROBE OK — provider: groq (${m})`); ok = true;
+      }
+      if (!ok) { console.log('PROBE FAIL — no usable provider'); process.exit(1); }
     } catch (e) {
       console.log('PROBE FAIL — ' + e.message.slice(0, 200));
       process.exit(1);
