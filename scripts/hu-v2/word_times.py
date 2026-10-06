@@ -8,16 +8,20 @@ async def main():
     out_mp3 = sys.argv[3]
     out_json = sys.argv[4]
     communicate = edge_tts.Communicate(text, voice)
-    words, audio_parts = [], []
+    words, audio_parts, seen_types = [], [], set()
     async for chunk in communicate.stream():
-        if chunk['type'] == 'WordBoundary':
+        t = chunk.get('type', '')
+        seen_types.add(t)
+        # edge-tts uses "WordsBoundary" (plural); accept any *oundary variant
+        if 'oundary' in t and 'offset' in chunk:
             words.append({
                 'w': chunk['text'],
                 's': round(chunk['offset'] / 1e7, 2),
                 'e': round((chunk['offset'] + chunk['duration']) / 1e7, 2),
             })
-        elif chunk['type'] == 'audio' and chunk.get('data'):
+        elif t == 'audio' and chunk.get('data'):
             audio_parts.append(chunk['data'])
+    print(f'chunk types seen: {sorted(seen_types)}', flush=True)
     with open(out_mp3, 'wb') as f:
         f.write(b''.join(audio_parts))
     json.dump(words, open(out_json, 'w'))

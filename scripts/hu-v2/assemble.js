@@ -17,7 +17,8 @@ async function assemble({ clips, panelPng, assPath, voiceMp3, outPath, totalSecs
   });
   fc += clips.map((_, i) => `[v${i}]`).join('') + `concat=n=${n}:v=1:a=0[vm];`;
   fc += `[vm][${n}:v]vstack=inputs=2[vcat];`;
-  fc += `[vcat]subtitles='${assPath.replace(/'/g, "'\\\\''")}':fontsdir='${path.dirname(assPath).replace(/'/g, "'\\\\''")}'[vout]`;
+  // subtitles -> film grain + vignette: glues archive footage & Ken Burns into one cinematic look
+  fc += `[vcat]subtitles='${assPath.replace(/'/g, "'\\\\''")}':fontsdir='${path.dirname(assPath).replace(/'/g, "'\\\\''")}',noise=alls=5:allf=t,vignette=PI/6[vout]`;
 
   const cmd = `ffmpeg -y -v error ${inputs} -loop 1 -i "${panelPng}" -i "${voiceMp3}" ` +
     `-filter_complex "${fc}" -map "[vout]" -map "${n + 1}:a" ` +
