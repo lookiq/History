@@ -96,10 +96,11 @@ async function main() {
   await assemble({ clips, assPath, voiceMp3, outPath: outMp4, totalSecs });
   console.log(`✅ Assembled: ${outMp4}`);
 
-  // 6. Thumbnail (frame + bold hook text)
+  // 6. Thumbnail — AI-generated first (Pollinations, free), frame fallback
   const thumbJpg = path.join(work, `thumb_${stamp}.jpg`);
-  const hookWords = topic.title.replace('#shorts', '').split(' ').filter(w => !['The', 'A'].includes(w)).slice(0, 3).join(' ').toUpperCase();
-  await execPromise(`python3 "${path.join(HU, 'thumb.py')}" "${outMp4}" "${thumbJpg}" "${hookWords}"`);
+  const hookWords = require('./aithumb').hookWordsFor(topic);
+  const { makeThumbnail } = require('./aithumb');
+  await makeThumbnail({ topic, mp4Path: outMp4, outPath: thumbJpg, hookWords });
 
   // 7. Meta for uploader
   const metaDir = path.join(ROOT, 'data', 'videos');

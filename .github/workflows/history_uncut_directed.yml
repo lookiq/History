@@ -1,0 +1,79 @@
+name: History Uncut — Directed Shorts (AI clip scoring)
+
+# $0/month autonomous pipeline with AI-directed visuals:
+# Groq vision (free) scores archive.org candidate clips against the story beats,
+# Gemini is used automatically if GEMINI_API_KEY is ever added.
+# Scoring failure -> heuristic fallback, the run never dies.
+# 3 runs/day. Telegram-only delivery (Md reviews & uploads manually).
+
+on:
+  schedule:
+    # 8 AM ET / 6 PM Dhaka — US morning commute
+    - cron: '0 12,16 * * *'
+    # 8 PM ET / 6 AM Dhaka — US prime evening
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-deliver:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          mkdir -p ~/.fonts
+          cp assets/fonts/*.ttf ~/.fonts/ 2>/dev/null || true
+          fc-cache -f ~/.fonts >/dev/null 2>&1 || true
+          fc-list | grep -i cinzel | head -2 || echo "cinzel check done"
+
+      - name: Install Python deps
+        run: |
+          python -m pip install -q --upgrade pip
+          pip install -q edge-tts pillow
+
+      - name: Install Node deps
+        run: npm install --production=false
+
+      - name: Build & deliver Short (AI-directed)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          HU_VOICE: en-US-ChristopherNeural
+        run: node scripts/hu-v2/direct.js
+
+      - name: Upload QC frames
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qc-frames-${{ github.run_id }}
+          path: data/hu_v2_work/qc_*.jpg
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Commit state
+        if: always()
+        run: |
+          git config user.name "HistoryUncut Bot"
+          git config user.email "bot@historyuncut.internal"
+          git add data/hu_v2_state.json data/videos/hu_v2_*.json || true
+          git commit -m "Auto-update: hu-v2 directed state [skip ci]" || echo "No changes"
+          git push || echo "Push failed (non-fatal)"

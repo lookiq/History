@@ -226,36 +226,38 @@ async function vaultClips(nClips, clipSecs, workDir, startIdx, usedVault) {
 
 /* ---------------- main entry ---------------- */
 
-async function buildVisuals(topic, nClips, clipSecs, workDir) {
+async function buildVisuals(topic, nClips, clipSecs, workDir, opts = {}) {
   const state = loadState();
   const usedSet = new Set(state.usedImages || []);
   const usedArchives = new Set(state.usedArchives || []);
   const usedVault = new Set(state.usedVault || []);
   const clips = [];
+  const candidateMode = !!opts.candidates;
+  const target = candidateMode ? (opts.candidates || 18) : nClips;
 
-  console.log(`🎬 Visuals for [${topic.pillar}]: need ${nClips} clips`);
+  console.log(`🎬 Visuals for [${topic.pillar}]: need ${candidateMode ? target + ' candidates' : nClips + ' clips'}`);
 
-  // 1. Pillar strategy (max 3 archive.org clips: fewer big downloads = fewer 429s, faster runs)
+  // 1. Pillar strategy (candidates mode: more archive.org motion clips for AI scoring)
   if (topic.pillar === 'hero') {
-    const nV = Math.min(3, Math.max(2, Math.ceil(nClips * 0.4)));
-    console.log(`   → ${nV} archive.org motion clips + Ken Burns fill`);
+    const nV = candidateMode ? Math.min(6, target) : Math.min(3, Math.max(2, Math.ceil(nClips * 0.4)));
+    console.log(`   → ${nV} archive.org motion clips${candidateMode ? ' (candidate pool)' : ' + Ken Burns fill'}`);
     try {
       clips.push(...await archiveOrgClips(topic, nV, clipSecs, workDir, usedArchives));
     } catch (e) { console.log(`   ⚠️ archive.org unavailable: ${e.message.slice(0, 80)}`); }
-  } else {
+  } else if (!candidateMode) {
     console.log(`   → Ken Burns stills (no real footage exists for this era)`);
   }
 
   // 2. Fill remaining with Ken Burns (each download guarded — never kill the run)
-  const need = nClips - clips.length;
+  const need = target - clips.length;
   if (need > 0) {
     try {
       clips.push(...await kenBurnsClips(topic, need, clipSecs, workDir, usedSet, clips.length));
     } catch (e) { console.log(`   ⚠️ Ken Burns failed: ${e.message.slice(0, 80)}`); }
   }
 
-  // 3. Vault fallback for anything still missing
-  const stillNeed = nClips - clips.length;
+  // 3. Vault fallback for anything still missing (candidates mode: only if pool is tiny)
+  const stillNeed = (candidateMode ? Math.max(0, 4 - clips.length) : nClips - clips.length);
   if (stillNeed > 0) {
     console.log(`   → ${stillNeed} vault fallback clips`);
     clips.push(...await vaultClips(stillNeed, clipSecs, workDir, clips.length, usedVault));
