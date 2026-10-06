@@ -75,10 +75,31 @@ async function sendPhoto(photoPath, caption) {
 /**
  * Md's standing copy-paste format: every piece arrives as its own clean,
  * separately-copyable block — title, description (body+hashtags+Tags),
- * pinned comment, focus keyword, music, playlist, thumbnail.
+ * pinned comment, focus keyword, music, playlist, thumbnail, upload checklist.
  */
+
+/**
+ * Generic upload checklist (mirrors the manual-delivery packs):
+ * title pasted exactly, one-block description, pinned comment, caption check,
+ * music-at-upload reminder, visibility settings, end-screen routine.
+ */
+function uploadChecklist({ title, music }) {
+  const lines = [
+    `Title pasted exactly: "${title}"`,
+    'Description + hashtags + tags pasted as one block',
+    'Pinned comment posted after upload',
+    'Captions verified on-device (gold karaoke syncs to voiceover)',
+  ];
+  if (music) lines.push(`Music added at upload: ${music} (NOT baked into the video)`);
+  lines.push(
+    'Visibility: Public | Audience: Not made for kids | Shorts remix: Allow',
+    'End screen / related Short pinned per channel routine'
+  );
+  return lines.map(l => '• ' + l).join('\n');
+}
+
 async function deliver({ videoPath, title, description, topicId, music, playlist,
-                         thumbnailPath, batchLabel, pinnedComment, focusKeyword }) {
+                         thumbnailPath, batchLabel, pinnedComment, focusKeyword, checklist }) {
   if (!enabled()) {
     console.log('   📱 Telegram not configured — skipping');
     return false;
@@ -104,8 +125,9 @@ async function deliver({ videoPath, title, description, topicId, music, playlist
       console.log('   ⚠️ thumbnail send failed: ' + e.message.slice(0, 80));
     }
   }
+  if (checklist) await sendMessage(`✅ *Upload checklist:*${label}\n${code(checklist)}`);
   console.log('   ✅ Telegram delivery done');
   return true;
 }
 
-module.exports = { deliver, enabled };
+module.exports = { deliver, enabled, uploadChecklist };

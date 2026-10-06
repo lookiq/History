@@ -261,13 +261,14 @@ async function main() {
   }, null, 1));
 
   // 9. Telegram delivery (primary — Md reviews & uploads manually from his phone)
-  const { deliver } = require('./telegram');
+  const { deliver, uploadChecklist } = require('./telegram');
   const musicSalt = (loadState().usedTopics || []).length;
   const music = pickMusic(topic.pillar, musicSalt);
   const playlist = playlistFor(topic.pillar);
+  const checklist = uploadChecklist({ title: meta.title, music });
   console.log(`   🎵 Music suggestion: ${music}`);
   console.log(`   📋 Playlist: ${playlist}`);
-  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg, batchLabel: process.env.HU_BATCH_LABEL || '', pinnedComment: meta.pinnedComment, focusKeyword: meta.focusKeyword });
+  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg, batchLabel: process.env.HU_BATCH_LABEL || '', pinnedComment: meta.pinnedComment, focusKeyword: meta.focusKeyword, checklist });
 
   // record in batch manifest for the end-of-batch schedule summary
   try {
