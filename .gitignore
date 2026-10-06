@@ -96,3 +96,7 @@ data/thumbnails/
 
 # Claude worktrees
 .claude/worktrees/
+
+# manual curated builds (delivered to Telegram)
+!data/manual/*.mp4
+!data/manual/*.jpg
