@@ -17,6 +17,7 @@ const { buildScript, buildMetadata } = require('./script');
 const { buildVisuals } = require('./visuals');
 const { buildAss } = require('./captions');
 const { assemble } = require('./assemble');
+const { synthesize } = require('./voice');
 
 const VOICE = process.env.HU_VOICE || 'en-US-GuyNeural';
 const CLIP_SECS = 8;
@@ -70,11 +71,10 @@ async function main() {
   const wordsJson = path.join(work, `words_${stamp}.json`);
   fs.writeFileSync(scriptTxt, script.text);
 
-  // 1. Voiceover (edge-tts, free unlimited)
+  // 1. Voiceover (edge-tts, free unlimited, with fallback voices)
   console.log('🎙️  Voiceover via edge-tts...');
-  await execPromise(`python3 "${path.join(HU, 'word_times.py')}" "${scriptTxt}" "${VOICE}" "${voiceMp3}" "${wordsJson}"`);
-  const words = loadJson(wordsJson);
-  if (!words.length) throw new Error('Voiceover produced no words');
+  const { words, voice } = await synthesize(script.text, VOICE, voiceMp3, wordsJson, scriptTxt);
+  console.log(`   🔊 Final voice: ${voice}`);
   const voiceDur = words[words.length - 1].e;
   const totalSecs = Math.ceil(voiceDur) + 2;
   console.log(`   🔊 Voice: ${voiceDur.toFixed(1)}s, total video: ${totalSecs}s`);

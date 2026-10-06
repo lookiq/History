@@ -47,6 +47,19 @@ jobs:
           python -m pip install -q --upgrade pip
           pip install -q edge-tts pillow
 
+      - name: Pre-flight TTS check
+        run: |
+          python3 -c "import edge_tts; print('edge-tts version:', edge_tts.__version__)"
+          python3 -c "
+          import asyncio, edge_tts
+          async def m():
+              vs = await edge_tts.list_voices()
+              us = [v['ShortName'] for v in vs if v['ShortName'].startswith('en-US-')]
+              print('en-US voices available:', len(us))
+              print('has GuyNeural:', 'en-US-GuyNeural' in us)
+          asyncio.run(m())
+          "
+
       - name: Install Node deps
         run: npm install --production=false
 
