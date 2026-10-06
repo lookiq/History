@@ -38,20 +38,31 @@ function fetchJson(url, timeout = 12000) {
   });
 }
 
-function downloadFile(url, dest) {
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function downloadFile(url, dest, retries = 2) {
   return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(dest);
-    const get = (u) => {
-      const req = https.get(u, { headers: { 'User-Agent': 'HistoryUncutBot/2.0' } }, res => {
-        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) return get(res.headers.location);
-        if (res.statusCode !== 200) { fs.unlink(dest, () => {}); return reject(new Error('HTTP ' + res.statusCode)); }
-        res.pipe(file);
-        file.on('finish', () => { file.close(); resolve(dest); });
-      });
-      req.setTimeout(60000, () => { req.destroy(); reject(new Error('dl timeout')); });
-      req.on('error', err => { fs.unlink(dest, () => {}); reject(err); });
+    const attempt = (n) => {
+      const file = fs.createWriteStream(dest);
+      const get = (u) => {
+        const req = https.get(u, { headers: { 'User-Agent': 'HistoryUncutBot/2.0' } }, res => {
+          if (res.statusCode === 429 && n < retries) {
+            // rate limited: back off and retry once
+            res.resume();
+            setTimeout(() => attempt(n + 1), 8000);
+            return;
+          }
+          if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) return get(res.headers.location);
+          if (res.statusCode !== 200) { fs.unlink(dest, () => {}); return reject(new Error('HTTP ' + res.statusCode)); }
+          res.pipe(file);
+          file.on('finish', () => { file.close(); resolve(dest); });
+        });
+        req.setTimeout(90000, () => { req.destroy(); reject(new Error('dl timeout')); });
+        req.on('error', err => { fs.unlink(dest, () => {}); reject(err); });
+      };
+      get(url);
     };
-    get(url);
+    attempt(0);
   });
 }
 
@@ -89,7 +100,13 @@ async function archiveOrgClips(topic, nClips, clipSecs, workDir, usedArchives) {
           const dlUrl = `https://archive.org/download/${id}/${encodeURIComponent(pick.name)}`;
           const tmp = path.join(workDir, `arch_${out.length}.mp4`);
           console.log(`   🎞️  archive.org: ${id} (${(pick.size / 1048576).toFixed(0)}MB)`);
-          await downloadFile(dlUrl, tmp);
+          if (out.length > 0) await sleep(3000); // be nice to archive.org
+          try {
+            await downloadFile(dlUrl, tmp);
+          } catch (e) {
+            console.log(`   ⚠️ archive dl skip ${id}: ${e.message.slice(0, 60)}`);
+            continue;
+          }
           // duration probe -> safe offset
           let dur = 600;
           try {
@@ -156,10 +173,15 @@ async function kenBurnsClips(topic, nClips, clipSecs, workDir, usedSet, startIdx
     const clip = path.join(workDir, `vis_kb_${startIdx + i}.mp4`);
     if (i < images.length) {
       const imgPath = path.join(workDir, `img_${startIdx + i}.jpg`);
-      await downloadFile(images[i].url, imgPath);
-      await kenBurns(imgPath, clip, clipSecs, startIdx + i);
-      fs.unlink(imgPath, () => {});
-      out.push(clip);
+      try {
+        await downloadFile(images[i].url, imgPath);
+        await kenBurns(imgPath, clip, clipSecs, startIdx + i);
+        out.push(clip);
+      } catch (e) {
+        console.log(`   ⚠️ kenburns skip: ${e.message.slice(0, 60)}`);
+      } finally {
+        fs.unlink(imgPath, () => {});
+      }
     }
   }
   return out;
@@ -203,18 +225,24 @@ async function buildVisuals(topic, nClips, clipSecs, workDir) {
 
   console.log(`🎬 Visuals for [${topic.pillar}]: need ${nClips} clips`);
 
-  // 1. Pillar strategy
+  // 1. Pillar strategy (max 3 archive.org clips: fewer big downloads = fewer 429s, faster runs)
   if (topic.pillar === 'hero') {
-    const nV = Math.max(2, Math.ceil(nClips * 0.6));
-    console.log(`   → ${nV} archive.org motion clips + ${nClips - nV} Ken Burns`);
-    clips.push(...await archiveOrgClips(topic, nV, clipSecs, workDir, usedArchives));
+    const nV = Math.min(3, Math.max(2, Math.ceil(nClips * 0.4)));
+    console.log(`   → ${nV} archive.org motion clips + Ken Burns fill`);
+    try {
+      clips.push(...await archiveOrgClips(topic, nV, clipSecs, workDir, usedArchives));
+    } catch (e) { console.log(`   ⚠️ archive.org unavailable: ${e.message.slice(0, 80)}`); }
   } else {
     console.log(`   → Ken Burns stills (no real footage exists for this era)`);
   }
 
-  // 2. Fill remaining with Ken Burns
+  // 2. Fill remaining with Ken Burns (each download guarded — never kill the run)
   const need = nClips - clips.length;
-  if (need > 0) clips.push(...await kenBurnsClips(topic, need, clipSecs, workDir, usedSet, clips.length));
+  if (need > 0) {
+    try {
+      clips.push(...await kenBurnsClips(topic, need, clipSecs, workDir, usedSet, clips.length));
+    } catch (e) { console.log(`   ⚠️ Ken Burns failed: ${e.message.slice(0, 80)}`); }
+  }
 
   // 3. Vault fallback for anything still missing
   const stillNeed = nClips - clips.length;
