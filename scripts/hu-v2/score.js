@@ -84,6 +84,7 @@ async function pickGroqVisionModel(apiKey) {
   const data = await getJson('https://api.groq.com/openai/v1/models',
     { Authorization: `Bearer ${apiKey}` });
   const ids = (data.data || []).map(m => m.id);
+  console.log(`   🔍 Groq models available (${ids.length}): ${ids.slice(0, 12).join(', ')}${ids.length > 12 ? '...' : ''}`);
   const pick = ids.find(id => /scout/i.test(id))
     || ids.find(id => /maverick/i.test(id))
     || ids.find(id => /vision/i.test(id))
@@ -194,6 +195,25 @@ async function scoreClipGemini(apiKey, model, frameB64, beats, clipId, nBeats) {
 }
 
 async function main() {
+  // probe mode: just verify provider + model selection, no scoring
+  if (process.argv[2] === '--probe') {
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        const m = await pickGeminiModel(process.env.GEMINI_API_KEY);
+        console.log(`PROBE OK — provider: gemini (${m})`);
+      } else if (process.env.GROQ_API_KEY) {
+        const m = await pickGroqVisionModel(process.env.GROQ_API_KEY);
+        console.log(`PROBE OK — provider: groq (${m})`);
+      } else {
+        console.log('PROBE FAIL — no keys set');
+        process.exit(1);
+      }
+    } catch (e) {
+      console.log('PROBE FAIL — ' + e.message.slice(0, 200));
+      process.exit(1);
+    }
+    return;
+  }
   const [framesDir, beatsPath, outPath] = process.argv.slice(2);
   if (!framesDir || !beatsPath || !outPath) {
     console.error('Usage: node score.js <framesDir> <beatsJson> <outJson>');
@@ -206,21 +226,27 @@ async function main() {
   if (!frames.length) throw new Error('no .jpg frames in ' + framesDir);
   console.log(`🔍 Scoring ${frames.length} clips against ${beats.length} beats...`);
 
-  // ---- provider selection ----
-  let provider, endpoint, headers, model, geminiKey, geminiModel;
+  // ---- provider selection: best available (Gemini -> Groq -> fail) ----
+  let provider = null, endpoint, headers, model, geminiKey, geminiModel;
   if (process.env.GEMINI_API_KEY) {
-    provider = 'gemini';
     geminiKey = process.env.GEMINI_API_KEY;
-    geminiModel = await pickGeminiModel(geminiKey);
-    console.log(`   🔍 provider: Gemini native (${geminiModel})`);
-  } else if (process.env.GROQ_API_KEY) {
+    try {
+      geminiModel = await pickGeminiModel(geminiKey);
+      provider = 'gemini';
+      console.log(`   🔍 provider: Gemini native (${geminiModel})`);
+    } catch (e) {
+      console.log(`   🔍 Gemini unavailable (${e.message.slice(0, 70)}) — trying Groq...`);
+    }
+  }
+  if (provider !== 'gemini' && process.env.GROQ_API_KEY) {
     provider = 'groq';
     endpoint = 'https://api.groq.com/openai/v1/chat/completions';
     headers = { Authorization: `Bearer ${process.env.GROQ_API_KEY}` };
     model = await pickGroqVisionModel(process.env.GROQ_API_KEY);
     console.log(`   🔍 provider: Groq (${model})`);
-  } else {
-    throw new Error('neither GEMINI_API_KEY nor GROQ_API_KEY is set');
+  }
+  if (!provider) {
+    throw new Error('neither GEMINI_API_KEY nor GROQ_API_KEY is usable');
   }
 
   // ---- score each clip (one request per clip) ----

@@ -1,0 +1,23 @@
+name: Score Probe (diagnostic)
+
+# Lightweight diagnostic: verifies AI scoring provider selection without
+# building a video. Dispatch manually when scoring falls back unexpectedly.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Probe scoring provider
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/hu-v2/score.js --probe
