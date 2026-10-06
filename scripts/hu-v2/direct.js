@@ -269,6 +269,15 @@ async function main() {
   console.log(`   📋 Playlist: ${playlist}`);
   await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg, batchLabel: process.env.HU_BATCH_LABEL || '' });
 
+  // record in batch manifest for the end-of-batch schedule summary
+  try {
+    const manPath = process.env.HU_BATCH_MANIFEST || 'data/hu_v2_work/batch_manifest.json';
+    let man = [];
+    try { man = JSON.parse(fs.readFileSync(manPath, 'utf8')); } catch (e) {}
+    man.push({ label: process.env.HU_BATCH_LABEL || '', title: meta.title, topicId: topic.id });
+    fs.writeFileSync(manPath, JSON.stringify(man, null, 1));
+  } catch (e) { console.log('   ⚠️ manifest write failed: ' + e.message.slice(0, 60)); }
+
   console.log('   📤 YouTube auto-upload disabled — Telegram delivery is the final handoff');
   console.log(`\n🎉 DONE in ${Math.round((Date.now() - t0) / 1000)}s — "${meta.title}" ${scored ? '[AI-scored]' : '[heuristic]'}`);
 }

@@ -58,10 +58,12 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           HU_VOICE: en-US-ChristopherNeural
         run: |
+          rm -f data/hu_v2_work/batch_manifest.json
           for i in 1 2 3; do
             echo "================================ Batch video $i/3 ================================"
             HU_BATCH_LABEL="$i/3" node scripts/hu-v2/direct.js || echo "⚠️ video $i failed — continuing batch"
           done
+          node scripts/hu-v2/batch_summary.js || echo "⚠️ schedule summary failed (non-fatal)"
 
       - name: Upload QC frames
         if: always()
