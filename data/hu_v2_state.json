@@ -7,11 +7,19 @@
   "desmond-doss",
   "bat-bombs",
   "operation-mincemeat",
-  "alvin-york"
+  "alvin-york",
+  "dancing-plague"
  ],
  "usedArchives": [
   "Conquerb1943",
   "202430_The_Chemical_Biological_and_Radiological_Element",
   "202648_Stallings_Collection_001495"
+ ],
+ "usedVault": [
+  "american_war_cannon_artillery.mp4",
+  "ww1_trench_artillery.mp4",
+  "ww2_battlefield_formations.mp4",
+  "ww2_infantry_action.mp4",
+  "ww2_tanks_kursk.mp4"
  ]
 }
