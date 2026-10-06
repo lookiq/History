@@ -21,18 +21,33 @@ function buildScript(topic) {
 }
 
 function buildMetadata(topic, script) {
-  const keywords = topic.title.replace('#shorts', '').trim();
-  return {
-    title: topic.title,
-    description:
-`${script.text.split('. ').slice(0, 2).join('. ')}.
+  // VidIQ-style SEO: focus keyword in first 25 words, natural 2-4x density,
+  // 3 hashtags (visible above title), specific->broad tag ladder.
+  const fk = topic.focus_keyword || topic.title.replace(/#shorts/i, '').trim();
+  const rel = topic.seo_keywords || [];
+  const hts = topic.seo_hashtags || ['#history', '#shorts', '#thehistoryuncut'];
+  const pillarWord = topic.pillar === 'hero' ? 'war heroes'
+    : topic.pillar === 'bizarre' ? 'bizarre true stories' : 'daring deceptions';
+
+  const k1 = rel[0] ? ` This is the untold true story of ${fk} — ${rel[0]} like you've never heard it.` : '';
+  const k2 = rel[1] ? ` From ${rel[1]} to the shocking ending, this is ${pillarWord} history tried to forget.` : '';
+
+  const description =
+`${fk} — ${topic.hook}${k1}${k2}
 
 ${topic.question}
 
-#history #shorts #thehistoryuncut #historyfacts
+${CTA}
 
-Tags: ${keywords}, history shorts, the history uncut, shocking history, untold history, war stories, viral history, history facts, documentary shorts`,
+${hts.slice(0, 3).join(' ')}
+
+Tags: ${fk.toLowerCase()}, ${rel.slice(0, 6).join(', ')}, history shorts, the history uncut, shocking history, untold history, ${pillarWord}, viral history, history facts`;
+
+  return {
+    title: topic.title,
+    description,
     pinnedComment: `${topic.question} 👇`,
+    focusKeyword: fk,
   };
 }
 

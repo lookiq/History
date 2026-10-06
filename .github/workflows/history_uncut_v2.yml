@@ -70,7 +70,7 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          HU_VOICE: en-US-GuyNeural
+          HU_VOICE: en-US-ChristopherNeural
         run: node scripts/hu-v2/pipeline.js
 
       - name: Commit state

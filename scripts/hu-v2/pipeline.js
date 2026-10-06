@@ -20,7 +20,7 @@ const { assemble } = require('./assemble');
 const { synthesize } = require('./voice');
 const { pickMusic, playlistFor } = require('./music');
 
-const VOICE = process.env.HU_VOICE || 'en-US-GuyNeural';
+const VOICE = process.env.HU_VOICE || 'en-US-ChristopherNeural';
 const CLIP_SECS = 8;
 
 function loadJson(p) { return JSON.parse(fs.readFileSync(p, 'utf-8')); }
