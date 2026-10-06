@@ -1,0 +1,68 @@
+name: History Uncut v2 — Daily Shorts (Muse Pipeline)
+
+# $0/month autonomous pipeline: curated topics, edge-tts, PD archives only.
+# 3 runs/day. No LLM API, no ElevenLabs, no yt-dlp — nothing to expire.
+
+on:
+  schedule:
+    # 8 AM ET / 6 PM Dhaka — US morning commute
+    - cron: '0 12 * * *'
+    # 12 PM ET / 10 PM Dhaka — US lunch break
+    - cron: '0 16 * * *'
+    # 8 PM ET / 6 AM Dhaka — US prime evening
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          mkdir -p ~/.fonts
+          cp assets/fonts/*.ttf ~/.fonts/ 2>/dev/null || true
+          fc-cache -f ~/.fonts >/dev/null 2>&1 || true
+          fc-list | grep -i cinzel | head -2 || echo "cinzel check done"
+
+      - name: Install Python deps
+        run: |
+          python -m pip install -q --upgrade pip
+          pip install -q edge-tts pillow
+
+      - name: Install Node deps
+        run: npm install --production=false
+
+      - name: Build & publish Short
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          HU_VOICE: en-US-GuyNeural
+        run: node scripts/hu-v2/pipeline.js
+
+      - name: Commit state
+        if: always()
+        run: |
+          git config user.name "HistoryUncut Bot"
+          git config user.email "bot@historyuncut.internal"
+          git add data/hu_v2_state.json data/videos/hu_v2_*.json || true
+          git commit -m "Auto-update: hu-v2 state [skip ci]" || echo "No changes"
+          git push || echo "Push failed (non-fatal)"

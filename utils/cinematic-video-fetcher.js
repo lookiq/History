@@ -586,8 +586,13 @@ class CinematicVideoFetcher {
       const pool = freshVault.length > 0 ? freshVault : vaultFiles; // rotate if all used this session
       const pickFile = pool[seedIndex % pool.length];
       const pickId = 'vault_' + pickFile.replace(/[^a-z0-9]/gi, '_');
-      const offsetSec = 5 + ((seedIndex * 37) % 120); // vary segment so repeats don't look identical
       const vaultSrc = path.join(vaultDir, pickFile);
+      let vdur = 12;
+      try {
+        const { stdout } = await execPromise(`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${vaultSrc}"`);
+        vdur = parseFloat(stdout.trim()) || 12;
+      } catch {}
+      const offsetSec = Math.min(5 + ((seedIndex * 37) % 120), Math.max(0, vdur - duration - 0.5)).toFixed(1);
       const cutCmd = `ffmpeg -y -ss ${offsetSec} -i "${vaultSrc}" -t ${duration} -c:v libx264 -preset veryfast -crf 18 -pix_fmt yuv420p -an "${outputPath}"`;
       await execPromise(cutCmd);
       this.sessionUsedIds.add(pickId);

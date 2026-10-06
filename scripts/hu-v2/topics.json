@@ -1,0 +1,426 @@
+{
+ "version": "2026-10-06",
+ "count": 30,
+ "topics": [
+  {
+   "beats": [
+    "May 1945. Okinawa. On a cliff the soldiers called Hacksaw Ridge, his unit was cut down by Japanese fire. The Americans retreated, but Doss stayed behind. Alone.",
+    "For twelve hours, under constant enemy fire, he dragged wounded men to the cliff's edge and lowered them down, one by one, on a rope.",
+    "Each time he whispered the same prayer: Lord, let me get one more. By morning, seventy-five men were alive."
+   ],
+   "hook": "His comrades called him a coward. The Army tried to throw him out.",
+   "id": "desmond-doss",
+   "payoff": "President Truman awarded him the Medal of Honor, the first conscientious objector in history to receive it.",
+   "pillar": "hero",
+   "question": "Would you have the courage to walk into battle without a weapon?",
+   "setup": "Desmond Doss was a Seventh-day Adventist who believed taking a life was a sin. He joined the Army as a medic, but would not touch a weapon.",
+   "title": "The Medic Who Saved 75 Men Without a Gun #shorts"
+  },
+  {
+   "beats": [
+    "His patrol was ambushed by German machine guns. Nine Americans fell. York was suddenly the one in charge.",
+    "He picked off gunners one by one with his rifle, then charged a machine gun nest with only his pistol.",
+    "When it was over, six Germans were dead, and one hundred thirty-two had surrendered to a single man."
+   ],
+   "hook": "One man. A rifle. And one hundred thirty-two enemy soldiers surrendering.",
+   "id": "alvin-york",
+   "payoff": "He received the Medal of Honor and became the most famous American hero of World War One.",
+   "pillar": "hero",
+   "question": "What would you do if everyone around you fell?",
+   "setup": "Alvin York was a Tennessee farm boy who didn't want to fight. But on October 8, 1918, in the Meuse-Argonne forest, war gave him no choice.",
+   "title": "The Soldier Who Captured 132 Germans Alone #shorts"
+  },
+  {
+   "beats": [
+    "April 1945, Italy. Inouye charged three machine gun nests, destroying two with grenades and his Thompson.",
+    "A German grenade struck his right elbow and tore his arm apart. He pried the live grenade from his own dead hand and threw it.",
+    "Bleeding and one-armed, he kept leading his men until the ridge was taken. Then he finally let them treat him."
+   ],
+   "hook": "A grenade tore off his arm. He kept fighting anyway.",
+   "id": "daniel-inouye",
+   "payoff": "He received the Medal of Honor, then served fifty years as a United States Senator.",
+   "pillar": "hero",
+   "question": "How far would you go for a country that doubted you?",
+   "setup": "Daniel Inouye served in the 442nd Regiment, made of Japanese-American soldiers whose families were locked in internment camps back home.",
+   "title": "The Soldier Who Kept Fighting After Losing His Arm #shorts"
+  },
+  {
+   "beats": [
+    "He was shot, stabbed, and hit by grenade shrapnel again and again, but kept dragging wounded men to the helicopters.",
+    "At one point he was clubbed from behind and left for dead among the bodies.",
+    "When a doctor zipped him into a body bag, Benavidez spit in his face to prove he was alive."
+   ],
+   "hook": "Thirty-seven wounds. Six hours. And he refused to die.",
+   "id": "roy-benavidez",
+   "payoff": "He saved eight men that day and received the Medal of Honor. Doctors said no one should have survived those wounds.",
+   "pillar": "hero",
+   "question": "What keeps a man going when his body gives up?",
+   "setup": "On May 2, 1968, in Vietnam, Sergeant Roy Benavidez heard a patrol was trapped. He grabbed a knife, jumped on a helicopter, and flew straight into hell.",
+   "title": "The Soldier Who Refused to Die #shorts"
+  },
+  {
+   "beats": [
+    "When his gunners fell, Basilone ran between gun pits, carrying ammunition through enemy fire.",
+    "For two days and nights he fought, at one point holding a burning machine gun barrel with his bare hands.",
+    "When the sun rose, nearly forty enemy soldiers lay dead in front of his position. The line had held."
+   ],
+   "hook": "Three thousand Japanese attacked. One Marine held them back.",
+   "id": "john-basilone",
+   "payoff": "He received the Medal of Honor, then died on Iwo Jima two years later, earning the Navy Cross there too.",
+   "pillar": "hero",
+   "question": "Could you stand alone against an army?",
+   "setup": "October 1942, Guadalcanal. Sergeant John Basilone and his machine gun section faced a full Japanese regiment in the jungle dark.",
+   "title": "The Machine Gunner Who Held the Line Alone #shorts"
+  },
+  {
+   "beats": [
+    "Alone, Paige moved from gun to gun, firing each one until the Japanese overran that position.",
+    "He fought through the entire night, at one point engaging in hand-to-hand combat in the dark.",
+    "At dawn, reinforcements found him alive, surrounded by more than a hundred enemy dead."
+   ],
+   "hook": "His entire platoon was wiped out. He stayed anyway.",
+   "id": "mitchell-paige",
+   "payoff": "He received the Medal of Honor. His stand is still taught to Marines today.",
+   "pillar": "hero",
+   "question": "When everyone falls, do you run or do you fight?",
+   "setup": "October 26, 1942, Guadalcanal. Sergeant Mitchell Paige watched his machine gun platoon get destroyed around him in a massive Japanese assault.",
+   "title": "The Marine Who Held Off 2500 Japanese Soldiers #shorts"
+  },
+  {
+   "beats": [
+    "In May 1918, Germans raided his outpost in the Argonne. Johnson's rifle jammed. Then his grenades ran out.",
+    "Grabbing only his bolo knife, he charged into the raiding party, slashing and fighting in the dark.",
+    "He was wounded twenty-one times but saved his fellow soldier and drove the Germans off."
+   ],
+   "hook": "Armed with only a knife, he fought off twenty-four German soldiers.",
+   "id": "henry-johnson",
+   "payoff": "France gave him its highest honor on the spot. America took nearly a century, awarding him the Medal of Honor in 2015.",
+   "pillar": "hero",
+   "question": "Why did it take America ninety-seven years to honor him?",
+   "setup": "Henry Johnson was a Harlem Hellfighter in World War One, a Black regiment America barely wanted to acknowledge.",
+   "title": "The Hellfighter Who Fought 24 Germans With a Knife #shorts"
+  },
+  {
+   "beats": [
+    "He used no scope, only iron sights, so no glare would give him away. He packed snow in his mouth to hide his breath.",
+    "In temperatures cold enough to freeze skin in minutes, he waited motionless for hours, day after day.",
+    "The Soviets called him the White Death and sent an entire task force just to kill him. They failed."
+   ],
+   "hook": "Five hundred and five kills. In one hundred days. At minus forty degrees.",
+   "id": "simo-hayha",
+   "payoff": "He survived a bullet to the face and lived to ninety-six, never boasting about a single kill.",
+   "pillar": "hero",
+   "question": "What does it take to become a ghost the enemy fears?",
+   "setup": "Simo Hayha was a Finnish farmer who became the deadliest sniper in history during the Winter War against the Soviet Union.",
+   "title": "The Sniper With 505 Confirmed Kills #shorts"
+  },
+  {
+   "beats": [
+    "She smuggled Allied airmen across borders, organized parachute drops, and built a guerrilla army of seven thousand.",
+    "When the Gestapo closed in, she escaped through the Pyrenees on foot, then parachuted back into France to keep fighting.",
+    "She once killed an SS guard with her bare hands to keep him from raising the alarm."
+   ],
+   "hook": "The Gestapo put a five million franc bounty on her head. They never caught her.",
+   "id": "nancy-wake",
+   "payoff": "She became the most decorated servicewoman of the war, honored by France, Britain, America, and Australia.",
+   "pillar": "hero",
+   "question": "What would you risk to fight an occupation?",
+   "setup": "Nancy Wake was a New Zealand journalist living in France when the Nazis invaded. She joined the Resistance and became its most wanted woman.",
+   "title": "The White Mouse the Gestapo Could Never Catch #shorts"
+  },
+  {
+   "beats": [
+    "The photo made him instantly famous. The military pulled him home to sell war bonds as a hero.",
+    "But Hayes never wanted fame. He had watched his friends die on that mountain, and the guilt never left him.",
+    "He died alone ten years later, still haunted, while the photo lived on without him."
+   ],
+   "hook": "He helped raise the most famous flag in American history. Then America forgot him.",
+   "id": "ira-hayes-flag",
+   "payoff": "His story reminds us that heroes are human, and fame is not the same as healing.",
+   "pillar": "hero",
+   "question": "Is it fair to make a hero out of someone who never asked?",
+   "setup": "Ira Hayes was a Pima Indian Marine who fought on Iwo Jima in 1945 and was photographed raising the flag on Mount Suribachi.",
+   "title": "The Flag Raiser History Forgot #shorts"
+  },
+  {
+   "beats": [
+    "In World War Two, the US military actually built this. Tiny incendiary bombs were strapped to bats.",
+    "The plan: release the bats over Japan at dawn. They would hide in wooden buildings, then the bombs would go off.",
+    "In a test in 1943, the bats escaped, hid in the airfield's own buildings, and burned the entire test base down."
+   ],
+   "hook": "The US military once tried to bomb Japan with bats.",
+   "id": "bat-bombs",
+   "payoff": "The project was cancelled, but the bats had already proven the idea worked, just on the wrong target.",
+   "pillar": "bizarre",
+   "question": "What is the strangest weapon ever built?",
+   "setup": "It sounds like a joke, but Project X-Ray was a real American military program with real funding.",
+   "title": "The Plan to Bomb Japan With Bats #shorts"
+  },
+  {
+   "beats": [
+    "It started with one woman dancing in the street. Within a week, dozens had joined. Within a month, hundreds.",
+    "They could not stop. Day and night they danced, some collapsing, some dying of exhaustion and heart failure.",
+    "Doctors blamed bad blood and hot weather. The city even hired musicians, hoping people would dance it out. It made it worse."
+   ],
+   "hook": "In 1518, an entire city started dancing, and they could not stop.",
+   "id": "dancing-plague",
+   "payoff": "After months, it ended as mysteriously as it began. Historians still argue about what really caused it.",
+   "pillar": "bizarre",
+   "question": "What could make hundreds of people dance to death?",
+   "setup": "Strasbourg, France, July 1518. What began as one woman dancing became one of history's strangest mass events.",
+   "title": "The Plague That Made People Dance to Death #shorts"
+  },
+  {
+   "beats": [
+    "The steel tank, fifty feet tall, burst open. A wave of molasses fifteen feet high rushed through the streets.",
+    "It moved at thirty-five miles per hour, tearing buildings from their foundations and sweeping away everything.",
+    "Rescue took days. The sticky mess was so thick that horses, wagons, and people were trapped where they stood."
+   ],
+   "hook": "A fifteen-foot wave of molasses once destroyed a Boston neighborhood.",
+   "id": "molasses-flood",
+   "payoff": "Twenty-one people died. The company paid out millions, and Boston smelled of molasses for decades.",
+   "pillar": "bizarre",
+   "question": "What is the strangest disaster in history?",
+   "setup": "January 15, 1919, Boston. A massive storage tank holding two point three million gallons of molasses suddenly exploded.",
+   "title": "The Day Molasses Killed 21 People #shorts"
+  },
+  {
+   "beats": [
+    "Australia sent soldiers with machine guns to kill twenty thousand emus destroying wheat fields.",
+    "The emus scattered at the first shots, running in small groups too fast to target. The birds simply outmaneuvered the guns.",
+    "After weeks of failure, the military withdrew. The emus kept the fields."
+   ],
+   "hook": "In 1932, Australia declared war on birds, and lost.",
+   "id": "emu-war",
+   "payoff": "The commanding officer admitted the emus faced machine guns with the maneuverability of tanks, and won.",
+   "pillar": "bizarre",
+   "question": "Has any army ever lost this embarrassingly?",
+   "setup": "Western Australia, 1932. Twenty thousand emus were destroying crops, so the government sent in the military.",
+   "title": "The War Australia Lost to Birds #shorts"
+  },
+  {
+   "beats": [
+    "Pope Stephen the Sixth ordered the corpse dug up, dressed in papal robes, and put on trial.",
+    "A deacon stood beside the body to speak for it. The dead pope was found guilty.",
+    "They stripped the corpse, cut off its blessing fingers, and threw it in the river."
+   ],
+   "hook": "In the year 897, the Pope was put on trial. He was already dead.",
+   "id": "cadaver-synod",
+   "payoff": "The trial horrified even medieval Rome. Stephen was strangled in prison months later.",
+   "pillar": "bizarre",
+   "question": "What is the darkest trial in history?",
+   "setup": "Rome, 897. Politics had become so bitter that Pope Stephen the Sixth decided to prosecute his dead predecessor, Formosus.",
+   "title": "The Pope Who Was Tried as a Corpse #shorts"
+  },
+  {
+   "beats": [
+    "In 1618, Protestant nobles stormed Prague Castle and grabbed three Catholic officials.",
+    "They threw all three out of a high castle window, seventy feet above the ground.",
+    "Miraculously, all three survived, landing in a pile of manure. But the insult ignited the Thirty Years War, which killed eight million people."
+   ],
+   "hook": "Three men were thrown out a window, and eight million people died because of it.",
+   "id": "defenestration-prague",
+   "payoff": "It is called the Defenestration of Prague, and it started one of the deadliest wars Europe ever saw.",
+   "pillar": "bizarre",
+   "question": "Can one act of anger really change the world?",
+   "setup": "Prague, 1618. Religious tensions between Protestants and Catholics had reached the breaking point.",
+   "title": "The Window Throw That Started a War #shorts"
+  },
+  {
+   "beats": [
+    "A massive vat holding thousands of gallons of beer burst open inside the brewery.",
+    "The flood smashed through walls into the streets, collapsing homes in a poor London neighborhood.",
+    "People climbed on furniture to survive as beer surged through their houses."
+   ],
+   "hook": "In 1814, London drowned in beer.",
+   "id": "beer-flood",
+   "payoff": "Eight people died. At the inquest, the disaster was ruled an act of God.",
+   "pillar": "bizarre",
+   "question": "What is the strangest flood in history?",
+   "setup": "October 1814, London. A brewery vat ruptured, unleashing a tidal wave of porter beer.",
+   "title": "The Beer Tsunami That Killed 8 People #shorts"
+  },
+  {
+   "beats": [
+    "In 1184, dozens of German nobles gathered in a church for a royal meeting.",
+    "The floor of the hall suddenly collapsed under their weight.",
+    "They fell straight into the latrine pit below. Around sixty nobles drowned in excrement."
+   ],
+   "hook": "Sixty nobles once drowned in a pit of human waste.",
+   "id": "erfurt-latrine",
+   "payoff": "It is remembered as the Erfurt latrine disaster, the deadliest meeting in medieval history.",
+   "pillar": "bizarre",
+   "question": "What is the most embarrassing way to die in history?",
+   "setup": "Erfurt, Germany, 1184. King Henry's nobles assembled in a church hall, never imagining the floor had other plans.",
+   "title": "The Meeting Where 60 Nobles Drowned in Poop #shorts"
+  },
+  {
+   "beats": [
+    "The CIA spent millions surgically implanting a microphone and transmitter into a cat.",
+    "The plan: the cat would wander near Soviet targets and record conversations.",
+    "On its first real mission, the spy cat walked into the street and was immediately hit by a taxi."
+   ],
+   "hook": "The CIA once spent twenty million dollars on a spy cat.",
+   "id": "acoustic-kitty",
+   "payoff": "The project was abandoned. The cat's sacrifice is still one of the strangest chapters of the Cold War.",
+   "pillar": "bizarre",
+   "question": "What is the most absurd spy mission ever?",
+   "setup": "Cold War, 1960s. The CIA needed a silent listener, so they turned to the most innocent-looking agent possible.",
+   "title": "The CIA's 20 Million Dollar Spy Cat #shorts"
+  },
+  {
+   "beats": [
+    "It began in a Tanzanian school in 1962. A few girls started laughing and could not stop.",
+    "The laughter spread from student to student, then to whole villages.",
+    "Schools were forced to close. The epidemic lasted six months and affected a thousand people."
+   ],
+   "hook": "In 1962, laughter became contagious, and no one could stop it.",
+   "id": "tanganyika-laughter",
+   "payoff": "Doctors eventually called it mass hysteria, but nobody fully explained why it happened.",
+   "pillar": "bizarre",
+   "question": "Can an emotion really become a plague?",
+   "setup": "Tanganyika, 1962. What started as a joke in a classroom turned into one of medicine's strangest mysteries.",
+   "title": "The Laughter Epidemic That Shut Down Schools #shorts"
+  },
+  {
+   "beats": [
+    "British intelligence dressed a dead body as a Royal Marine officer named Major Martin.",
+    "They planted fake invasion plans in his briefcase, chained to his wrist, and floated him off the coast of Spain.",
+    "The Spanish found the body and shared the documents with German intelligence, who believed every word."
+   ],
+   "hook": "A dead man once tricked Hitler himself.",
+   "id": "operation-mincemeat",
+   "payoff": "Germany moved its armies to the wrong place, and the real invasion of Sicily succeeded. The man who never was changed the war.",
+   "pillar": "deception",
+   "question": "Is it right to use the dead to deceive the living?",
+   "setup": "1943. Britain needed Hitler to believe the Allies would invade Greece, not Sicily. So they invented a man who never existed.",
+   "title": "The Dead Man Who Fooled Hitler #shorts"
+  },
+  {
+   "beats": [
+    "The Allies created an entire fake army, complete with inflatable tanks, fake radio traffic, and dummy landing craft.",
+    "General Patton was put in charge of this ghost force, because the Germans respected and feared him most.",
+    "Double agents fed Berlin detailed reports of an army that existed only on paper and rubber."
+   ],
+   "hook": "The Allies built an entire army out of rubber, and Hitler believed it.",
+   "id": "operation-fortitude",
+   "payoff": "On D-Day, German reinforcements stayed away from Normandy, waiting for an attack that would never come.",
+   "pillar": "deception",
+   "question": "How do you hide the largest invasion in history?",
+   "setup": "1944. To protect the Normandy landings, the Allies had to convince Germany the attack would come at Calais instead.",
+   "title": "The Fake Army That Saved D-Day #shorts"
+  },
+  {
+   "beats": [
+    "Pujol fed the Germans a network of twenty-seven fake spies, all invented by him and his handler.",
+    "His reports were so convincing that Berlin paid him a fortune and awarded him the Iron Cross.",
+    "On D-Day, his fake reports kept German divisions frozen in place for the critical first hours."
+   ],
+   "hook": "He was awarded medals by both Hitler and the King of England.",
+   "id": "juan-pujol",
+   "payoff": "He received the Iron Cross from Germany and the Order of the British Empire, the only man decorated by both sides.",
+   "pillar": "deception",
+   "question": "What makes someone betray both sides and save millions?",
+   "setup": "Juan Pujol was a Spaniard the British first rejected as a spy. So he became a German agent instead, then secretly worked for Britain all along.",
+   "title": "The Double Agent Who Got Medals From Both Sides #shorts"
+  },
+  {
+   "beats": [
+    "In prison, Chapman offered the British a deal: release him, and he would spy on Germany for them.",
+    "The Germans trained him in sabotage and parachuted him into Britain, where he immediately turned double agent.",
+    "He fed Berlin fake sabotage reports so convincing that they awarded him the Iron Cross."
+   ],
+   "hook": "A criminal walked out of prison and into the most dangerous spy game of the war.",
+   "id": "eddie-chapman",
+   "payoff": "He remains the only Briton to receive the Iron Cross, and his deceptions saved countless Allied lives.",
+   "pillar": "deception",
+   "question": "Can a criminal become a hero?",
+   "setup": "Eddie Chapman was a safecracker in a British jail when World War Two gave him an extraordinary second chance.",
+   "title": "The Criminal Who Became Britain's Boldest Spy #shorts"
+  },
+  {
+   "beats": [
+    "Thirty-six separate deception plans ran at once, from fake armies to fake spies to fake radio chatter.",
+    "The goal was total confusion: make Germany defend everywhere, which meant defending nowhere.",
+    "Every German guess about D-Day was wrong, because every clue had been planted."
+   ],
+   "hook": "D-Day was protected by the biggest lie ever told.",
+   "id": "operation-bodyguard",
+   "payoff": "It worked. The invasion succeeded, and historians call it the most successful deception in military history.",
+   "pillar": "deception",
+   "question": "Is lying justified to save lives in war?",
+   "setup": "The Normandy invasion could only succeed if Germany was looking the wrong way. So the Allies built an entire false reality.",
+   "title": "The Lie That Protected D-Day #shorts"
+  },
+  {
+   "beats": [
+    "Montgomery's engineers built hundreds of dummy tanks from wood and canvas in the desert.",
+    "At night, they disguised the real tanks as harmless trucks, swapping the fakes and reals under cover of darkness.",
+    "When the battle began, Rommel's intelligence had counted the British armor completely wrong."
+   ],
+   "hook": "The British won a battle with tanks made of wood.",
+   "id": "operation-bertram",
+   "payoff": "El Alamein became the turning point of the North African war, won partly with stage props.",
+   "pillar": "deception",
+   "question": "When does a trick become a weapon?",
+   "setup": "1942, Egypt. Before the battle of El Alamein, the British decided to fight Rommel with illusions as well as guns.",
+   "title": "The Wooden Tanks That Won El Alamein #shorts"
+  },
+  {
+   "beats": [
+    "These young refugees were trained in interrogation at Camp Ritchie, Maryland.",
+    "Because they spoke perfect German and understood the culture, prisoners opened up to them in ways they never would to others.",
+    "They gathered more than half of all actionable intelligence in the European theater."
+   ],
+   "hook": "Refugees fleeing the Nazis became America's secret weapon against them.",
+   "id": "ritchie-boys",
+   "payoff": "Their work shortened the war. Many never spoke of it for decades.",
+   "pillar": "deception",
+   "question": "Who are the unsung heroes of intelligence?",
+   "setup": "Thousands of German Jews fled to America, then volunteered to go back to Europe as soldiers with a unique mission.",
+   "title": "The Refugees Who Outsmarted the Nazis #shorts"
+  },
+  {
+   "beats": [
+    "In 1943, Norwegian commandos parachuted onto a frozen plateau and skied to the heavily guarded plant.",
+    "They climbed a ravine the Germans thought unclimbable and slipped inside without firing a shot.",
+    "They destroyed the heavy water supply and escaped into the mountains on skis."
+   ],
+   "hook": "Nine skiers stopped Hitler from getting the atomic bomb.",
+   "id": "gunnerside",
+   "payoff": "The raid is considered the most successful sabotage of the entire war.",
+   "pillar": "deception",
+   "question": "How much can nine brave people change history?",
+   "setup": "Nazi Germany was racing to build an atomic bomb, and it needed heavy water from a plant in Telemark, Norway.",
+   "title": "The Skiers Who Stopped Hitler's Atomic Bomb #shorts"
+  },
+  {
+   "beats": [
+    "Popov was a wealthy playboy the Germans recruited as a spy. He immediately offered to work for the British too.",
+    "He lived a double life of luxury, feeding Berlin carefully crafted lies while reporting everything to London.",
+    "He even warned America about the Pearl Harbor attack, but his warning was not believed."
+   ],
+   "hook": "The real James Bond warned about Pearl Harbor, and nobody listened.",
+   "id": "dusko-popov",
+   "payoff": "His codename was Tricycle, and his true story is stranger than any spy novel.",
+   "pillar": "deception",
+   "question": "What happens when the truth is too unbelievable?",
+   "setup": "Dusko Popov was a Yugoslav playboy recruited by German intelligence, who secretly became one of Britain's most valuable double agents.",
+   "title": "The Real James Bond #shorts"
+  },
+  {
+   "beats": [
+    "The British found an actor named Clifton James who looked exactly like General Montgomery.",
+    "They sent him to North Africa and Gibraltar, letting German spies spot him far from England.",
+    "German intelligence concluded Montgomery was planning a southern attack, and moved forces to meet him."
+   ],
+   "hook": "A fake general fooled an entire army.",
+   "id": "operation-copperhead",
+   "payoff": "The double played his role so well that even Allied soldiers saluted him by mistake.",
+   "pillar": "deception",
+   "question": "Could you impersonate a famous general under enemy eyes?",
+   "setup": "1944. To hide the Normandy plans, Britain needed the Germans to believe Montgomery was somewhere he was not.",
+   "title": "The General's Double Who Fooled Rommel #shorts"
+  }
+ ]
+}
