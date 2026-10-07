@@ -8,9 +8,10 @@ name: History Uncut — Directed Shorts (AI clip scoring)
 
 on:
   schedule:
-    # 1 AM UTC = 7 AM Dhaka (low GitHub load window) — batch of 3 builds,
-    # done by ~8:15 AM Dhaka. Md batch-uploads & schedules on YouTube.
-    - cron: '0 1 * * *'
+    # 11:15 PM UTC = 5:15 AM Dhaka — batch of 3 builds (~75 min),
+    # done by ~6:30 AM Dhaka (Md's direction 2026-10-07: in hand by 6:30).
+    # Md batch-uploads & schedules on YouTube.
+    - cron: '15 23 * * *'
   workflow_dispatch:
 
 jobs:
