@@ -121,9 +121,12 @@ function pickWinners(scores, nBeats) {
 }
 
 async function trimSegment(clipPath, dur, outPath) {
+  // random offset per segment (Md 2026-10-07: always -ss 0 made repeats obvious)
+  const maxOff = Math.max(0, CLIP_SECS - dur);
+  const ss = (Math.random() * maxOff).toFixed(2);
   const loops = dur > CLIP_SECS ? `-stream_loop ${Math.ceil(dur / CLIP_SECS) + 1}` : '';
   await execPromise(
-    `ffmpeg -y -v error ${loops} -ss 0 -i "${clipPath}" -t ${dur.toFixed(2)} ` +
+    `ffmpeg -y -v error ${loops} -ss ${ss} -i "${clipPath}" -t ${dur.toFixed(2)} ` +
     `-c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${outPath}"`
   );
 }
@@ -161,13 +164,19 @@ async function scoredClips(topic, words, voiceDur, workDir) {
   const totalSecs = Math.ceil(voiceDur) + 2;
   const slack = totalSecs - parts.reduce((a, p) => a + p.dur, 0);
   parts[parts.length - 1].dur += Math.max(0, slack); // CTA absorbs the tail
-  let fi = 0;
+  let fi = 0, prevClipId = null;
   const segs = [];
   for (let i = 0; i < parts.length; i++) {
     const p = parts[i];
     let clipId;
     if (p.beatIdx >= 0 && winners[p.beatIdx]) clipId = winners[p.beatIdx];
-    else { clipId = fillers[fi % fillers.length]; fi++; }
+    else {
+      clipId = fillers[fi % fillers.length];
+      // never play the same clip twice in a row (Md 2026-10-07: repeats looked cheap)
+      if (clipId === prevClipId && fillers.length > 1) { fi++; clipId = fillers[fi % fillers.length]; }
+      fi++;
+    }
+    prevClipId = clipId;
     const seg = path.join(workDir, `seg_${i}_${p.name}.mp4`);
     await trimSegment(idOf[clipId], p.dur, seg);
     segs.push(seg);

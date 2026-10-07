@@ -118,7 +118,10 @@ async function archiveOrgClips(topic, nClips, clipSecs, workDir, usedArchives) {
           } catch {}
           const off = Math.max(0, Math.min(dur - clipSecs - 1, 10 + (out.length * 53) % Math.max(1, dur - clipSecs - 11))).toFixed(1);
           const clip = path.join(workDir, `vis_arch_${out.length}.mp4`);
-          await execPromise(`ffmpeg -y -v error -ss ${off} -i "${tmp}" -t ${clipSecs} -vf "scale=1080:1350:force_original_aspect_ratio=increase,crop=1080:1350,eq=contrast=1.05:saturation=1.04" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
+          // NOTE: keep NATIVE aspect ratio here — no portrait pre-crop (it chopped
+          // heads/action off landscape footage). assemble.js fits each clip into
+          // the video window with a blurred-fill background instead.
+          await execPromise(`ffmpeg -y -v error -ss ${off} -i "${tmp}" -t ${clipSecs} -vf "eq=contrast=1.05:saturation=1.04" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
           fs.unlink(tmp, () => {});
           usedArchives.add(id);
           seenIds.push(id);
@@ -214,7 +217,8 @@ async function vaultClips(nClips, clipSecs, workDir, startIdx, usedVault) {
       // random-ish offset per run so the same file yields different moments
       const maxOff = Math.max(0, vdur - clipSecs - 0.5);
       const off = (5 + ((Date.now() / 1000 + (startIdx + i) * 37) % Math.max(1, maxOff))).toFixed(1);
-      await execPromise(`ffmpeg -y -v error -ss ${off} -i "${vsrc}" -t ${clipSecs} -vf "scale=1080:1350:force_original_aspect_ratio=increase,crop=1080:1350" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
+      // NOTE: native aspect kept — assemble.js does fit + blurred-fill (no crop).
+      await execPromise(`ffmpeg -y -v error -ss ${off} -i "${vsrc}" -t ${clipSecs} -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
     } else {
       // absolute last resort: generated slate (pipeline never dies)
       await execPromise(`ffmpeg -y -v error -f lavfi -i "color=c=0x141419:s=1080x1350:d=${clipSecs}:r=30" -vf "noise=alls=7:allf=t" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);

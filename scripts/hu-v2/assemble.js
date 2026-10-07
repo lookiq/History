@@ -29,8 +29,15 @@ async function assemble({ clips, assPath, voiceMp3, outPath, totalSecs }) {
   const inputs = clips.map(c => `-i "${c}"`).join(' ');
   let fc = '';
   clips.forEach((_, i) => {
-    fc += `[${i}:v]scale=${VW.w}:${VW.h}:force_original_aspect_ratio=increase,` +
-      `crop=${VW.w}:${VW.h},setsar=1,fps=30[v${i}];`;
+    // Fit (never crop content): full frame scaled to fit the window, over a
+    // blurred fill of itself — Md 2026-10-07: the old center-crop chopped
+    // heads/action off archival footage ("crop hoyce vhul jaigai").
+    fc += `[${i}:v]split=2[bs${i}][fs${i}];` +
+      `[bs${i}]scale=${VW.w}:${VW.h}:force_original_aspect_ratio=increase,` +
+      `crop=${VW.w}:${VW.h},boxblur=20:3,setsar=1,fps=30[bg${i}];` +
+      `[fs${i}]scale=${VW.w}:${VW.h}:force_original_aspect_ratio=decrease,` +
+      `setsar=1,fps=30[fg${i}];` +
+      `[bg${i}][fg${i}]overlay=(W-w)/2:(H-h)/2[v${i}];`;
   });
   fc += clips.map((_, i) => `[v${i}]`).join('') + `concat=n=${n}:v=1:a=0[vm];`;
   // template split: base (CTA painted out) + CTA strip (revealed at the end)
