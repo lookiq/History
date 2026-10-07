@@ -1,0 +1,588 @@
+{
+  "count": 12,
+  "cta": "Subscribe to SciBytes — see you in the cosmos!",
+  "pillars": [
+    "mystery",
+    "origins",
+    "epic"
+  ],
+  "topics": [
+    {
+      "beats": [
+        "It flew seventy-two times. For three years, it scouted ahead for the Perseverance rover — the first aerial scout on another world.",
+        "And hidden under its solar panel — a tiny piece of fabric from the Wright brothers' first airplane.",
+        "Humanity's first flight rode along for the first flight on Mars."
+      ],
+      "focus_keyword": "Ingenuity helicopter",
+      "hook": "NASA sent a helicopter to Mars. Most engineers expected it to fail.",
+      "id": "ingenuity-helicopter",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA23720"
+        },
+        {
+          "beat": 1,
+          "nasa_id": "PIA24582"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA24043"
+        },
+        {
+          "beat": 3,
+          "nasa_id": "PIA24434"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA26482"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA26243"
+        }
+      ],
+      "payoff": "In January twenty twenty-four, a hard landing damaged a rotor blade. Seventy-two flights. Goodbye, little helicopter that could.",
+      "pillar": "epic",
+      "question": "If a test helicopter did all that — what should we fly next?",
+      "seo_hashtags": [
+        "#Mars",
+        "#Ingenuity",
+        "#NASA"
+      ],
+      "seo_keywords": [
+        "mars helicopter",
+        "NASA ingenuity",
+        "perseverance rover",
+        "wright brothers",
+        "first flight on mars",
+        "72 flights"
+      ],
+      "setup": "Mars' air is one percent as thick as Earth's. So they built Ingenuity — lighter than a bag of sugar — with blades spinning five times faster than any Earth helicopter. Just a test: five flights, thirty days.",
+      "sources": [
+        "https://mars.nasa.gov/technology/helicopter/"
+      ],
+      "title": "The Helicopter That Wasn't Supposed to Fly 🚁 #shorts"
+    },
+    {
+      "beats": [
+        "In twenty twelve, it became the first human-made object to enter interstellar space.",
+        "Now it's over fifteen billion miles away — its signal takes twenty-two hours just to reach us.",
+        "Its power is fading — within a decade, silence."
+      ],
+      "focus_keyword": "Voyager Golden Record",
+      "hook": "In nineteen seventy-seven, NASA launched a mixtape for aliens. It's still flying.",
+      "id": "voyager-golden-record",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA17464"
+        },
+        {
+          "beat": 1,
+          "nasa_id": "PIA21741"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA21741"
+        },
+        {
+          "beat": 3,
+          "nasa_id": "PIA23214"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA23645"
+        }
+      ],
+      "payoff": "But the record will drift for a billion years, outliving Earth itself.",
+      "pillar": "origins",
+      "question": "If aliens ever find it... what will they think of us?",
+      "seo_hashtags": [
+        "#Voyager",
+        "#GoldenRecord",
+        "#NASA"
+      ],
+      "seo_keywords": [
+        "voyager 1",
+        "golden record",
+        "carl sagan",
+        "interstellar space",
+        "alien message",
+        "pale blue dot"
+      ],
+      "setup": "Voyager One carries the Golden Record — a gold-plated disc with greetings in fifty-five languages, whale songs, ninety minutes of music from Mozart to Chuck Berry, and one hundred fifteen pictures of Earth. All picked by Carl Sagan's team.",
+      "sources": [
+        "https://science.nasa.gov/mission/voyager/voyager-1/"
+      ],
+      "title": "NASA Launched a Mixtape for Aliens 👽 #shorts"
+    },
+    {
+      "beats": [
+        "The landing is cancelled. Three astronauts squeeze into a lunar lander built for two — their only lifeboat.",
+        "Carbon dioxide is rising. Engineers build a fix from spare parts — plastic and duct tape. They call it the mailbox. It works.",
+        "Freezing, running on fumes, they swing around the Moon and aim for home — unsure their heat shield survived."
+      ],
+      "focus_keyword": "Apollo 13",
+      "hook": "\"Houston, we've had a problem\" — the call that turned a Moon mission into a fight for survival, two hundred thousand miles from Earth.",
+      "id": "apollo-13",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "as13-59-8500"
+        },
+        {
+          "beat": 1,
+          "nasa_id": "as13-59-8500"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "S70-35471"
+        },
+        {
+          "beat": 3,
+          "nasa_id": "as13-62-8929"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "S70-35638"
+        }
+      ],
+      "payoff": "April seventeenth. Splashdown in the Pacific. All three walk away. NASA calls it a successful failure.",
+      "pillar": "epic",
+      "question": "Could you stay calm with the whole world watching?",
+      "seo_hashtags": [
+        "#Apollo13",
+        "#NASA",
+        "#Space"
+      ],
+      "seo_keywords": [
+        "apollo 13 explosion",
+        "houston we have a problem",
+        "jim lovell",
+        "moon mission",
+        "NASA rescue",
+        "successful failure"
+      ],
+      "setup": "April nineteen seventy. Apollo Thirteen is racing to the Moon when an oxygen tank explodes, ripping open the service module.",
+      "sources": [
+        "https://www.nasa.gov/missions/apollo/apollo-13-the-successful-failure/"
+      ],
+      "title": "The Explosion That Almost Killed Three Astronauts 🚀 #shorts"
+    },
+    {
+      "beats": [
+        "Earth appears as a tiny blue speck, caught in a ray of scattered sunlight.",
+        "Carl Sagan fought for years to take this photo. NASA said it had no scientific value — and pointing near the Sun could damage the camera.",
+        "Minutes later, Voyager's cameras were switched off forever — saving power for interstellar space."
+      ],
+      "focus_keyword": "Pale Blue Dot",
+      "hook": "This is a photograph of everything you have ever known — smaller than a single pixel.",
+      "id": "pale-blue-dot",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA23645"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA00452"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA23645"
+        },
+        {
+          "beat": 1,
+          "nasa_id": "PIA17464"
+        }
+      ],
+      "payoff": "Sagan called it a pale blue dot — everyone you love, every war ever fought, on a mote of dust in a sunbeam.",
+      "pillar": "origins",
+      "question": "Does seeing this make our problems smaller — or more precious?",
+      "seo_hashtags": [
+        "#PaleBlueDot",
+        "#Voyager",
+        "#Space"
+      ],
+      "seo_keywords": [
+        "pale blue dot",
+        "voyager 1 earth photo",
+        "carl sagan",
+        "earth from space",
+        "6 billion km",
+        "cosmic perspective"
+      ],
+      "setup": "February fourteenth, nineteen ninety. Voyager One, six billion kilometers away, turns its camera home for one last picture.",
+      "sources": [
+        "https://www.nasa.gov/image-article/our-pale-blue-dot/"
+      ],
+      "title": "Everything You Know Fits in One Pixel 🌍 #shorts"
+    },
+    {
+      "beats": [
+        "In twenty twenty-one, it did it — plunging through the corona, the Sun's outer atmosphere, tasting particles and magnetic fields no spacecraft had ever touched.",
+        "It endures fourteen hundred degrees Celsius behind a carbon shield just eleven centimeters thick.",
+        "It keeps diving closer — nearly six and a half million kilometers from the surface — hunting why the corona burns hotter than the Sun itself, a sixty-year mystery."
+      ],
+      "focus_keyword": "Parker Solar Probe",
+      "hook": "NASA built a spacecraft to touch the Sun — and live.",
+      "id": "parker-solar-probe",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "KSC-20180810-PH_KLS01_0038"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "GSFC_20171208_Archive_e000790"
+        },
+        {
+          "beat": 3,
+          "nasa_id": "GSFC_20171208_Archive_e000790"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "KSC-20180810-PH_KLS01_0038"
+        }
+      ],
+      "payoff": "We live inside the Sun's atmosphere. Parker is exploring our own star from within.",
+      "pillar": "mystery",
+      "question": "What do you think is hiding inside the corona?",
+      "seo_hashtags": [
+        "#ParkerSolarProbe",
+        "#Sun",
+        "#NASA"
+      ],
+      "seo_keywords": [
+        "parker solar probe",
+        "touched the sun",
+        "solar corona",
+        "NASA sun mission",
+        "closest to the sun",
+        "space weather"
+      ],
+      "setup": "The Parker Solar Probe launched in twenty eighteen, on a mission once thought impossible: fly into the Sun's atmosphere.",
+      "sources": [
+        "https://science.nasa.gov/mission/parker-solar-probe/"
+      ],
+      "title": "The Spacecraft Touching the Sun ☀️ #shorts"
+    },
+    {
+      "beats": [
+        "It completes a full lap around the Sun before it finishes a single spin.",
+        "And it spins backwards. On Venus, the Sun rises in the west and sets in the east.",
+        "Its crushing carbon-dioxide air, ninety times Earth's pressure, and the Sun's tidal grip braked its spin over billions of years."
+      ],
+      "focus_keyword": "Venus day longer than year",
+      "hook": "On Venus, a single day outlasts an entire year — and the Sun rises backwards.",
+      "id": "venus-day-longer-than-year",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA00271"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA00008"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA00271"
+        }
+      ],
+      "payoff": "The strangest clock in the solar system — ticking on a world hot enough to melt lead.",
+      "pillar": "mystery",
+      "question": "Would you last a single day on Venus?",
+      "seo_hashtags": [
+        "#Venus",
+        "#SpaceFacts",
+        "#SolarSystem"
+      ],
+      "seo_keywords": [
+        "venus rotation",
+        "day longer than year",
+        "retrograde rotation",
+        "venus facts",
+        "solar system weird",
+        "space facts"
+      ],
+      "setup": "Venus, Earth's twisted twin, spins once every two hundred forty-three Earth days — yet circles the Sun in just two hundred twenty-five.",
+      "sources": [
+        "https://spacedaily.com/t-a-venusian-day-is-243-earth-days-long-longer-than-the-planets-entire-225-day-year-and-because-venus-rotates-backwards-the-sun-would-rise-in-the-west-and-set-in-the-east/"
+      ],
+      "title": "A Day Longer Than a Year 🪐 #shorts"
+    },
+    {
+      "beats": [
+        "Gravity squeezes atoms until electrons fuse with protons, leaving neutrons packed at the density of an atomic nucleus.",
+        "A teaspoon of it would weigh about a billion tons — a mountain, in a spoon.",
+        "Many spin hundreds of times per second, sweeping lighthouse beams of radiation across space as pulsars."
+      ],
+      "focus_keyword": "neutron star teaspoon",
+      "hook": "One teaspoon of this star outweighs every human on Earth — combined.",
+      "id": "neutron-star-teaspoon",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA23863"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "GSFC_20171208_Archive_e001097"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA23863"
+        }
+      ],
+      "payoff": "The densest matter in the universe — one step from collapsing into a black hole.",
+      "pillar": "mystery",
+      "question": "What would you do with a teaspoon of neutron star?",
+      "seo_hashtags": [
+        "#NeutronStar",
+        "#SpaceFacts",
+        "#Universe"
+      ],
+      "seo_keywords": [
+        "neutron star",
+        "billion tons teaspoon",
+        "densest matter",
+        "pulsar",
+        "supernova remnant",
+        "space facts"
+      ],
+      "setup": "A neutron star is what's left when a giant star dies — twice the Sun's mass crushed into a ball just twenty kilometers wide, the size of a city.",
+      "sources": [
+        "https://spacedaily.com/d-a-teaspoon-of-material-from-a-neutron-star-the-collapsed-remnant-of-a-massive-star-that-has-compressed-all-its-mass-into-a-sphere-the-size-of-a-small-city-would-weigh-approximately/"
+      ],
+      "title": "A Teaspoon Heavier Than Humanity ⚫ #shorts"
+    },
+    {
+      "beats": [
+        "It's a shield volcano six hundred kilometers wide — roughly the size of Arizona — built by runny lava flows.",
+        "Mars has no drifting tectonic plates, so lava kept erupting from one spot for billions of years, stacking ever higher.",
+        "Its base cliffs alone stand six kilometers tall — and the summit rises above most of the Martian sky."
+      ],
+      "focus_keyword": "Olympus Mons",
+      "hook": "The tallest mountain in the solar system makes Everest look like a hill.",
+      "id": "olympus-mons",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA10063"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA10020"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA10063"
+        }
+      ],
+      "payoff": "Low gravity built what Earth never could — a mountain too tall for our world to hold.",
+      "pillar": "epic",
+      "question": "Would you climb a volcano three times Everest?",
+      "seo_hashtags": [
+        "#OlympusMons",
+        "#Mars",
+        "#SpaceFacts"
+      ],
+      "seo_keywords": [
+        "olympus mons",
+        "tallest mountain solar system",
+        "mars volcano",
+        "taller than everest",
+        "mars facts",
+        "space facts"
+      ],
+      "setup": "Olympus Mons on Mars rises twenty-two kilometers high — nearly three times the height of Mount Everest.",
+      "sources": [
+        "https://www.jagranjosh.com/general-knowledge/which-is-the-tallest-mountain-in-the-solar-system-1820005699-1"
+      ],
+      "title": "Three Times Taller Than Everest 🏔️ #shorts"
+    },
+    {
+      "beats": [
+        "That hidden sea holds about twice the water of every ocean on Earth combined.",
+        "Jupiter's gravity kneads the moon, keeping the ocean liquid — and ice drips may carry nutrients down from above.",
+        "Water, chemistry, energy: the three ingredients of life. Europa has all three."
+      ],
+      "focus_keyword": "Europa hidden ocean",
+      "hook": "Under this moon's ice hides more water than all of Earth's oceans.",
+      "id": "europa-hidden-ocean",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "europa02-photoa-plumes1042x1042-160919"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA25694"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA26445"
+        }
+      ],
+      "payoff": "NASA's Europa Clipper is flying there now — arriving in twenty thirty to taste that hidden sea.",
+      "pillar": "origins",
+      "question": "If we find life beneath Europa's ice — what do we say to it?",
+      "seo_hashtags": [
+        "#Europa",
+        "#AlienLife",
+        "#NASA"
+      ],
+      "seo_keywords": [
+        "europa ocean",
+        "jupiter moon",
+        "alien life",
+        "europa clipper",
+        "subsurface ocean",
+        "astrobiology"
+      ],
+      "setup": "Europa, a moon of Jupiter, wears an ice shell fifteen kilometers thick. Beneath it — a global saltwater ocean.",
+      "sources": [
+        "https://www.gadgets360.com/science/news/europa-s-ice-drips-may-feed-its-hidden-ocean-with-life-supporting-nutrients-10877761"
+      ],
+      "title": "The Alien Ocean Hiding Under Ice 🌊 #shorts"
+    },
+    {
+      "beats": [
+        "So in twenty seventeen, NASA gave it a last mission: twenty-two daring dives between Saturn and its rings.",
+        "It threaded a gap no spacecraft had ever entered — tasting the atmosphere, weighing the rings from the inside.",
+        "Then, on September fifteenth, it plunged into Saturn's clouds, transmitting data until the final second."
+      ],
+      "focus_keyword": "Cassini Grand Finale",
+      "hook": "NASA deliberately crashed a billion-dollar spacecraft into Saturn — on purpose.",
+      "id": "cassini-grand-finale",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA22766"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA06193"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA17199"
+        }
+      ],
+      "payoff": "Cassini burned up like a shooting star — becoming part of the planet it revealed.",
+      "pillar": "epic",
+      "question": "Was it right to sacrifice Cassini to protect alien moons?",
+      "seo_hashtags": [
+        "#Cassini",
+        "#Saturn",
+        "#NASA"
+      ],
+      "seo_keywords": [
+        "cassini",
+        "grand finale",
+        "saturn mission",
+        "NASA crash",
+        "enceladus",
+        "space exploration"
+      ],
+      "setup": "After thirteen years at Saturn, Cassini was running out of fuel. An uncontrolled drift could contaminate moons that might harbor life.",
+      "sources": [
+        "https://www.space.com/39192-cassini-saturn-mission-grand-finale-2017.html"
+      ],
+      "title": "NASA Crashed It Into Saturn on Purpose 🪐 #shorts"
+    },
+    {
+      "beats": [
+        "At its heart lurks a monster — six and a half billion times the mass of our Sun.",
+        "The image shows no black hole itself — nothing escapes one — but its shadow, ringed by superheated gas bent around it by gravity.",
+        "That glowing ring matched predictions Einstein made a century earlier — almost exactly."
+      ],
+      "focus_keyword": "first black hole photo",
+      "hook": "In twenty nineteen, humanity photographed the unphotographable — a black hole, fifty-five million light-years away.",
+      "id": "black-hole-m87",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA23122"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA16695"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA25440"
+        }
+      ],
+      "payoff": "A blurry orange ring — the most important photograph in the history of astronomy.",
+      "pillar": "mystery",
+      "question": "What waits inside the shadow, where physics breaks?",
+      "seo_hashtags": [
+        "#BlackHole",
+        "#M87",
+        "#Space"
+      ],
+      "seo_keywords": [
+        "black hole photo",
+        "M87",
+        "event horizon telescope",
+        "2019",
+        "supermassive black hole",
+        "einstein"
+      ],
+      "setup": "The Event Horizon Telescope linked radio dishes across the planet into one Earth-sized eye, aimed at the galaxy Messier eighty-seven.",
+      "sources": [
+        "https://eventhorizontelescope.org/press-release-april-10-2019-astronomers-capture-first-image-black-hole"
+      ],
+      "title": "We Photographed the Unphotographable 🕳️ #shorts"
+    },
+    {
+      "beats": [
+        "That inferno tears methane molecules apart. The freed carbon atoms lock together — crystallizing into solid diamonds.",
+        "The diamonds sink through the planet's depths like rain, some growing to millions of carats over thousands of years.",
+        "Scientists fired lasers at plastic to recreate those pressures — and watched diamonds form in real time, confirming the theory."
+      ],
+      "focus_keyword": "diamond rain Neptune",
+      "hook": "Right now, on Neptune, it is raining diamonds.",
+      "id": "diamond-rain-neptune",
+      "nasa_assets": [
+        {
+          "beat": 0,
+          "nasa_id": "PIA01493"
+        },
+        {
+          "beat": 2,
+          "nasa_id": "PIA02210"
+        },
+        {
+          "beat": 4,
+          "nasa_id": "PIA01539"
+        }
+      ],
+      "payoff": "The most precious rainfall in the solar system — falling forever where no eyes will see it.",
+      "pillar": "mystery",
+      "question": "Would you dive into Neptune for a single diamond?",
+      "seo_hashtags": [
+        "#Neptune",
+        "#Diamonds",
+        "#SpaceFacts"
+      ],
+      "seo_keywords": [
+        "diamond rain",
+        "neptune",
+        "uranus",
+        "ice giants",
+        "methane",
+        "space facts"
+      ],
+      "setup": "Deep inside the ice giants Uranus and Neptune, pressures climb to millions of times Earth's atmosphere — and temperatures pass seven thousand degrees.",
+      "sources": [
+        "https://www.sci.news/space/it-rains-diamonds-ice-giant-planets-05149.html"
+      ],
+      "title": "It Rains Diamonds on Neptune 💎 #shorts"
+    }
+  ],
+  "version": 1
+}

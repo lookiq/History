@@ -1,6 +1,12 @@
 /**
  * hu-v2 telegram delivery — sends finished Short + metadata to Md's Telegram.
  * Uses curl multipart (no extra deps). Bot API 50MB file limit.
+ *
+ * Bot/chat resolution is parameterized: the dedicated SciBytes bot secrets
+ * (SCIBYTES_TELEGRAM_BOT_TOKEN / SCIBYTES_TELEGRAM_CHAT_ID) take precedence,
+ * falling back to the original TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID.
+ * hu-v2 workflows only set the original names, so History Uncut behavior is
+ * completely unchanged.
  */
 const { exec } = require('child_process');
 const util = require('util');
@@ -8,8 +14,8 @@ const fs = require('fs');
 const path = require('path');
 const execPromise = util.promisify(exec);
 
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const TOKEN = process.env.SCIBYTES_TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
+const CHAT_ID = process.env.SCIBYTES_TELEGRAM_CHAT_ID || process.env.TELEGRAM_CHAT_ID;
 const MAX_TG_BYTES = 45 * 1024 * 1024; // Bot API limit is 50MB — stay safely under
 
 function enabled() { return !!(TOKEN && CHAT_ID); }
@@ -126,7 +132,8 @@ function uploadChecklist({ title, music }) {
 }
 
 async function deliver({ videoPath, title, description, topicId, music, playlist,
-                         thumbnailPath, batchLabel, pinnedComment, focusKeyword, checklist }) {
+                         thumbnailPath, batchLabel, pinnedComment, focusKeyword, checklist,
+                         tags }) {
   if (!enabled()) {
     console.log('   📱 Telegram not configured — skipping');
     return false;
@@ -144,6 +151,7 @@ async function deliver({ videoPath, title, description, topicId, music, playlist
 
   await withRetry(() => sendMessage(`📋 *Title — tap to copy:*${label}\n${code(title)}`), 'title message');
   await withRetry(() => sendMessage(`📝 *Description — tap to copy:*\n${code(description)}`), 'description message');
+  if (tags) await withRetry(() => sendMessage(`🏷️ *Tags — tap to copy:*\n${code(tags)}`), 'tags message');
   if (pinnedComment) await withRetry(() => sendMessage(`📌 *Pinned comment:*\n${pinnedComment}`), 'pinned comment');
   if (focusKeyword) await withRetry(() => sendMessage(`🎯 *Focus keyword:* ${focusKeyword}`), 'focus keyword');
   if (music) await withRetry(() => sendMessage(`🎵 *Music:*\n${music}\n_YouTube Audio Library — add at upload time_`), 'music suggestion');
