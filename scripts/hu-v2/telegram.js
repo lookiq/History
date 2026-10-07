@@ -14,6 +14,33 @@ const MAX_TG_BYTES = 45 * 1024 * 1024; // Bot API limit is 50MB — stay safely 
 
 function enabled() { return !!(TOKEN && CHAT_ID); }
 
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+/**
+ * Retry a Telegram send with exponential backoff (Md's rule: if a send fails,
+ * check and try again until it succeeds — never silently drop a delivery).
+ * Each message is retried individually so a later failure never duplicates
+ * an earlier, already-delivered message. Honors Telegram 429 retry_after.
+ */
+async function withRetry(fn, label, maxAttempts = 6) {
+  let delay = 10000; // start at 10s
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      const msg = e.message || String(e);
+      const m = msg.match(/retry_after[^0-9]*([0-9]+)/i);
+      if (m) delay = Math.max(delay, parseInt(m[1], 10) * 1000 + 5000);
+      if (attempt === maxAttempts) {
+        throw new Error(`${label} failed after ${maxAttempts} attempts: ${msg.slice(0, 160)}`);
+      }
+      console.log(`   ⚠️ ${label} attempt ${attempt}/${maxAttempts} failed — retrying in ${Math.round(delay / 1000)}s...`);
+      await sleep(delay);
+      delay = Math.min(delay * 2, 300000); // cap at 5 min between attempts
+    }
+  }
+}
+
 /** If video exceeds Telegram's limit, make a compressed copy (YouTube master untouched). */
 async function fitForTelegram(videoPath) {
   const size = fs.statSync(videoPath).size;
@@ -109,23 +136,26 @@ async function deliver({ videoPath, title, description, topicId, music, playlist
 
   console.log('   📱 Sending video to Telegram...');
   const sendPath = await fitForTelegram(videoPath);
-  await sendVideo(sendPath, `${title}${label}`);
-  if (sendPath !== videoPath) fs.unlink(sendPath, () => {}); // clean compressed copy
+  try {
+    await withRetry(() => sendVideo(sendPath, `${title}${label}`), 'sendVideo');
+  } finally {
+    if (sendPath !== videoPath) fs.unlink(sendPath, () => {}); // clean compressed copy
+  }
 
-  await sendMessage(`📋 *Title — tap to copy:*${label}\n${code(title)}`);
-  await sendMessage(`📝 *Description — tap to copy:*\n${code(description)}`);
-  if (pinnedComment) await sendMessage(`📌 *Pinned comment:*\n${pinnedComment}`);
-  if (focusKeyword) await sendMessage(`🎯 *Focus keyword:* ${focusKeyword}`);
-  if (music) await sendMessage(`🎵 *Music:*\n${music}\n_YouTube Audio Library — add at upload time_`);
-  if (playlist) await sendMessage(`🗂️ *Playlist:*\n${playlist}`);
+  await withRetry(() => sendMessage(`📋 *Title — tap to copy:*${label}\n${code(title)}`), 'title message');
+  await withRetry(() => sendMessage(`📝 *Description — tap to copy:*\n${code(description)}`), 'description message');
+  if (pinnedComment) await withRetry(() => sendMessage(`📌 *Pinned comment:*\n${pinnedComment}`), 'pinned comment');
+  if (focusKeyword) await withRetry(() => sendMessage(`🎯 *Focus keyword:* ${focusKeyword}`), 'focus keyword');
+  if (music) await withRetry(() => sendMessage(`🎵 *Music:*\n${music}\n_YouTube Audio Library — add at upload time_`), 'music suggestion');
+  if (playlist) await withRetry(() => sendMessage(`🗂️ *Playlist:*\n${playlist}`), 'playlist');
   if (thumbnailPath && fs.existsSync(thumbnailPath)) {
     try {
-      await sendPhoto(thumbnailPath, `🖼️ Thumbnail${label}`);
+      await withRetry(() => sendPhoto(thumbnailPath, `🖼️ Thumbnail${label}`), 'thumbnail', 3);
     } catch (e) {
       console.log('   ⚠️ thumbnail send failed: ' + e.message.slice(0, 80));
     }
   }
-  if (checklist) await sendMessage(`✅ *Upload checklist:*${label}\n${code(checklist)}`);
+  if (checklist) await withRetry(() => sendMessage(`✅ *Upload checklist:*${label}\n${code(checklist)}`), 'upload checklist');
   console.log('   ✅ Telegram delivery done');
   return true;
 }
