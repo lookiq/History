@@ -8,18 +8,43 @@
   "bat-bombs",
   "operation-mincemeat",
   "alvin-york",
-  "dancing-plague"
+  "dancing-plague",
+  "operation-fortitude",
+  "daniel-inouye",
+  "molasses-flood"
  ],
  "usedArchives": [
   "Conquerb1943",
   "202430_The_Chemical_Biological_and_Radiological_Element",
-  "202648_Stallings_Collection_001495"
+  "202648_Stallings_Collection_001495",
+  "DuckandC1951",
+  "MyJapan1945",
+  "Challeng1944",
+  "Challeng1961",
+  "ArmyNurs1945",
+  "Birthoft1945",
+  "Dividean1943",
+  "TargetIn1945",
+  "Challeng1961_2"
  ],
  "usedVault": [
   "american_war_cannon_artillery.mp4",
   "ww1_trench_artillery.mp4",
   "ww2_battlefield_formations.mp4",
   "ww2_infantry_action.mp4",
-  "ww2_tanks_kursk.mp4"
+  "ww2_tanks_kursk.mp4",
+  "ww2_artillery_firing.mp4",
+  "ww2_bombers_air.mp4",
+  "ww2_d_day_assault.mp4",
+  "ww2_desert_tanks.mp4",
+  "ww2_fighter_planes.mp4",
+  "ww2_italy_combat.mp4",
+  "ww2_medics_evacuation.mp4",
+  "ww2_naval_battle.mp4",
+  "ww2_pacific_jungle.mp4",
+  "ww2_paratroopers.mp4",
+  "ww2_pearl_harbor.mp4",
+  "ww2_war_compilation.mp4",
+  "ww2_ships_convoy.mp4"
  ]
 }
