@@ -83,5 +83,20 @@ jobs:
           git config user.name "SciBytes Bot"
           git config user.email "bot@scibytes.internal"
           git add data/sb_v2_state.json data/videos/sb_v2_*.json || true
-          git commit -m "Auto-update: sb-v2 directed state [skip ci]" || echo "No changes"
-          git push || echo "Push failed (non-fatal)"
+          git commit -m "Auto-update: sb-v2 directed state [skip ci]" || echo "No changes to commit"
+          # The state push MUST succeed. A silently stale data/sb_v2_state.json
+          # makes the next run rebuild the SAME topics -> DUPLICATE Telegram
+          # deliveries. Retry with rebase (never force-push); FAIL the run LOUDLY
+          # if the state cannot be pushed.
+          PUSHED=false
+          for attempt in 1 2 3; do
+            if git push; then PUSHED=true; break; fi
+            echo "State push failed (attempt $attempt/3) — pulling --rebase and retrying..."
+            git pull --rebase || sleep 10
+            sleep 10
+          done
+          if [ "$PUSHED" != "true" ]; then
+            echo "❌ FATAL: could not push sb_v2_state.json after 3 attempts. Failing the run to prevent duplicate deliveries from stale state."
+            exit 1
+          fi
+          echo "✅ State pushed to origin"
