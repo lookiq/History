@@ -50,7 +50,12 @@ function saveState(s) {
 function pickTopic() {
   const bank = loadJson(path.join(SB, 'topics.json'));
   const state = loadState();
-  const topics = bank.topics;
+  // published_blocklist: topics Md already built/uploaded manually (e.g. Ingenuity,
+  // published 2026-10-07, flagged duplicate 2026-10-08). Never re-picked — even
+  // across bank-exhaustion resets, unlike state.usedTopics. Mirrors Factify's
+  // MANUAL_BLOCKLIST. Edit via topics.json, no code change needed.
+  const blocked = new Set(bank.published_blocklist || []);
+  const topics = bank.topics.filter(t => !blocked.has(t.id));
   let fresh = topics.filter(t => !state.usedTopics.includes(t.id));
   if (fresh.length === 0) {
     console.log('♻️  SciBytes topic bank exhausted, starting new cycle');

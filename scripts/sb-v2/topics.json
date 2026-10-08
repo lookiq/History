@@ -6,6 +6,9 @@
     "origins",
     "epic"
   ],
+  "published_blocklist": [
+    "ingenuity-helicopter"
+  ],
   "topics": [
     {
       "beats": [
