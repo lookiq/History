@@ -11,6 +11,7 @@
 const { exec } = require('child_process');
 const util = require('util');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const execPromise = util.promisify(exec);
 
@@ -86,11 +87,21 @@ async function sendMessage(text) {
   }
   chunks.push(t);
   for (const c of chunks) {
-    const cmd = `curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" ` +
-      `--data-urlencode chat_id="${CHAT_ID}" --data-urlencode parse_mode="Markdown" --data-urlencode text="${c.replace(/"/g, "'")}"`;
-    const { stdout } = await execPromise(cmd);
-    const res = JSON.parse(stdout);
-    if (!res.ok) throw new Error('Telegram sendMessage failed: ' + stdout.slice(0, 200));
+    // Write text to a temp file and let curl read it via text@<file>.
+    // NEVER interpolate message text into the shell command: Markdown code
+    // fences (```) and other chars break /bin/sh parsing ("Unterminated
+    // quoted string"), killing the send before curl even runs.
+    const tmp = path.join(os.tmpdir(), `tgmsg-${Date.now()}-${Math.random().toString(36).slice(2)}.txt`);
+    fs.writeFileSync(tmp, c, 'utf8');
+    try {
+      const cmd = `curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" ` +
+        `--data-urlencode chat_id="${CHAT_ID}" --data-urlencode parse_mode="Markdown" --data-urlencode text@${tmp}`;
+      const { stdout } = await execPromise(cmd);
+      const res = JSON.parse(stdout);
+      if (!res.ok) throw new Error('Telegram sendMessage failed: ' + stdout.slice(0, 200));
+    } finally {
+      fs.unlink(tmp, () => {});
+    }
   }
 }
 
