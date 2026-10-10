@@ -199,7 +199,8 @@ async function vaultClips(nClips, clipSecs, workDir, startIdx, usedVault) {
   const out = [];
   const vaultDir = path.join(ROOT, 'assets', 'vault');
   let vaultFiles = [];
-  try { vaultFiles = fs.readdirSync(vaultDir).filter(f => f.endsWith('.mp4')).sort(); } catch {}
+  try { vaultFiles = fs.readdirSync(vaultDir).filter(f => f.endsWith('.mp4') && !f.startsWith('_')).sort(); } catch {}
+  // NOTE: underscore-prefixed mp4s (e.g. _demo_new_footage.mp4) are excluded — demos/docs, not footage.
   // prefer vault files not used in recent runs; fall back to least-recently-used
   const fresh = vaultFiles.filter(f => !usedVault.has(f));
   const pool = fresh.length ? fresh : vaultFiles;
