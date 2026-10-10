@@ -121,7 +121,7 @@ async function archiveOrgClips(topic, nClips, clipSecs, workDir, usedArchives) {
           // NOTE: keep NATIVE aspect ratio here — no portrait pre-crop (it chopped
           // heads/action off landscape footage). assemble.js fits each clip into
           // the video window with a blurred-fill background instead.
-          await execPromise(`ffmpeg -y -v error -ss ${off} -i "${tmp}" -t ${clipSecs} -vf "eq=contrast=1.05:saturation=1.04" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
+          await execPromise(`ffmpeg -y -v error -ss ${off} -i "${tmp}" -t ${clipSecs} -vf "hqdn3d=1.5:1.5:6:6,eq=contrast=1.06:saturation=1.05,unsharp=5:5:0.7" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
           fs.unlink(tmp, () => {});
           usedArchives.add(id);
           seenIds.push(id);
@@ -218,7 +218,8 @@ async function vaultClips(nClips, clipSecs, workDir, startIdx, usedVault) {
       const maxOff = Math.max(0, vdur - clipSecs - 0.5);
       const off = (5 + ((Date.now() / 1000 + (startIdx + i) * 37) % Math.max(1, maxOff))).toFixed(1);
       // NOTE: native aspect kept — assemble.js does fit + blurred-fill (no crop).
-      await execPromise(`ffmpeg -y -v error -ss ${off} -i "${vsrc}" -t ${clipSecs} -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
+      // HD-feel grade: light denoise + sharpen so archival footage looks clean/crisp.
+      await execPromise(`ffmpeg -y -v error -ss ${off} -i "${vsrc}" -t ${clipSecs} -vf "hqdn3d=1.5:1.5:6:6,unsharp=5:5:0.7" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
     } else {
       // absolute last resort: generated slate (pipeline never dies)
       await execPromise(`ffmpeg -y -v error -f lavfi -i "color=c=0x141419:s=1080x1350:d=${clipSecs}:r=30" -vf "noise=alls=7:allf=t" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
