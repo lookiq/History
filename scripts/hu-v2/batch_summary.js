@@ -34,6 +34,14 @@ async function main() {
     lines.push(`→ 🕐 ${slot.when}\n`);
   });
   lines.push('_Tip: Shorts-এ schedule রাখলে algorithm প্রতিটাকে আলাদা push দেয়।_');
+  // clip-reuse audit (Md rule 2026-10-10): only shown when the exception fired
+  const excLines = [];
+  man.slice(0, 3).forEach((v) => {
+    (v.clipExceptions || []).forEach((f) => {
+      excLines.push(`🎞️ _"${f}" reused ≤2s in "${v.title}" — vault rotation exhausted_`);
+    });
+  });
+  if (excLines.length) lines.push('\n' + excLines.join('\n'));
 
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;

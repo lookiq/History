@@ -83,7 +83,7 @@ async function main() {
   // 2. Visuals (archive-first)
   const nClips = Math.ceil(totalSecs / CLIP_SECS);
   console.log(`🎬 Sourcing ${nClips} archive visuals...`);
-  const clips = await buildVisuals(topic, nClips, CLIP_SECS, work);
+  const { clips } = await buildVisuals(topic, nClips, CLIP_SECS, work);
 
   // 3. Karaoke captions (master template style) + per-video context line
   const assPath = path.join(work, `caps_${stamp}.ass`);

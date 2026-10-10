@@ -20,7 +20,7 @@ const execPromise = util.promisify(exec);
 const ROOT = path.join(__dirname, '..', '..');
 const HU = __dirname;
 const { buildScript, buildMetadata, CTA } = require('./script');
-const { buildVisuals } = require('./visuals');
+const { buildVisuals, recordClipHistory } = require('./visuals');
 const { buildAss } = require('./captions');
 const { assemble } = require('./assemble');
 const { synthesize } = require('./voice');
@@ -133,16 +133,18 @@ async function trimSegment(clipPath, dur, outPath) {
 
 async function scoredClips(topic, words, voiceDur, workDir) {
   // 1. candidate pool
-  const candidates = await buildVisuals(topic, 0, CLIP_SECS, workDir, { candidates: N_CANDIDATES });
+  const { clips: candidates, clipSources } = await buildVisuals(topic, 0, CLIP_SECS, workDir, { candidates: N_CANDIDATES });
   if (candidates.length < 2) throw new Error(`only ${candidates.length} candidates — not enough to score`);
 
   // 2. middle frame per candidate
   const framesDir = path.join(workDir, 'frames');
   fs.mkdirSync(framesDir, { recursive: true });
   const idOf = {};
+  const srcOf = {};
   for (const c of candidates) {
     const id = path.basename(c, '.mp4');
     idOf[id] = c;
+    srcOf[id] = clipSources[c] || { kind: 'unknown', file: id, offset: 0, exception: false };
     await execPromise(`ffmpeg -y -v error -ss ${(CLIP_SECS / 2).toFixed(1)} -i "${c}" -frames:v 1 -q:v 3 "${path.join(framesDir, id + '.jpg')}"`);
   }
 
@@ -159,30 +161,56 @@ async function scoredClips(topic, words, voiceDur, workDir) {
   const { winners, fillers } = pickWinners(scores, topic.beats.length);
   console.log(`   🏆 beat winners: ${winners.join(', ')}`);
 
-  // 5. timeline: one clip per script part, trimmed to the part's duration
+  // 5. timeline: one clip per script part, trimmed to the part's duration.
+  //    Exception-reuse clips (Md 2026-10-10: same vault clip must not repeat
+  //    across days' videos) are capped at 2s per appearance; the part then
+  //    continues with the next filler so part durations stay exact.
   const parts = partTimings(topic, words, voiceDur);
   const totalSecs = Math.ceil(voiceDur) + 2;
   const slack = totalSecs - parts.reduce((a, p) => a + p.dur, 0);
   parts[parts.length - 1].dur += Math.max(0, slack); // CTA absorbs the tail
   let fi = 0, prevClipId = null;
   const segs = [];
+  const clipRecords = [];    // [{ kind, file, offset, duration, exception }]
+  const clipExceptions = []; // vault filenames reused under the exception rule
+  const noteUse = (clipId, takeSecs) => {
+    const src = srcOf[clipId];
+    clipRecords.push({ kind: src.kind, file: src.file, offset: src.offset, duration: +takeSecs.toFixed(2), exception: !!src.exception });
+    if (src.exception && !clipExceptions.includes(src.file)) {
+      clipExceptions.push(src.file);
+      console.log(`   🚨 CLIP-REUSE EXCEPTION: "${src.file}" — all vault clips used in recent videos; capped at 2s (Md rule 2026-10-10)`);
+    }
+  };
+  const nextFiller = () => {
+    let id = fillers[fi % fillers.length];
+    // never play the same clip twice in a row (Md 2026-10-07: repeats looked cheap)
+    if (id === prevClipId && fillers.length > 1) { fi++; id = fillers[fi % fillers.length]; }
+    fi++;
+    return id;
+  };
   for (let i = 0; i < parts.length; i++) {
     const p = parts[i];
     let clipId;
     if (p.beatIdx >= 0 && winners[p.beatIdx]) clipId = winners[p.beatIdx];
-    else {
-      clipId = fillers[fi % fillers.length];
-      // never play the same clip twice in a row (Md 2026-10-07: repeats looked cheap)
-      if (clipId === prevClipId && fillers.length > 1) { fi++; clipId = fillers[fi % fillers.length]; }
-      fi++;
+    else clipId = nextFiller();
+    let remaining = p.dur;
+    const usedIds = [];
+    let segN = 0;
+    while (remaining > 0.1) {
+      const take = srcOf[clipId].exception ? Math.min(2, remaining) : remaining;
+      const seg = path.join(workDir, `seg_${i}_${p.name}${segN ? `_c${segN}` : ''}.mp4`);
+      await trimSegment(idOf[clipId], take, seg);
+      segs.push(seg);
+      usedIds.push(clipId + (srcOf[clipId].exception ? ` (${take.toFixed(0)}s max)` : ''));
+      noteUse(clipId, take);
+      prevClipId = clipId;
+      remaining -= take;
+      segN++;
+      if (remaining > 0.1) clipId = nextFiller();
     }
-    prevClipId = clipId;
-    const seg = path.join(workDir, `seg_${i}_${p.name}.mp4`);
-    await trimSegment(idOf[clipId], p.dur, seg);
-    segs.push(seg);
-    console.log(`   🎞️  ${p.name} (${p.dur.toFixed(1)}s) <- ${clipId}`);
+    console.log(`   🎞️  ${p.name} (${p.dur.toFixed(1)}s) <- ${usedIds.join(' + ')}`);
   }
-  return { clips: segs, totalSecs };
+  return { clips: segs, totalSecs, clipRecords, clipExceptions };
 }
 
 async function qcFrames(mp4, workDir, stamp) {
@@ -223,18 +251,49 @@ async function main() {
   console.log(`   🔊 Voice: ${voiceDur.toFixed(1)}s, total video: ${totalSecs}s`);
 
   // 2-3. Visuals: AI-scored, with heuristic fallback
-  let clips, scored = false;
+  let clips, scored = false, clipRecords = [], clipExceptions = [];
   try {
     const r = await scoredClips(topic, words, voiceDur, work);
     clips = r.clips;
     totalSecs = r.totalSecs;
+    clipRecords = r.clipRecords;
+    clipExceptions = r.clipExceptions;
     scored = true;
     console.log(`   ✅ AI-directed visuals (${clips.length} segments)`);
   } catch (e) {
     console.log(`   ⚠️ AI scoring unavailable (${e.message.slice(0, 90)}) — heuristic fallback`);
     const nClips = Math.ceil(totalSecs / CLIP_SECS);
-    clips = await buildVisuals(topic, nClips, CLIP_SECS, work);
+    const hv = await buildVisuals(topic, nClips, CLIP_SECS, work);
+    // timeline pass: exception-reuse clips (Md 2026-10-10) capped at 2s per
+    // appearance; no back-to-back identical source in the timeline
+    clips = [];
+    const fileOf = (c) => ((hv.clipSources[c] || {}).file || path.basename(c));
+    let hPrevFile = null, hIdx = 0, hRemaining = nClips * CLIP_SECS, guard = 0;
+    while (hRemaining > 0.5 && guard++ < hv.clips.length * 3 + 8) {
+      let k = hIdx % hv.clips.length;
+      if (fileOf(hv.clips[k]) === hPrevFile && hv.clips.length > 1) k = (k + 1) % hv.clips.length;
+      const cpath = hv.clips[k];
+      const src = hv.clipSources[cpath] || { kind: 'unknown', file: fileOf(cpath), offset: 0, exception: false };
+      const take = src.exception ? Math.min(2, hRemaining) : Math.min(CLIP_SECS, hRemaining);
+      if (take >= CLIP_SECS - 0.01 && !src.exception) {
+        clips.push(cpath); // already exactly 8s — no re-encode needed
+      } else {
+        const seg = path.join(work, `hseg_${hIdx}.mp4`);
+        await trimSegment(cpath, take, seg);
+        clips.push(seg);
+      }
+      clipRecords.push({ kind: src.kind, file: src.file, offset: src.offset, duration: +take.toFixed(2), exception: !!src.exception });
+      if (src.exception && !clipExceptions.includes(src.file)) {
+        clipExceptions.push(src.file);
+        console.log(`   🚨 CLIP-REUSE EXCEPTION: "${src.file}" — all vault clips used in recent videos; capped at 2s (Md rule 2026-10-10)`);
+      }
+      hPrevFile = src.file;
+      hRemaining -= take;
+      hIdx++;
+    }
   }
+  // persist per-video clip usage for the cross-video no-reuse rule
+  recordClipHistory(topic.id, clipRecords);
 
   // 4. Karaoke captions
   const assPath = path.join(work, `caps_${stamp}.ass`);
@@ -268,6 +327,7 @@ async function main() {
     topicId: topic.id,
     pillar: topic.pillar,
     aiScored: scored,
+    clipExceptions, // vault clips reused ≤2s under Md's 2026-10-10 exception rule
   }, null, 1));
 
   // 9. Telegram delivery (primary — Md reviews & uploads manually from his phone)
@@ -285,7 +345,7 @@ async function main() {
     const manPath = process.env.HU_BATCH_MANIFEST || 'data/hu_v2_work/batch_manifest.json';
     let man = [];
     try { man = JSON.parse(fs.readFileSync(manPath, 'utf8')); } catch (e) {}
-    man.push({ label: process.env.HU_BATCH_LABEL || '', title: meta.title, topicId: topic.id });
+    man.push({ label: process.env.HU_BATCH_LABEL || '', title: meta.title, topicId: topic.id, clipExceptions });
     fs.writeFileSync(manPath, JSON.stringify(man, null, 1));
   } catch (e) { console.log('   ⚠️ manifest write failed: ' + e.message.slice(0, 60)); }
 

@@ -7,6 +7,12 @@
  *   deception → Commons PD images + Ken Burns, archive.org espionage/WWII reels when topical
  *   fallback  → bundled assets/vault PD clips (never fail the run)
  *
+ * CROSS-VIDEO CLIP RULE (Md 2026-10-10): the same vault clip must NEVER be
+ * reused across different days' videos. state.clipHistory records every built
+ * video's vault clips (last 30 videos); selection excludes them. Exception:
+ * when the pool is exhausted, least-recently-used clips may be reused but are
+ * flagged — direct.js caps their screen time at 2s and logs the exception.
+ *
  * Cohesion: subtle film grain + vignette applied at assemble time so mixed
  * sources feel like one cinematic piece.
  */
@@ -18,13 +24,32 @@ const util = require('util');
 const execPromise = util.promisify(exec);
 
 const ROOT = path.join(__dirname, '..', '..');
-const STATE_FILE = path.join(ROOT, 'data', 'hu_v2_state.json');
+// HU_V2_STATE env override exists for local dry-run tests (never set in prod).
+function stateFile() { return process.env.HU_V2_STATE || path.join(ROOT, 'data', 'hu_v2_state.json'); }
 
 function loadState() {
-  try { return JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')); }
-  catch { return { usedImages: [], usedTopics: [], usedArchives: [] }; }
+  try { return JSON.parse(fs.readFileSync(stateFile(), 'utf-8')); }
+  catch { return { usedImages: [], usedTopics: [], usedArchives: [], clipHistory: [] }; }
 }
-function saveState(s) { fs.writeFileSync(STATE_FILE, JSON.stringify(s, null, 1)); }
+function saveState(s) { fs.writeFileSync(stateFile(), JSON.stringify(s, null, 1)); }
+
+/**
+ * Record the clips that actually made a built video's timeline (called by
+ * direct.js AFTER winners/timeline are final — candidates that lost scoring
+ * are NOT recorded, so they stay eligible).
+ * records: [{ kind: 'vault'|'archive'|'commons', file, offset, duration, exception }]
+ */
+function recordClipHistory(topicId, records) {
+  const s = loadState();
+  s.clipHistory = s.clipHistory || [];
+  s.clipHistory.push({
+    date: new Date().toISOString().slice(0, 10),
+    topicId,
+    clips: records,
+  });
+  s.clipHistory = s.clipHistory.slice(-30); // last 30 videos ≈ 10 days at 3/day
+  saveState(s);
+}
 
 function fetchJson(url, timeout = 12000) {
   return new Promise((resolve, reject) => {
@@ -70,6 +95,7 @@ function downloadFile(url, dest, retries = 2) {
 
 async function archiveOrgClips(topic, nClips, clipSecs, workDir, usedArchives) {
   const out = [];
+  const sources = {}; // clipPath -> { kind, file, offset, exception }
   const kw = topic.archive_query || 'world war ii combat';
   // topic-specific first, then pillar-flavoured fallbacks — wider pool, fewer repeats
   const queries = [
@@ -126,11 +152,12 @@ async function archiveOrgClips(topic, nClips, clipSecs, workDir, usedArchives) {
           usedArchives.add(id);
           seenIds.push(id);
           out.push(clip);
+          sources[clip] = { kind: 'archive', file: id, offset: +off, duration: clipSecs, exception: false };
         } catch (e) { console.log(`   ⚠️ archive skip ${id}: ${e.message.slice(0, 80)}`); }
       }
     } catch (e) { console.log(`   ⚠️ archive search fail: ${e.message.slice(0, 80)}`); }
   }
-  return out;
+  return { clips: out, sources };
 }
 
 /* ---------------- Commons PD images + Ken Burns ---------------- */
@@ -173,6 +200,7 @@ async function kenBurns(imgPath, outPath, duration, seed) {
 
 async function kenBurnsClips(topic, nClips, clipSecs, workDir, usedSet, startIdx) {
   const out = [];
+  const sources = {}; // clipPath -> { kind, file, offset, exception }
   const q = topic.title.replace(/#shorts/i, '').replace(/^The /i, '').split(' ').slice(0, 4).join(' ');
   const images = await commonsImages(q, nClips, usedSet);
   for (let i = 0; i < nClips; i++) {
@@ -183,6 +211,7 @@ async function kenBurnsClips(topic, nClips, clipSecs, workDir, usedSet, startIdx
         await downloadFile(images[i].url, imgPath);
         await kenBurns(imgPath, clip, clipSecs, startIdx + i);
         out.push(clip);
+        sources[clip] = { kind: 'commons', file: images[i].id, offset: 0, duration: clipSecs, exception: false };
       } catch (e) {
         console.log(`   ⚠️ kenburns skip: ${e.message.slice(0, 60)}`);
       } finally {
@@ -190,44 +219,73 @@ async function kenBurnsClips(topic, nClips, clipSecs, workDir, usedSet, startIdx
       }
     }
   }
-  return out;
+  return { clips: out, sources };
 }
 
 /* ---------------- vault fallback (never fail, never repeat recently) ---------------- */
 
-async function vaultClips(nClips, clipSecs, workDir, startIdx, usedVault) {
+/**
+ * Pure vault-file selection (exported for dry-run tests).
+ * - excludes files used in recent videos (Md 2026-10-10: no cross-day reuse)
+ * - when everything is excluded, falls back to least-recently-used order and
+ *   flags `exception: true` so direct.js can cap screen time at 2s + log it
+ * Returns [{ file, exception }]
+ */
+function selectVaultFiles({ vaultFiles, excluded, lruRank, nClips, startIdx }) {
+  const fresh = vaultFiles.filter(f => !excluded.has(f));
+  let pool = fresh;
+  let exception = false;
+  if (!fresh.length && vaultFiles.length) {
+    pool = (lruRank && lruRank.length ? lruRank : vaultFiles).filter(f => vaultFiles.includes(f));
+    if (!pool.length) pool = vaultFiles;
+    exception = true;
+  }
+  const picks = [];
+  for (let i = 0; i < nClips && pool.length; i++) {
+    picks.push({ file: pool[(startIdx + i) % pool.length], exception });
+  }
+  return picks;
+}
+
+async function vaultClips(nClips, clipSecs, workDir, startIdx, excluded, lruRank) {
   const out = [];
+  const sources = {}; // clipPath -> { kind, file, offset, exception }
   const vaultDir = path.join(ROOT, 'assets', 'vault');
   let vaultFiles = [];
   try { vaultFiles = fs.readdirSync(vaultDir).filter(f => f.endsWith('.mp4') && !f.startsWith('_')).sort(); } catch {}
   // NOTE: underscore-prefixed mp4s (e.g. _demo_new_footage.mp4) are excluded — demos/docs, not footage.
-  // prefer vault files not used in recent runs; fall back to least-recently-used
-  const fresh = vaultFiles.filter(f => !usedVault.has(f));
-  const pool = fresh.length ? fresh : vaultFiles;
-  for (let i = 0; i < nClips; i++) {
-    const clip = path.join(workDir, `vis_vault_${startIdx + i}.mp4`);
-    if (pool.length) {
-      const vf = pool[(startIdx + i) % pool.length];
-      usedVault.add(vf);
-      const vsrc = path.join(vaultDir, vf);
-      let vdur = 12;
-      try {
-        const { stdout } = await execPromise(`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${vsrc}"`);
-        vdur = parseFloat(stdout.trim()) || 12;
-      } catch {}
-      // random-ish offset per run so the same file yields different moments
-      const maxOff = Math.max(0, vdur - clipSecs - 0.5);
-      const off = (5 + ((Date.now() / 1000 + (startIdx + i) * 37) % Math.max(1, maxOff))).toFixed(1);
-      // NOTE: native aspect kept — assemble.js does fit + blurred-fill (no crop).
-      // HD-feel grade: light denoise + sharpen so archival footage looks clean/crisp.
-      await execPromise(`ffmpeg -y -v error -ss ${off} -i "${vsrc}" -t ${clipSecs} -vf "hqdn3d=1.5:1.5:6:6,unsharp=5:5:0.7" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
-    } else {
-      // absolute last resort: generated slate (pipeline never dies)
-      await execPromise(`ffmpeg -y -v error -f lavfi -i "color=c=0x141419:s=1080x1350:d=${clipSecs}:r=30" -vf "noise=alls=7:allf=t" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
-    }
-    out.push(clip);
+  const picks = selectVaultFiles({ vaultFiles, excluded, lruRank, nClips, startIdx });
+  if (picks.length && picks[0].exception) {
+    console.log(`   🚨 vault pool exhausted — all ${vaultFiles.length} clips used in recent videos; LRU reuse capped at 2s (Md rule 2026-10-10)`);
   }
-  return out;
+  for (let i = 0; i < picks.length; i++) {
+    const clip = path.join(workDir, `vis_vault_${startIdx + i}.mp4`);
+    const vf = picks[i].file;
+    const vsrc = path.join(vaultDir, vf);
+    let vdur = 12;
+    try {
+      const { stdout } = await execPromise(`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${vsrc}"`);
+      vdur = parseFloat(stdout.trim()) || 12;
+    } catch {}
+    // random-ish offset per run so the same file yields different moments
+    const maxOff = Math.max(0, vdur - clipSecs - 0.5);
+    const off = (5 + ((Date.now() / 1000 + (startIdx + i) * 37) % Math.max(1, maxOff))).toFixed(1);
+    // NOTE: native aspect kept — assemble.js does fit + blurred-fill (no crop).
+    // HD-feel grade: light denoise + sharpen so archival footage looks clean/crisp.
+    await execPromise(`ffmpeg -y -v error -ss ${off} -i "${vsrc}" -t ${clipSecs} -vf "hqdn3d=1.5:1.5:6:6,unsharp=5:5:0.7" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
+    out.push(clip);
+    sources[clip] = { kind: 'vault', file: vf, offset: +off, duration: clipSecs, exception: picks[i].exception };
+  }
+  if (!out.length) {
+    // absolute last resort: generated slate (pipeline never dies)
+    for (let i = 0; i < nClips; i++) {
+      const clip = path.join(workDir, `vis_vault_${startIdx + i}.mp4`);
+      await execPromise(`ffmpeg -y -v error -f lavfi -i "color=c=0x141419:s=1080x1350:d=${clipSecs}:r=30" -vf "noise=alls=7:allf=t" -c:v libx264 -preset veryfast -pix_fmt yuv420p -an "${clip}"`);
+      out.push(clip);
+      sources[clip] = { kind: 'slate', file: 'generated_slate', offset: 0, duration: clipSecs, exception: false };
+    }
+  }
+  return { clips: out, sources };
 }
 
 /* ---------------- main entry ---------------- */
@@ -236,8 +294,17 @@ async function buildVisuals(topic, nClips, clipSecs, workDir, opts = {}) {
   const state = loadState();
   const usedSet = new Set(state.usedImages || []);
   const usedArchives = new Set(state.usedArchives || []);
-  const usedVault = new Set(state.usedVault || []);
+  // cross-video vault exclusion (Md 2026-10-10): files used in recent videos
+  const excludedVault = new Set();
+  const lastUsedIdx = {};
+  (state.clipHistory || []).forEach((e, i) => {
+    for (const c of (e.clips || [])) {
+      if (c.kind === 'vault') { excludedVault.add(c.file); lastUsedIdx[c.file] = i; }
+    }
+  });
   const clips = [];
+  const clipSources = {}; // clipPath -> { kind, file, offset, duration, exception }
+  const merge = (r) => { clips.push(...r.clips); Object.assign(clipSources, r.sources); };
   const candidateMode = !!opts.candidates;
   const target = candidateMode ? (opts.candidates || 18) : nClips;
 
@@ -248,7 +315,7 @@ async function buildVisuals(topic, nClips, clipSecs, workDir, opts = {}) {
     const nV = candidateMode ? Math.min(6, target) : Math.min(3, Math.max(2, Math.ceil(nClips * 0.4)));
     console.log(`   → ${nV} archive.org motion clips${candidateMode ? ' (candidate pool)' : ' + Ken Burns fill'}`);
     try {
-      clips.push(...await archiveOrgClips(topic, nV, clipSecs, workDir, usedArchives));
+      merge(await archiveOrgClips(topic, nV, clipSecs, workDir, usedArchives));
     } catch (e) { console.log(`   ⚠️ archive.org unavailable: ${e.message.slice(0, 80)}`); }
   } else if (!candidateMode) {
     console.log(`   → Ken Burns stills (no real footage exists for this era)`);
@@ -258,7 +325,7 @@ async function buildVisuals(topic, nClips, clipSecs, workDir, opts = {}) {
   const need = target - clips.length;
   if (need > 0) {
     try {
-      clips.push(...await kenBurnsClips(topic, need, clipSecs, workDir, usedSet, clips.length));
+      merge(await kenBurnsClips(topic, need, clipSecs, workDir, usedSet, clips.length));
     } catch (e) { console.log(`   ⚠️ Ken Burns failed: ${e.message.slice(0, 80)}`); }
   }
 
@@ -266,16 +333,19 @@ async function buildVisuals(topic, nClips, clipSecs, workDir, opts = {}) {
   const stillNeed = (candidateMode ? Math.max(0, 4 - clips.length) : nClips - clips.length);
   if (stillNeed > 0) {
     console.log(`   → ${stillNeed} vault fallback clips`);
-    clips.push(...await vaultClips(stillNeed, clipSecs, workDir, clips.length, usedVault));
+    const vaultDir = path.join(ROOT, 'assets', 'vault');
+    let vaultFiles = [];
+    try { vaultFiles = fs.readdirSync(vaultDir).filter(f => f.endsWith('.mp4') && !f.startsWith('_')).sort(); } catch {}
+    const lruRank = vaultFiles.slice().sort((a, b) => (lastUsedIdx[a] ?? -1) - (lastUsedIdx[b] ?? -1));
+    merge(await vaultClips(stillNeed, clipSecs, workDir, clips.length, excludedVault, lruRank));
   }
 
   state.usedImages = [...usedSet].slice(-600);
   state.usedArchives = [...usedArchives].slice(-200);
-  state.usedVault = [...usedVault].slice(-30);
   if (!state.usedTopics.includes(topic.id)) state.usedTopics.push(topic.id);
   saveState(state);
   console.log(`   ✅ ${clips.length}/${nClips} clips ready`);
-  return clips;
+  return { clips, clipSources };
 }
 
-module.exports = { buildVisuals };
+module.exports = { buildVisuals, recordClipHistory, selectVaultFiles, vaultClips };
