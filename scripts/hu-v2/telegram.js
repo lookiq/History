@@ -118,7 +118,7 @@ async function sendPhoto(photoPath, caption) {
 
 /**
  * Md's standing copy-paste format: every piece arrives as its own clean,
- * separately-copyable block — title, description (body+hashtags+Tags),
+ * separately-copyable block — title, description (body+hashtags), tags,
  * pinned comment, focus keyword, music, playlist, thumbnail, upload checklist.
  */
 

@@ -258,11 +258,12 @@ async function main() {
   const metaDir = path.join(ROOT, 'data', 'videos');
   fs.mkdirSync(metaDir, { recursive: true });
   const keywords = topic.title.replace(/#shorts/i, '').trim();
+  const tags = [keywords, 'history shorts', 'the history uncut', 'history facts', 'shocking history', 'untold history', 'shorts'];
   fs.writeFileSync(path.join(metaDir, `hu_v2_${stamp}.json`), JSON.stringify({
     videoPath: outMp4,
     title: meta.title,
     description: meta.description,
-    tags: [keywords, 'history shorts', 'the history uncut', 'history facts', 'shocking history', 'untold history', 'shorts'],
+    tags,
     customThumbnail: thumbJpg,
     topicId: topic.id,
     pillar: topic.pillar,
@@ -277,7 +278,7 @@ async function main() {
   const checklist = uploadChecklist({ title: meta.title, music });
   console.log(`   🎵 Music suggestion: ${music}`);
   console.log(`   📋 Playlist: ${playlist}`);
-  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg, batchLabel: process.env.HU_BATCH_LABEL || '', pinnedComment: meta.pinnedComment, focusKeyword: meta.focusKeyword, checklist });
+  await deliver({ videoPath: outMp4, title: meta.title, description: meta.description, topicId: topic.id, music, playlist, thumbnailPath: thumbJpg, batchLabel: process.env.HU_BATCH_LABEL || '', pinnedComment: meta.pinnedComment, focusKeyword: meta.focusKeyword, checklist, tags: tags.join(', ') });
 
   // record in batch manifest for the end-of-batch schedule summary
   try {
