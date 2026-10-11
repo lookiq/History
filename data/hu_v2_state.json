@@ -17,7 +17,10 @@
   "john-basilone",
   "emu-war",
   "eddie-chapman",
-  "mitchell-paige"
+  "mitchell-paige",
+  "cadaver-synod",
+  "operation-bodyguard",
+  "henry-johnson"
  ],
  "usedArchives": [
   "Conquerb1943",
@@ -41,7 +44,9 @@
   "Remember1945",
   "CrimeofK1950",
   "spain_in_revolt",
-  "0539_Spain_in_Revolt_R2"
+  "0539_Spain_in_Revolt_R2",
+  "6113_Ten_Years_After_00_34_14_14",
+  "202204_America_Goes_Over_P3-5"
  ],
  "usedVault": [
   "american_war_cannon_artillery.mp4",
@@ -62,5 +67,179 @@
   "ww2_pearl_harbor.mp4",
   "ww2_war_compilation.mp4",
   "ww2_ships_convoy.mp4"
+ ],
+ "clipHistory": [
+  {
+   "date": "2026-10-11",
+   "topicId": "cadaver-synod",
+   "clips": [
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 346.4,
+     "duration": 6.14,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 346.4,
+     "duration": 10.19,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "american_war_cannon_artillery.mp4",
+     "offset": 7.7,
+     "duration": 6.09,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww1_trench_artillery.mp4",
+     "offset": 6.3,
+     "duration": 5.99,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_air_raid.mp4",
+     "offset": 117.1,
+     "duration": 5.14,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 346.4,
+     "duration": 6.41,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 346.4,
+     "duration": 2.77,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 346.4,
+     "duration": 8.27,
+     "exception": false
+    }
+   ]
+  },
+  {
+   "date": "2026-10-11",
+   "topicId": "operation-bodyguard",
+   "clips": [
+    {
+     "kind": "vault",
+     "file": "ww2_anti_aircraft.mp4",
+     "offset": 155.7,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_artillery_firing.mp4",
+     "offset": 145.6,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_battlefield_formations.mp4",
+     "offset": 5.5,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_bombers_air.mp4",
+     "offset": 1010.5,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_bombing_japan.mp4",
+     "offset": 38.4,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_d_day_assault.mp4",
+     "offset": 299.3,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_desert_tanks.mp4",
+     "offset": 336.8,
+     "duration": 8,
+     "exception": false
+    }
+   ]
+  },
+  {
+   "date": "2026-10-11",
+   "topicId": "henry-johnson",
+   "clips": [
+    {
+     "kind": "vault",
+     "file": "ww2_eastern_front.mp4",
+     "offset": 76.3,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_fighter_planes.mp4",
+     "offset": 517.2,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_infantry_action.mp4",
+     "offset": 6.5,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_italy_combat.mp4",
+     "offset": 593.6,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_marines_tarawa.mp4",
+     "offset": 283.2,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_medics_evacuation.mp4",
+     "offset": 668.8,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_naval_battle.mp4",
+     "offset": 779.8,
+     "duration": 8,
+     "exception": false
+    }
+   ]
+  }
  ]
 }
