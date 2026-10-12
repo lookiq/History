@@ -20,7 +20,10 @@
   "mitchell-paige",
   "cadaver-synod",
   "operation-bodyguard",
-  "henry-johnson"
+  "henry-johnson",
+  "defenestration-prague",
+  "operation-bertram",
+  "simo-hayha"
  ],
  "usedArchives": [
   "Conquerb1943",
@@ -238,6 +241,311 @@
      "offset": 779.8,
      "duration": 8,
      "exception": false
+    }
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "topicId": "defenestration-prague",
+   "clips": [
+    {
+     "kind": "vault",
+     "file": "ww2_pacific_jungle.mp4",
+     "offset": 155.5,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_paratroopers.mp4",
+     "offset": 21.3,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_pearl_harbor.mp4",
+     "offset": 162.8,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_pows_german.mp4",
+     "offset": 225.6,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_pows_iwo.mp4",
+     "offset": 138.4,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_ships_convoy.mp4",
+     "offset": 298.9,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_submarines_pearl.mp4",
+     "offset": 162.9,
+     "duration": 8,
+     "exception": false
+    }
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "topicId": "operation-bertram",
+   "clips": [
+    {
+     "kind": "vault",
+     "file": "ww2_tanks_kursk.mp4",
+     "offset": 5.4,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_tarawa_assault.mp4",
+     "offset": 344,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_tunisia.mp4",
+     "offset": 193.1,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_uboat_surrender.mp4",
+     "offset": 155,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_victory_parade.mp4",
+     "offset": 115,
+     "duration": 8,
+     "exception": false
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_war_compilation.mp4",
+     "offset": 175.7,
+     "duration": 8,
+     "exception": false
+    }
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "topicId": "simo-hayha",
+   "clips": [
+    {
+     "kind": "vault",
+     "file": "american_war_cannon_artillery.mp4",
+     "offset": 5.4,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww1_trench_artillery.mp4",
+     "offset": 5.5,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_air_raid.mp4",
+     "offset": 224.3,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 42.2,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_anti_aircraft.mp4",
+     "offset": 271.9,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_artillery_firing.mp4",
+     "offset": 327.9,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_battlefield_formations.mp4",
+     "offset": 8.3,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "american_war_cannon_artillery.mp4",
+     "offset": 5.4,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww1_trench_artillery.mp4",
+     "offset": 5.5,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_air_raid.mp4",
+     "offset": 224.3,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 42.2,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_anti_aircraft.mp4",
+     "offset": 271.9,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_artillery_firing.mp4",
+     "offset": 327.9,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_battlefield_formations.mp4",
+     "offset": 8.3,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "american_war_cannon_artillery.mp4",
+     "offset": 5.4,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww1_trench_artillery.mp4",
+     "offset": 5.5,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_air_raid.mp4",
+     "offset": 224.3,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 42.2,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_anti_aircraft.mp4",
+     "offset": 271.9,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_artillery_firing.mp4",
+     "offset": 327.9,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_battlefield_formations.mp4",
+     "offset": 8.3,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "american_war_cannon_artillery.mp4",
+     "offset": 5.4,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww1_trench_artillery.mp4",
+     "offset": 5.5,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_air_raid.mp4",
+     "offset": 224.3,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_aircraft_carrier.mp4",
+     "offset": 42.2,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_anti_aircraft.mp4",
+     "offset": 271.9,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_artillery_firing.mp4",
+     "offset": 327.9,
+     "duration": 2,
+     "exception": true
+    },
+    {
+     "kind": "vault",
+     "file": "ww2_battlefield_formations.mp4",
+     "offset": 8.3,
+     "duration": 2,
+     "exception": true
     }
    ]
   }
