@@ -1,8 +1,8 @@
 /**
  * sb-v2 batch schedule summary — sent once after the daily 2-video batch.
  * Reads the batch manifest written by direct.js and tells Md exactly when
- * to schedule each video on YouTube. SciBytes slot: 1 AM Dhaka (US evening
- * daypart), staggered across two nights.
+ * to post each video on YouTube. Locked SciBytes slots (Md 2026-10-09):
+ * 10 PM Dhaka (USA lunch peak) + 5 AM Dhaka scheduled (USA evening prime).
  *
  * Uses the DEDICATED SciBytes bot secrets (SCIBYTES_TELEGRAM_BOT_TOKEN /
  * SCIBYTES_TELEGRAM_CHAT_ID) — never the History Uncut ones.
@@ -13,11 +13,12 @@ const path = require('path');
 const MANIFEST = process.env.SB_BATCH_MANIFEST ||
   path.join(__dirname, '..', '..', 'data', 'sb_v2_work', 'sb_batch_manifest.json');
 
-// Videos land in Md's hands ~10 PM Dhaka; YouTube scheduling is staggered
-// across the 1 AM Dhaka slot (SciBytes prime slot).
+// Videos land in Md's hands ~10 PM Dhaka; YouTube posting follows the locked
+// SciBytes slots (Md 2026-10-09): 10 PM Dhaka (USA lunch peak) + 5 AM Dhaka
+// scheduled (USA evening prime).
 const SLOTS = [
-  { when: 'আজ রাত ১টা' },   // video 1 -> tonight 1 AM Dhaka
-  { when: 'কাল রাত ১টা' },  // video 2 -> tomorrow 1 AM Dhaka
+  { when: 'আজ রাত ১০টা' },            // video 1 -> tonight 10 PM Dhaka (USA lunch peak)
+  { when: 'কাল ভোর ৫টা (schedule)' }, // video 2 -> 5 AM Dhaka, scheduled (USA evening prime)
 ];
 
 async function main() {
