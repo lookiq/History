@@ -6,7 +6,8 @@
  *
  * Usage: node scripts/hu-v2/send_manual.js <bundle.json>
  * bundle.json: { video, thumbnail, title, description, tags, pinnedComment }
- * (paths relative to repo root)
+ * (video/thumbnail: repo-relative path OR https URL — URLs are passed
+ * straight to Telegram, so large files never bloat the repo)
  *
  * Standalone on purpose: does not touch telegram.js, so the pipeline's
  * deliver() behavior is completely unchanged.
@@ -50,7 +51,19 @@ async function fitForTelegram(videoPath) {
   return out;
 }
 
+const isUrl = (s) => /^https?:\/\//i.test(s || '');
+
 async function sendVideo(videoPath) {
+  if (isUrl(videoPath)) {
+    // Remote URL: Telegram fetches it directly (still under the 50MB bot limit —
+    // the builder must keep manual videos <=45MB before uploading).
+    const cmd = `curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendVideo" ` +
+      `--data-urlencode chat_id="${CHAT_ID}" --data-urlencode video="${videoPath}"`;
+    const { stdout } = await execPromise(cmd);
+    const res = JSON.parse(stdout);
+    if (!res.ok) throw new Error('Telegram sendVideo (URL) failed: ' + stdout.slice(0, 200));
+    return;
+  }
   const sendPath = await fitForTelegram(videoPath);
   const cmd = `curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendVideo" ` +
     `-F chat_id="${CHAT_ID}" -F supports_streaming=true -F video=@"${sendPath}"`;
@@ -60,6 +73,14 @@ async function sendVideo(videoPath) {
 }
 
 async function sendPhoto(photoPath) {
+  if (isUrl(photoPath)) {
+    const cmd = `curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendPhoto" ` +
+      `--data-urlencode chat_id="${CHAT_ID}" --data-urlencode photo="${photoPath}"`;
+    const { stdout } = await execPromise(cmd);
+    const res = JSON.parse(stdout);
+    if (!res.ok) throw new Error('Telegram sendPhoto (URL) failed: ' + stdout.slice(0, 200));
+    return;
+  }
   const cmd = `curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendPhoto" ` +
     `-F chat_id="${CHAT_ID}" -F photo=@"${photoPath}"`;
   const { stdout } = await execPromise(cmd, { maxBuffer: 5 * 1024 * 1024 });
@@ -91,14 +112,14 @@ async function main() {
   if (!bundlePath) throw new Error('usage: node scripts/hu-v2/send_manual.js <bundle.json>');
   const b = JSON.parse(fs.readFileSync(bundlePath, 'utf8'));
   const root = path.resolve(__dirname, '..', '..');
-  const video = path.join(root, b.video);
-  const thumb = b.thumbnail ? path.join(root, b.thumbnail) : null;
-  if (!fs.existsSync(video)) throw new Error('video not found: ' + b.video);
+  const video = isUrl(b.video) ? b.video : path.join(root, b.video);
+  const thumb = b.thumbnail ? (isUrl(b.thumbnail) ? b.thumbnail : path.join(root, b.thumbnail)) : null;
+  if (!isUrl(video) && !fs.existsSync(video)) throw new Error('video not found: ' + b.video);
 
   console.log('manual delivery: ' + (b.title || b.video));
   await withRetry(() => sendVideo(video), 'video');
   console.log('  video sent');
-  if (thumb && fs.existsSync(thumb)) {
+  if (thumb && (isUrl(thumb) || fs.existsSync(thumb))) {
     await withRetry(() => sendPhoto(thumb), 'thumbnail', 3);
     console.log('  thumbnail sent');
   } else {
