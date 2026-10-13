@@ -88,11 +88,11 @@ async function sendPhoto(photoPath) {
   if (!res.ok) throw new Error('Telegram sendPhoto failed: ' + stdout.slice(0, 200));
 }
 
-async function sendCodeBlock(text) {
-  // Plain triple-backtick block, no heading — Md's copy-paste format.
-  // Written via temp file so backticks never break /bin/sh parsing.
-  const body = '```\n' + text + '\n```';
-  const t = body.length > 4000 ? body.slice(0, 4000) : body;
+async function sendPlain(text) {
+  // Md's format (2026-10-13): absolutely plain text — no headings, no
+  // backticks, no quotes, no extra symbols. Just the raw copy-paste content.
+  // Written via temp file so special chars never break /bin/sh parsing.
+  const t = text.length > 4000 ? text.slice(0, 4000) : text;
   const tmp = path.join(os.tmpdir(), `tgmanual-${Date.now()}-${Math.random().toString(36).slice(2)}.txt`);
   fs.writeFileSync(tmp, t, 'utf8');
   try {
@@ -126,10 +126,10 @@ async function main() {
     console.log('  (no thumbnail — skipped)');
   }
   // Exact order, no headings, no extra text:
-  await withRetry(() => sendCodeBlock(b.title), 'title');
-  await withRetry(() => sendCodeBlock(b.description), 'description');
-  if (b.tags) await withRetry(() => sendCodeBlock(b.tags), 'tags');
-  if (b.pinnedComment) await withRetry(() => sendCodeBlock(b.pinnedComment), 'pinned comment');
+  await withRetry(() => sendPlain(b.title), 'title');
+  await withRetry(() => sendPlain(b.description), 'description');
+  if (b.tags) await withRetry(() => sendPlain(b.tags), 'tags');
+  if (b.pinnedComment) await withRetry(() => sendPlain(b.pinnedComment), 'pinned comment');
   console.log('manual delivery done');
 }
 
