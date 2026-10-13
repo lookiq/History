@@ -1,0 +1,45 @@
+name: History Uncut — Manual delivery to Telegram
+
+# Sends one finished manual-build video + metadata to Md's Telegram in his
+# exact order: video -> thumbnail -> title -> description -> tags -> pinned
+# comment. No extra text, no headings — full copy-paste format.
+#
+# The cron worker (or Muse) builds the video locally, writes a bundle JSON
+# into data/manual_delivery/, pushes, then dispatches this workflow with
+# the bundle path. Telegram secrets stay in GitHub — never on the laptop.
+#
+# bundle JSON: { video, thumbnail, title, description, tags, pinnedComment }
+# (video/thumbnail paths relative to repo root)
+
+on:
+  workflow_dispatch:
+    inputs:
+      bundle:
+        description: 'Path to bundle JSON in repo, e.g. data/manual_delivery/irena_sendler.json'
+        required: true
+        type: string
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 18
+
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Send manual delivery to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          node --check scripts/hu-v2/send_manual.js
+          node scripts/hu-v2/send_manual.js "${{ inputs.bundle }}"
