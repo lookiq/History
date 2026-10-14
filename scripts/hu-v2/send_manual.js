@@ -89,10 +89,11 @@ async function sendPhoto(photoPath) {
 }
 
 async function sendPlain(text) {
-  // Md's format (2026-10-13): absolutely plain text — no headings, no
-  // backticks, no quotes, no extra symbols. Just the raw copy-paste content.
-  // Written via temp file so special chars never break /bin/sh parsing.
-  const t = text.length > 4000 ? text.slice(0, 4000) : text;
+  // Md's format: code block so Telegram shows a tap-to-copy button under
+  // each metadata message. Written via temp file so backticks never break
+  // /bin/sh parsing.
+  const body = '```\n' + text + '\n```';
+  const t = body.length > 4000 ? body.slice(0, 4000) : body;
   const tmp = path.join(os.tmpdir(), `tgmanual-${Date.now()}-${Math.random().toString(36).slice(2)}.txt`);
   fs.writeFileSync(tmp, t, 'utf8');
   try {
